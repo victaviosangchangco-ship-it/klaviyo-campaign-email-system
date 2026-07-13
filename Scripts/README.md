@@ -1,0 +1,1 @@
+**Scripts/** — automation for the production workflow: HTML assembly/build, image optimization & resizing, email-HTML validation/linting, and reference-screenshot capture. Keeps production repeatable and hands-off (supports CR-18).

@@ -1,0 +1,1 @@
+**Brief/** — the campaign brief for a single send: purpose, audience, key message, featured products/offer, and target send date pulled from the Content Calendar. The starting point of the pipeline (WK-P1 / MO-P1). One markdown brief per campaign instance.

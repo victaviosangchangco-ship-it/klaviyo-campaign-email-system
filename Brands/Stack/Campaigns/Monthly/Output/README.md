@@ -1,0 +1,1 @@
+**Output/** — the final, approved, ready-to-ship HTML for this send (WK-P7–P8 / MO-P7–P8). This per-campaign folder is the SINGLE SOURCE OF TRUTH for the shipped campaign; there is no top-level Output folder.

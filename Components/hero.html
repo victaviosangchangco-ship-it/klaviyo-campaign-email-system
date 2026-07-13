@@ -1,0 +1,28 @@
+<!--
+  Component: hero
+  Purpose: Headline block — optional eyebrow/kicker, the primary H1, and an optional lead line.
+           Sits directly below the hero image (hero-image.html) or the header.
+  BRD mapping: WK-S4 / MO-S5
+  Required inputs: [[HERO_HEADING]]
+  Optional inputs: [[EYEBROW_TEXT]] (uppercase kicker; omit the <p> when absent),
+                   [[HERO_BODY]] (single lead line; for multi-paragraph copy use intro.html instead),
+                   [[HERO_ALIGN]] (default left), [[EYEBROW_SIZE]] (default 11px),
+                   [[H1_SIZE]] (default 32px), [[HEADING_WEIGHT]] (default 700; serif brands set 400),
+                   [[BODY_SIZE]] (default 15px)
+  Fallback behavior: [[EYEBROW_TEXT]] and [[HERO_BODY]] are optional; if [[HERO_HEADING]] is absent,
+                     STOP and request it. Never fabricate a headline.
+  Dependencies: shared .hh (mobile headline size) from base-head.
+-->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" style="background:[[BODY_BG]];">
+  <tr>
+    <td class="mp" align="[[HERO_ALIGN]]" style="padding:30px 28px 8px 28px;">
+      <p style="margin:0 0 12px 0; font-family:[[FONT_STACK]]; font-size:[[EYEBROW_SIZE]]; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:[[ACCENT_COLOR]];">[[EYEBROW_TEXT]]</p>
+      <h1 class="hh dm-text" style="margin:0; font-family:[[HEADING_FONT_STACK]]; font-size:[[H1_SIZE]]; font-weight:[[HEADING_WEIGHT]]; line-height:1.15; letter-spacing:-0.3px; color:[[TEXT_COLOR]];">[[HERO_HEADING]]</h1>
+    </td>
+  </tr>
+  <tr>
+    <td class="mp" align="[[HERO_ALIGN]]" style="padding:12px 28px 24px 28px;">
+      <p class="dm-text" style="margin:0; font-family:[[FONT_STACK]]; font-size:[[BODY_SIZE]]; line-height:1.6; color:[[TEXT_COLOR]];">[[HERO_BODY]]</p>
+    </td>
+  </tr>
+</table>

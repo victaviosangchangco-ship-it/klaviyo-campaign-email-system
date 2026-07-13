@@ -1,0 +1,76 @@
+<!--
+  Snippet: base-head
+  Purpose: Document scaffold — doctype, <head>, meta, and the shared <style> block
+           (client resets, 600px container, responsive stacking, dark-mode technique).
+  BRD mapping: supports CS-08 (client compatibility), CS-09 (responsive), CS-11 (accessibility),
+               CS-12 (graceful degradation)
+  Required inputs: [[SUBJECT_LINE]] (used as document <title>)
+  Optional inputs: [[DARK_BODY_BG]] (default #000000), [[DARK_TEXT_COLOR]] (default #ffffff)
+  Fallback behavior: if dark tokens are absent, generation applies the documented defaults above
+  Dependencies: none. Paired with a Template that opens <body> and assembles components.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="supported-color-schemes" content="light dark" />
+  <title>[[SUBJECT_LINE]]</title>
+  <!--[if mso]>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <![endif]-->
+  <style>
+    /* --- client resets (structural, not brand) --- */
+    body { margin:0; padding:0; width:100% !important; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; }
+    table { border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; }
+    img { border:0; height:auto; line-height:100%; outline:none; text-decoration:none; -ms-interpolation-mode:bicubic; }
+    a { text-decoration:none; }
+
+    /* --- shared layout baseline (not brand) --- */
+    .email-container { width:600px; max-width:600px; margin:0 auto; }
+    /* Fixed name/description heights keep every product card equal height so prices align across a row */
+    .prod-name { min-height:34px; }
+    .prod-sub  { min-height:52px; }
+
+    /* --- responsive (CS-09) --- */
+    @media screen and (max-width:600px) {
+      .email-container { width:100% !important; }
+      .stack-col, .pc { display:block !important; width:100% !important; max-width:100% !important; }
+      .pc img { width:100% !important; height:auto !important; }
+      .center-sm { text-align:center !important; }
+      .mp { padding-left:16px !important; padding-right:16px !important; }
+      .hh { font-size:28px !important; }
+      .tap { min-height:44px !important; line-height:44px !important; }
+      /* category pills: 3-across → 2-across, full-width tappable chips */
+      .cat-td { display:inline-block !important; width:50% !important; box-sizing:border-box !important; padding:4px !important; text-align:center !important; vertical-align:top !important; }
+      .pill { display:block !important; padding:14px 8px !important; }
+      /* trust badges: 4-across → 2x2 */
+      .trust-card { width:50% !important; padding:6px !important; }
+      /* coupon code never overflows a narrow screen */
+      .coupon-code { font-size:24px !important; letter-spacing:2px !important; word-break:break-all !important; }
+      /* cards stack full-width: drop the equal-height locks and keep copy readable */
+      .prod-name { min-height:0 !important; }
+      .prod-sub  { min-height:0 !important; font-size:14px !important; line-height:1.5 !important; }
+    }
+
+    /* --- dark mode (CS-12); colours inject via tokens from Design.md --- */
+    @media (prefers-color-scheme: dark) {
+      .dm-bg   { background:[[DARK_BODY_BG]] !important; }
+      .dm-text { color:[[DARK_TEXT_COLOR]] !important; }
+      .dm-logo-light { display:none !important; }
+      .dm-logo-dark  { display:block !important; }
+    }
+    [data-ogsc] .dm-bg   { background:[[DARK_BODY_BG]] !important; }
+    [data-ogsc] .dm-text { color:[[DARK_TEXT_COLOR]] !important; }
+    [data-ogsc] .dm-logo-light { display:none !important; }
+    [data-ogsc] .dm-logo-dark  { display:block !important; }
+  </style>
+</head>

@@ -1,0 +1,43 @@
+<!--
+  Component: category-pills
+  Purpose: A grid of outline "pill" links to key categories/collections — quick navigation below the
+           intro. 3-across on desktop, 2-across on mobile, each pill a ≥44px tappable chip.
+  BRD mapping: WK-S4 / MO-S5 (supporting navigation)
+  Required inputs: for each pill n (1..6) in use — [[PILL_n_LABEL]], [[PILL_n_URL]]
+  Optional inputs: [[PILL_BORDER_COLOR]] (default [[TEXT_COLOR]]), [[PILL_TEXT_COLOR]]
+                   (default [[TEXT_COLOR]]), [[PILL_RADIUS]] (default 24px), [[SMALL_SIZE]] (default 12px)
+  Fallback behavior: entirely optional — omit for sends with no category navigation. Render only the
+                     pills that have real labels + URLs; delete unused <td> cells (do not leave empty
+                     chips). Best with 3 or 6 pills so rows stay balanced. Never invent categories.
+  Dependencies: shared .cat-td / .pill (responsive) from base-head.
+-->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" style="background:[[BODY_BG]];">
+  <tr>
+    <td align="center" class="mp" style="padding:0 20px 16px 20px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:520px; margin:0 auto;">
+        <tr>
+          <td class="cat-td" width="33.33%" align="center" valign="middle" style="padding:0 6px 10px 6px;">
+            <a href="[[PILL_1_URL]]" target="_blank" class="pill" style="display:inline-block; padding:10px 20px; border:1.5px solid [[PILL_BORDER_COLOR]]; border-radius:[[PILL_RADIUS]]; font-family:[[FONT_STACK]]; font-size:[[SMALL_SIZE]]; font-weight:500; color:[[PILL_TEXT_COLOR]]; text-decoration:none;">[[PILL_1_LABEL]]</a>
+          </td>
+          <td class="cat-td" width="33.33%" align="center" valign="middle" style="padding:0 6px 10px 6px;">
+            <a href="[[PILL_2_URL]]" target="_blank" class="pill" style="display:inline-block; padding:10px 20px; border:1.5px solid [[PILL_BORDER_COLOR]]; border-radius:[[PILL_RADIUS]]; font-family:[[FONT_STACK]]; font-size:[[SMALL_SIZE]]; font-weight:500; color:[[PILL_TEXT_COLOR]]; text-decoration:none;">[[PILL_2_LABEL]]</a>
+          </td>
+          <td class="cat-td" width="33.33%" align="center" valign="middle" style="padding:0 6px 10px 6px;">
+            <a href="[[PILL_3_URL]]" target="_blank" class="pill" style="display:inline-block; padding:10px 20px; border:1.5px solid [[PILL_BORDER_COLOR]]; border-radius:[[PILL_RADIUS]]; font-family:[[FONT_STACK]]; font-size:[[SMALL_SIZE]]; font-weight:500; color:[[PILL_TEXT_COLOR]]; text-decoration:none;">[[PILL_3_LABEL]]</a>
+          </td>
+        </tr>
+        <tr>
+          <td class="cat-td" width="33.33%" align="center" valign="middle" style="padding:0 6px 6px;">
+            <a href="[[PILL_4_URL]]" target="_blank" class="pill" style="display:inline-block; padding:10px 20px; border:1.5px solid [[PILL_BORDER_COLOR]]; border-radius:[[PILL_RADIUS]]; font-family:[[FONT_STACK]]; font-size:[[SMALL_SIZE]]; font-weight:500; color:[[PILL_TEXT_COLOR]]; text-decoration:none;">[[PILL_4_LABEL]]</a>
+          </td>
+          <td class="cat-td" width="33.33%" align="center" valign="middle" style="padding:0 6px 6px;">
+            <a href="[[PILL_5_URL]]" target="_blank" class="pill" style="display:inline-block; padding:10px 20px; border:1.5px solid [[PILL_BORDER_COLOR]]; border-radius:[[PILL_RADIUS]]; font-family:[[FONT_STACK]]; font-size:[[SMALL_SIZE]]; font-weight:500; color:[[PILL_TEXT_COLOR]]; text-decoration:none;">[[PILL_5_LABEL]]</a>
+          </td>
+          <td class="cat-td" width="33.33%" align="center" valign="middle" style="padding:0 6px 6px;">
+            <a href="[[PILL_6_URL]]" target="_blank" class="pill" style="display:inline-block; padding:10px 20px; border:1.5px solid [[PILL_BORDER_COLOR]]; border-radius:[[PILL_RADIUS]]; font-family:[[FONT_STACK]]; font-size:[[SMALL_SIZE]]; font-weight:500; color:[[PILL_TEXT_COLOR]]; text-decoration:none;">[[PILL_6_LABEL]]</a>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>

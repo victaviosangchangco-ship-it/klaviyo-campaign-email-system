@@ -1,0 +1,1 @@
+**References/** — read-only inputs that inform generation: screenshots of past sends, the live site and product pages, design references, and competitor/example emails. Gathered during WK-P1/P3 · MO-P1/P3. These guide the build; they are never shipped.

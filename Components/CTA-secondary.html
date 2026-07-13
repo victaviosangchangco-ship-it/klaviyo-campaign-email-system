@@ -1,0 +1,27 @@
+<!--
+  Component: CTA-secondary
+  Purpose: Supporting call-to-action — an OUTLINE (ghost) button, one tier below the filled primary
+           CTA. Establishes CTA hierarchy: filled primary drives the main action, outline secondary
+           offers a lower-commitment path (e.g. "Shop the Full Range") without competing for the click.
+  BRD mapping: WK-S5 / MO-S6 (supporting CTA)
+  Required inputs: [[CTA2_LABEL]], [[CTA2_URL]]
+  Optional inputs: [[CTA2_BORDER_COLOR]] (default [[TEXT_COLOR]]), [[CTA2_TEXT_COLOR]]
+                   (default [[TEXT_COLOR]]), [[BUTTON_RADIUS]] (default 24px), [[BODY_SIZE]] (default 15px)
+  Fallback behavior: entirely optional — omit when the send has a single action. NEVER place a
+                     secondary CTA with equal visual weight to the primary (that breaks hierarchy);
+                     it is always outline, never filled. If used, keep to one per section.
+  Dependencies: none. Uses shared .tap class from base-head for a 44px tap target on mobile.
+-->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" style="background:[[BODY_BG]];">
+  <tr>
+    <td align="center" style="padding:8px 28px 28px 28px;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td style="border:1.5px solid [[CTA2_BORDER_COLOR]]; border-radius:[[BUTTON_RADIUS]];">
+            <a href="[[CTA2_URL]]" class="tap" style="display:inline-block; font-family:[[FONT_STACK]]; font-size:[[BODY_SIZE]]; font-weight:700; color:[[CTA2_TEXT_COLOR]]; text-decoration:none; padding:13px 38px; letter-spacing:0.6px;">[[CTA2_LABEL]]</a>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>

@@ -1,0 +1,18 @@
+# Secrets — never commit BigCommerce (or any brand) credentials
+.env
+.env.*
+!.env.example
+Brands/**/.env
+Brands/**/.env.*
+!Brands/**/.env.example
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+
+# Build output
+dist/

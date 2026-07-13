@@ -1,0 +1,47 @@
+<!--
+  Component: footer
+  Purpose: Closing block — optional footer logo, social icons, brand blurb, and the compliance
+           block (unsubscribe, manage preferences, address). Self-contained; includes compliance.
+  BRD mapping: WK-S8 / MO-S9; satisfies CS-15 (compliance) and CS-14 (deliverability)
+  Required inputs: [[COMPANY_NAME]], [[COMPANY_ADDRESS]]
+  Optional inputs: [[FOOTER_LOGO_URL]], [[FOOTER_DESCRIPTION]], [[FACEBOOK_URL]], [[FB_ICON_URL]],
+                   [[INSTAGRAM_URL]], [[IG_ICON_URL]], [[PRIVACY_URL]] (privacy-policy link),
+                   [[FOOTER_BG]] (default #000000), [[FOOTER_TEXT_COLOR]] (default #ffffff),
+                   [[LINK_COLOR]], [[SMALL_SIZE]] (default 12px)
+  Fallback behavior: the unsubscribe link and [[COMPANY_ADDRESS]] are mandatory (legal, CS-15) — if
+                     missing, STOP and request them. Social icons / blurb / privacy link are optional;
+                     omit if absent. Klaviyo Liquid ({% unsubscribe_link %}, {{ organization.* }}) must
+                     remain intact in the output — [[COMPANY_NAME]]/[[COMPANY_ADDRESS]] may be filled
+                     with the Klaviyo org variables {{ organization.name }} / {{ organization.full_address }}.
+  Dependencies: none.
+  Note: uses Klaviyo's {% unsubscribe_link %} (the proven URL tag) inside the href — NOT a
+        manage-preferences variable, which is not a standard Klaviyo tag.
+-->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:[[FOOTER_BG]];">
+  <tr>
+    <td align="center" style="padding:32px 40px;">
+      <img src="[[FOOTER_LOGO_URL]]" alt="[[COMPANY_NAME]]" width="48" style="display:block; margin:0 auto 16px auto; height:auto;" />
+
+      <!-- Social -->
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto 16px auto;">
+        <tr>
+          <td style="padding:0 6px;"><a href="[[FACEBOOK_URL]]" target="_blank"><img src="[[FB_ICON_URL]]" alt="Facebook" width="30" style="display:block;" /></a></td>
+          <td style="padding:0 6px;"><a href="[[INSTAGRAM_URL]]" target="_blank"><img src="[[IG_ICON_URL]]" alt="Instagram" width="30" style="display:block;" /></a></td>
+        </tr>
+      </table>
+
+      <!-- Brand blurb -->
+      <p style="margin:0 0 16px 0; font-family:[[FONT_STACK]]; font-size:[[SMALL_SIZE]]; line-height:1.5; color:[[FOOTER_TEXT_COLOR]];">[[FOOTER_DESCRIPTION]]</p>
+
+      <!-- Compliance (mandatory) — Klaviyo Liquid, must remain intact -->
+      <p style="margin:0 0 8px 0; font-family:[[FONT_STACK]]; font-size:[[SMALL_SIZE]]; line-height:1.5; color:[[FOOTER_TEXT_COLOR]];">
+        <a href="{% unsubscribe_link %}" style="color:[[LINK_COLOR]]; text-decoration:underline;">Unsubscribe</a>
+        &nbsp;|&nbsp;
+        <a href="[[PRIVACY_URL]]" style="color:[[LINK_COLOR]]; text-decoration:underline;">Privacy Policy</a>
+      </p>
+      <p style="margin:0; font-family:[[FONT_STACK]]; font-size:[[SMALL_SIZE]]; line-height:1.5; color:[[FOOTER_TEXT_COLOR]];">
+        [[COMPANY_NAME]]<br />[[COMPANY_ADDRESS]]
+      </p>
+    </td>
+  </tr>
+</table>

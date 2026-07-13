@@ -1,0 +1,63 @@
+<!--
+  Component: product-grid
+  Purpose: One row of TWO product cards, 2-up on desktop and stacking to 1 on mobile. This is the
+           repeatable unit: generation clones the row per pair of products (2 products → 1 row,
+           6 products → 3 rows). Cards use fixed name/description heights so prices align across the row.
+  BRD mapping: WK-S6 / MO-S7 (multi-product use)
+  Required inputs (per card, suffix _1 = left, _2 = right): [[PRODUCT_n_IMAGE_URL]],
+                   [[PRODUCT_n_TITLE]], [[PRODUCT_n_URL]]
+  Optional inputs: [[PRODUCT_n_DESC]], [[PRODUCT_n_PRICE]]; [[CARD_BORDER_COLOR]] (default #ececec),
+                   [[CARD_BG]] (default #ffffff), [[CARD_RADIUS]] (default 12px),
+                   [[IMAGE_RADIUS]] (default 8px), [[META_SIZE]] (default 13px),
+                   [[SMALL_SIZE]] (default 12px), [[BODY_SIZE]] (default 15px)
+  Fallback behavior: never fabricate products, prices, or images — if no real product data is
+                     available, STOP and report (CLAUDE.md §5). Odd final product: render only the _1
+                     cell and delete the _2 cell (the remaining card sits left; it does not stretch).
+  Future (not yet approved — CLAUDE.md §11): to bind live catalog data, replace the two static cells
+                     with a Klaviyo loop over the store's catalog, e.g.
+                       {% for item in catalog_items %} …card markup, break to a new row every 2… {% endfor %}
+                     mapping img={{ item.image_url }} title={{ item.title }} price={{ item.price }}
+                     url={{ item.url }}. Do not enable until integrations are approved.
+  Dependencies: shared .pc (stack), .prod-name / .prod-sub (equal-height) from base-head. Card markup
+                mirrors product-card.html inline (independence rule, Components/README).
+-->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" style="background:[[BODY_BG]];">
+  <tr>
+    <td style="padding:12px 16px 0 16px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <!-- LEFT card -->
+          <td class="pc" width="50%" valign="top" style="padding:0 6px 16px 6px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid [[CARD_BORDER_COLOR]]; border-radius:[[CARD_RADIUS]]; background:[[CARD_BG]];">
+              <tr>
+                <td style="padding:12px 12px 16px 12px;">
+                  <a href="[[PRODUCT_1_URL]]" style="text-decoration:none;">
+                    <img src="[[PRODUCT_1_IMAGE_URL]]" alt="[[PRODUCT_1_TITLE]]" width="100%" style="display:block; width:100%; height:auto; margin-bottom:12px; border-radius:[[IMAGE_RADIUS]];" />
+                    <p class="prod-name dm-text" style="margin:0 0 3px 0; font-family:[[FONT_STACK]]; font-size:[[META_SIZE]]; font-weight:700; line-height:1.4; color:[[TEXT_COLOR]];">[[PRODUCT_1_TITLE]]</p>
+                    <p class="prod-sub" style="margin:0 0 8px 0; font-family:[[FONT_STACK]]; font-size:[[SMALL_SIZE]]; line-height:1.45; color:[[MUTED_TEXT_COLOR]];">[[PRODUCT_1_DESC]]</p>
+                    <p class="dm-text" style="margin:0; font-family:[[FONT_STACK]]; font-size:[[BODY_SIZE]]; font-weight:700; color:[[TEXT_COLOR]];">[[PRODUCT_1_PRICE]]</p>
+                  </a>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <!-- RIGHT card (delete this cell for an odd final product) -->
+          <td class="pc" width="50%" valign="top" style="padding:0 6px 16px 6px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid [[CARD_BORDER_COLOR]]; border-radius:[[CARD_RADIUS]]; background:[[CARD_BG]];">
+              <tr>
+                <td style="padding:12px 12px 16px 12px;">
+                  <a href="[[PRODUCT_2_URL]]" style="text-decoration:none;">
+                    <img src="[[PRODUCT_2_IMAGE_URL]]" alt="[[PRODUCT_2_TITLE]]" width="100%" style="display:block; width:100%; height:auto; margin-bottom:12px; border-radius:[[IMAGE_RADIUS]];" />
+                    <p class="prod-name dm-text" style="margin:0 0 3px 0; font-family:[[FONT_STACK]]; font-size:[[META_SIZE]]; font-weight:700; line-height:1.4; color:[[TEXT_COLOR]];">[[PRODUCT_2_TITLE]]</p>
+                    <p class="prod-sub" style="margin:0 0 8px 0; font-family:[[FONT_STACK]]; font-size:[[SMALL_SIZE]]; line-height:1.45; color:[[MUTED_TEXT_COLOR]];">[[PRODUCT_2_DESC]]</p>
+                    <p class="dm-text" style="margin:0; font-family:[[FONT_STACK]]; font-size:[[BODY_SIZE]]; font-weight:700; color:[[TEXT_COLOR]];">[[PRODUCT_2_PRICE]]</p>
+                  </a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>

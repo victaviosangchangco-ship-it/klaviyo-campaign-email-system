@@ -1,0 +1,1 @@
+**Shared / Snippets** — brand-agnostic HTML/code fragments reused during generation: preheader boilerplate, compliance-footer scaffold, dark-mode meta/media-query blocks. Smaller than a full Component.

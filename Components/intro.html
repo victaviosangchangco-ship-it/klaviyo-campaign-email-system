@@ -1,0 +1,22 @@
+<!--
+  Component: intro
+  Purpose: Introductory body copy — one to three short paragraphs that set up the send below the
+           headline. Comfortable reading measure and leading (line-height 1.7).
+  BRD mapping: WK-S4 / MO-S5 (supporting lead copy)
+  Required inputs: [[INTRO_PARA_1]]
+  Optional inputs: [[INTRO_PARA_2]], [[INTRO_PARA_3]] (omit the <p> for any absent paragraph),
+                   [[INTRO_ALIGN]] (default left), [[BODY_SIZE]] (default 15px)
+  Fallback behavior: entirely optional — omit for a copy-light send. Keep to three paragraphs max;
+                     longer copy belongs in a dedicated content block, not the intro. Never pad with
+                     filler to fill space.
+  Dependencies: shared .mp (mobile inset) from base-head.
+-->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" style="background:[[BODY_BG]];">
+  <tr>
+    <td class="mp" align="[[INTRO_ALIGN]]" style="padding:14px 28px 24px 28px;">
+      <p class="dm-text" style="margin:0 0 14px 0; font-family:[[FONT_STACK]]; font-size:[[BODY_SIZE]]; line-height:1.7; color:[[TEXT_COLOR]];">[[INTRO_PARA_1]]</p>
+      <p class="dm-text" style="margin:0 0 14px 0; font-family:[[FONT_STACK]]; font-size:[[BODY_SIZE]]; line-height:1.7; color:[[TEXT_COLOR]];">[[INTRO_PARA_2]]</p>
+      <p class="dm-text" style="margin:0; font-family:[[FONT_STACK]]; font-size:[[BODY_SIZE]]; line-height:1.7; color:[[TEXT_COLOR]];">[[INTRO_PARA_3]]</p>
+    </td>
+  </tr>
+</table>

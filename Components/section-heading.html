@@ -1,0 +1,39 @@
+<!--
+  Component: section-heading
+  Purpose: Titled divider that opens a content section — a tinted panel with an H2, a one-line
+           subhead, and an optional badge (e.g. "Sale") on the right. Gives the email clear rhythm
+           between blocks (e.g. before a product grid).
+  BRD mapping: WK-S6 / MO-S7 (section framing)
+  Required inputs: [[SECTION_TITLE]]
+  Optional inputs: [[SECTION_SUBTITLE]] (omit the <p> when absent), [[BADGE_TEXT]] (omit the badge
+                   cell when absent), [[SECTION_BG]] (tinted panel, default #F5F1EA),
+                   [[BADGE_BG]] (default [[ACCENT_COLOR]]), [[BADGE_TEXT_COLOR]] (default #ffffff),
+                   [[H2_SIZE]] (default 22px), [[HEADING_WEIGHT]] (default 700), [[SMALL_SIZE]] (default 12px)
+  Fallback behavior: [[SECTION_SUBTITLE]] and [[BADGE_TEXT]] are optional. If [[SECTION_TITLE]] is
+                     absent, omit the whole component (do not render an empty panel).
+  Dependencies: shared .mp (mobile inset) from base-head. Panel uses border-collapse:separate so the
+                radius renders in clients that honour it.
+-->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" style="background:[[BODY_BG]];">
+  <tr>
+    <td class="mp" style="padding:34px 28px 14px 28px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:separate;">
+        <tr>
+          <td style="background:[[SECTION_BG]]; border-radius:10px; padding:16px 18px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td valign="middle" style="padding-right:10px;">
+                  <h2 style="margin:0; font-family:[[HEADING_FONT_STACK]]; font-size:[[H2_SIZE]]; font-weight:[[HEADING_WEIGHT]]; line-height:1.2; color:[[TEXT_COLOR]];">[[SECTION_TITLE]]</h2>
+                  <p style="margin:5px 0 0 0; font-family:[[FONT_STACK]]; font-size:[[SMALL_SIZE]]; line-height:1.4; color:[[MUTED_TEXT_COLOR]];">[[SECTION_SUBTITLE]]</p>
+                </td>
+                <td valign="middle" align="right" style="white-space:nowrap;">
+                  <span style="display:inline-block; background:[[BADGE_BG]]; color:[[BADGE_TEXT_COLOR]]; border-radius:20px; padding:6px 13px; font-family:[[FONT_STACK]]; font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase;">[[BADGE_TEXT]]</span>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>

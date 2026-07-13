@@ -1,0 +1,45 @@
+<!--
+  Component: coupon
+  Purpose: Promo/offer block — a tinted panel with an eyebrow, a dashed discount-code chip, the offer
+           line, a primary CTA, and fine print (expiry). The featured incentive of a promotional send.
+  BRD mapping: offer/promo block (supporting; replaces the old text-only announcement bar)
+  Required inputs: [[COUPON_CODE]], [[COUPON_OFFER_TEXT]], [[CTA_URL]], [[CTA_LABEL]]
+  Optional inputs: [[COUPON_EYEBROW]] (uppercase kicker), [[COUPON_FINEPRINT]] (e.g. expiry),
+                   [[COUPON_BG]] (tinted panel, default #f0ebe4), [[COUPON_BORDER_COLOR]]
+                   (dashed chip border, default [[ACCENT_COLOR]]), [[BUTTON_BG]] (default [[ACCENT_COLOR]]),
+                   [[BUTTON_TEXT_COLOR]] (default #ffffff), [[BUTTON_RADIUS]] (default 24px)
+  Fallback behavior: entirely optional — omit for a non-promo send. Do not render a coupon without a
+                     real [[COUPON_CODE]] and offer. Never invent a code, discount, or expiry date
+                     (CLAUDE.md §5).
+  Dependencies: shared .coupon-code (mobile shrink) and .tap (44px) from base-head. Button markup is
+                inlined (self-contained) rather than assembling CTA.html.
+-->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" style="background:[[BODY_BG]];">
+  <tr>
+    <td style="padding:0 16px 28px 16px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:[[COUPON_BG]]; border-radius:8px;">
+        <tr>
+          <td style="padding:32px 28px; text-align:center;">
+            <p style="margin:0 0 14px 0; font-family:[[FONT_STACK]]; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:[[ACCENT_COLOR]];">[[COUPON_EYEBROW]]</p>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto 16px auto;">
+              <tr>
+                <td style="background:#ffffff; border:1.5px dashed [[COUPON_BORDER_COLOR]]; border-radius:8px; padding:13px 28px;">
+                  <span class="coupon-code" style="font-family:'Courier New',Courier,monospace; font-size:26px; font-weight:700; letter-spacing:4px; color:[[TEXT_COLOR]];">[[COUPON_CODE]]</span>
+                </td>
+              </tr>
+            </table>
+            <p style="margin:0 0 18px 0; font-family:[[FONT_STACK]]; font-size:15px; font-weight:600; color:[[TEXT_COLOR]];">[[COUPON_OFFER_TEXT]]</p>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
+              <tr>
+                <td style="background:[[BUTTON_BG]]; border-radius:[[BUTTON_RADIUS]];">
+                  <a href="[[CTA_URL]]" target="_blank" class="tap" style="display:inline-block; padding:14px 34px; font-family:[[FONT_STACK]]; font-size:13px; font-weight:700; color:[[BUTTON_TEXT_COLOR]]; text-decoration:none; letter-spacing:0.6px;">[[CTA_LABEL]]</a>
+                </td>
+              </tr>
+            </table>
+            <p style="margin:16px 0 0 0; font-family:[[FONT_STACK]]; font-size:9px; color:[[MUTED_TEXT_COLOR]];">[[COUPON_FINEPRINT]]</p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>

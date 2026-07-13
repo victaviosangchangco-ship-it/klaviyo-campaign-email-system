@@ -1,0 +1,1 @@
+**Assets/** — the actual image/asset files used in THIS specific send (hero banner, product images, campaign graphics). Gathered per WK-P3 / MO-P3, meeting the Assets Library standards. Evergreen brand assets live one level up in the brand's Assets/ folder instead.

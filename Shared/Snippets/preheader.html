@@ -1,0 +1,14 @@
+<!--
+  Snippet: preheader
+  Purpose: Hidden inbox-preview text shown after the subject line in most clients.
+  BRD mapping: WK-S2 / MO-S2; supports CS-14 (deliverability — valid preheader)
+  Required inputs: [[PREHEADER_TEXT]]
+  Optional inputs: none
+  Fallback behavior: if absent, generation must STOP and request it (never ship an empty preheader
+                     or leave visible fallback body text as the preview — see CS-14).
+  Dependencies: none. (The hide styles below are technical, not brand.)
+-->
+<div style="display:none; max-height:0; overflow:hidden; mso-hide:all; font-size:1px; line-height:1px; opacity:0;">
+  [[PREHEADER_TEXT]]
+  &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+</div>

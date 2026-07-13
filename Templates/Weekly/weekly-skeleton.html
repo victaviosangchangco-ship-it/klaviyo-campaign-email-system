@@ -1,0 +1,75 @@
+<!--
+  Template: weekly-skeleton
+  Purpose: Assembles the weekly email in WK-S order. Document shell + ordered ASSEMBLE markers;
+           generation expands each marker with the component's markup, then injects [[TOKEN]]s.
+  BRD mapping: WK-S1 → WK-S8 (01-Weekly Campaign)
+  Required inputs: [[SUBJECT_LINE]], [[PREHEADER_TEXT]], [[BODY_BG]], plus each assembled
+                   component's required inputs (see that component's header).
+  Optional inputs: hero-image, intro, category-pills, section-heading, product-grid, CTA-secondary,
+                   coupon and trust-strip are optional — omit the marker entirely when the send does
+                   not use them. product-grid and section-heading repeat as needed (one product-grid
+                   marker = one row of 2 cards; repeat per pair of products).
+  Fallback behavior: never fabricate content or assets; any missing required input STOPs generation
+                     and is reported (per CLAUDE.md §5).
+  Dependencies: Shared/Snippets/base-head.html, Shared/Snippets/preheader.html, Shared/design-tokens.md
+                (token contract), and the assembled Components below. No brand values live here.
+  Assembly order follows the benchmark section flow (Brands/SC/.../References/SC-2026-W28-ref-benchmark.html).
+-->
+<!-- ASSEMBLE: Shared/Snippets/base-head.html -->   <!-- provides <!DOCTYPE> … </head>; WK-S1 subject via [[SUBJECT_LINE]] -->
+<body class="dm-bg" style="margin:0; padding:0; background:[[BODY_BG]];">
+
+  <!-- WK-S2: Preheader -->
+  <!-- ASSEMBLE: Shared/Snippets/preheader.html -->
+
+  <center style="width:100%; background:[[BODY_BG]];">
+    <table role="presentation" class="email-container" width="600" cellpadding="0" cellspacing="0" border="0" align="center" style="width:600px; max-width:600px; margin:0 auto;">
+      <tr>
+        <td>
+
+          <!-- WK-S3: Header / logo -->
+          <!-- ASSEMBLE: Components/header.html -->
+
+          <!-- WK-S4: Hero image banner (optional visual lead) -->
+          <!-- ASSEMBLE: Components/hero-image.html -->
+
+          <!-- WK-S4: Headline block — eyebrow + H1 + optional lead line -->
+          <!-- ASSEMBLE: Components/hero.html -->
+
+          <!-- WK-S4: Intro copy (optional) -->
+          <!-- ASSEMBLE: Components/intro.html -->
+
+          <!-- WK-S4: Category navigation pills (optional) -->
+          <!-- ASSEMBLE: Components/category-pills.html -->
+
+          <!-- WK-S5: Primary call to action -->
+          <!-- ASSEMBLE: Components/CTA.html -->
+
+          <!-- WK-S6: Section heading (framing; repeat per product section) -->
+          <!-- ASSEMBLE: Components/section-heading.html -->
+
+          <!-- WK-S6: Featured products (conditional; one marker = one 2-card row, repeat per pair) -->
+          <!-- ASSEMBLE: Components/product-grid.html -->
+
+          <!-- WK-S6: Second product section — heading + grid (optional; e.g. an On-Sale block) -->
+          <!-- ASSEMBLE: Components/section-heading.html -->
+          <!-- ASSEMBLE: Components/product-grid.html -->
+
+          <!-- WK-S5: Secondary CTA — outline (optional; lower tier than the primary) -->
+          <!-- ASSEMBLE: Components/CTA-secondary.html -->
+
+          <!-- Offer / coupon (optional) -->
+          <!-- ASSEMBLE: Components/coupon.html -->
+
+          <!-- WK-S7: Supporting content — trust badges (optional) -->
+          <!-- ASSEMBLE: Components/trust-strip.html -->
+
+          <!-- WK-S8: Footer (compliance) -->
+          <!-- ASSEMBLE: Components/footer.html -->
+
+        </td>
+      </tr>
+    </table>
+  </center>
+
+</body>
+</html>

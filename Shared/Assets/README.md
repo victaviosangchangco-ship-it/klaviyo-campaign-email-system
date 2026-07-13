@@ -1,0 +1,1 @@
+**Shared / Assets** — shared image assets usable by any brand (payment icons, generic social icons, spacers/dividers). Brand-specific assets live under Brands/<CODE>/Assets or the per-campaign Assets/ folder.

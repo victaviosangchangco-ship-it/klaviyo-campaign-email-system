@@ -1,0 +1,84 @@
+<!--
+  Component: trust-strip
+  Purpose: Credibility block — an optional centred title over four bordered cards, each with a circular
+           glyph icon, a short label, and a sub-label. 4-across on desktop, 2x2 on mobile.
+  BRD mapping: supporting block (WK-S7 / MO-S8 optional)
+  Required inputs: for each of 4 items — [[TRUST_n_GLYPH]] (a unicode glyph / HTML entity, asset-free),
+                   [[TRUST_n_LABEL]] (n = 1..4)
+  Optional inputs: [[TRUST_TITLE]] (centred heading; omit the row when absent), [[TRUST_n_SUB]]
+                   (sub-label), [[TRUST_ICON_BG]] (circle fill, default #eaf2f6), [[ACCENT_COLOR]]
+                   (glyph colour), [[CARD_BORDER_COLOR]] (default #e0e0e0), [[H2_SIZE]] (default 20px),
+                   [[SMALL_SIZE]] (default 12px)
+  Fallback behavior: the whole component is optional; omit it entirely if the brand has no trust items.
+                     Render all four cells or none (a 4-up grid with gaps looks broken). Glyphs are
+                     asset-free (no icon image dependency) — never fabricate a claim (e.g. a
+                     certification) that isn't verified.
+  Dependencies: shared .trust-card (2x2 on mobile) from base-head.
+-->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" style="background:[[BODY_BG]];">
+  <tr>
+    <td style="padding:28px 20px 8px 20px;">
+      <p style="margin:0; font-family:[[HEADING_FONT_STACK]]; font-size:[[H2_SIZE]]; font-weight:[[HEADING_WEIGHT]]; color:[[TEXT_COLOR]]; text-align:center;">[[TRUST_TITLE]]</p>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding:12px 12px 28px 12px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="trust-card" width="25%" align="center" valign="top" style="padding:4px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border:1px solid [[CARD_BORDER_COLOR]]; border-radius:10px; width:100%;">
+              <tr>
+                <td style="padding:18px 6px 14px 6px; text-align:center;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto 8px auto;">
+                    <tr><td align="center" style="width:36px; height:36px; background:[[TRUST_ICON_BG]]; border-radius:50%; font-size:16px; line-height:36px; color:[[ACCENT_COLOR]];">[[TRUST_1_GLYPH]]</td></tr>
+                  </table>
+                  <p style="margin:0 0 2px 0; font-family:[[FONT_STACK]]; font-size:[[SMALL_SIZE]]; font-weight:700; line-height:1.35; color:[[TEXT_COLOR]];">[[TRUST_1_LABEL]]</p>
+                  <p style="margin:0; font-family:[[FONT_STACK]]; font-size:9px; color:[[MUTED_TEXT_COLOR]];">[[TRUST_1_SUB]]</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td class="trust-card" width="25%" align="center" valign="top" style="padding:4px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border:1px solid [[CARD_BORDER_COLOR]]; border-radius:10px; width:100%;">
+              <tr>
+                <td style="padding:18px 6px 14px 6px; text-align:center;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto 8px auto;">
+                    <tr><td align="center" style="width:36px; height:36px; background:[[TRUST_ICON_BG]]; border-radius:50%; font-size:16px; line-height:36px; color:[[ACCENT_COLOR]];">[[TRUST_2_GLYPH]]</td></tr>
+                  </table>
+                  <p style="margin:0 0 2px 0; font-family:[[FONT_STACK]]; font-size:[[SMALL_SIZE]]; font-weight:700; line-height:1.35; color:[[TEXT_COLOR]];">[[TRUST_2_LABEL]]</p>
+                  <p style="margin:0; font-family:[[FONT_STACK]]; font-size:9px; color:[[MUTED_TEXT_COLOR]];">[[TRUST_2_SUB]]</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td class="trust-card" width="25%" align="center" valign="top" style="padding:4px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border:1px solid [[CARD_BORDER_COLOR]]; border-radius:10px; width:100%;">
+              <tr>
+                <td style="padding:18px 6px 14px 6px; text-align:center;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto 8px auto;">
+                    <tr><td align="center" style="width:36px; height:36px; background:[[TRUST_ICON_BG]]; border-radius:50%; font-size:16px; line-height:36px; color:[[ACCENT_COLOR]];">[[TRUST_3_GLYPH]]</td></tr>
+                  </table>
+                  <p style="margin:0 0 2px 0; font-family:[[FONT_STACK]]; font-size:[[SMALL_SIZE]]; font-weight:700; line-height:1.35; color:[[TEXT_COLOR]];">[[TRUST_3_LABEL]]</p>
+                  <p style="margin:0; font-family:[[FONT_STACK]]; font-size:9px; color:[[MUTED_TEXT_COLOR]];">[[TRUST_3_SUB]]</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td class="trust-card" width="25%" align="center" valign="top" style="padding:4px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border:1px solid [[CARD_BORDER_COLOR]]; border-radius:10px; width:100%;">
+              <tr>
+                <td style="padding:18px 6px 14px 6px; text-align:center;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto 8px auto;">
+                    <tr><td align="center" style="width:36px; height:36px; background:[[TRUST_ICON_BG]]; border-radius:50%; font-size:16px; line-height:36px; color:[[ACCENT_COLOR]];">[[TRUST_4_GLYPH]]</td></tr>
+                  </table>
+                  <p style="margin:0 0 2px 0; font-family:[[FONT_STACK]]; font-size:[[SMALL_SIZE]]; font-weight:700; line-height:1.35; color:[[TEXT_COLOR]];">[[TRUST_4_LABEL]]</p>
+                  <p style="margin:0; font-family:[[FONT_STACK]]; font-size:9px; color:[[MUTED_TEXT_COLOR]];">[[TRUST_4_SUB]]</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>

@@ -1,0 +1,24 @@
+<!--
+  Component: announcement
+  Purpose: Incentive / offer callout — a bordered bar highlighting a promo (e.g. a code + discount).
+  BRD mapping: offer/promo block (supporting; sits near the primary CTA)
+  Required inputs: [[ANNOUNCEMENT_TEXT]]
+  Optional inputs: [[ACCENT_COLOR]] (border, default [[TEXT_COLOR]]),
+                   [[ANNOUNCEMENT_BG]] (default [[BODY_BG]]), [[BODY_SIZE]] (default 16px)
+  Fallback behavior: the whole component is optional — omit the section entirely when the send has
+                     no offer. Do not render an empty bar.
+  Dependencies: none.
+-->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" style="background:[[BODY_BG]];">
+  <tr>
+    <td style="padding:8px 40px 24px 40px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:2px solid [[ACCENT_COLOR]]; background:[[ANNOUNCEMENT_BG]];">
+        <tr>
+          <td align="center" style="padding:16px 20px; font-family:[[FONT_STACK]]; font-size:[[BODY_SIZE]]; line-height:1.5; color:[[TEXT_COLOR]];">
+            [[ANNOUNCEMENT_TEXT]]
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>

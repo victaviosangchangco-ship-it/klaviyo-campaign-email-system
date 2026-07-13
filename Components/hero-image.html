@@ -1,0 +1,21 @@
+<!--
+  Component: hero-image
+  Purpose: Full-width hero banner image (edge-to-edge inside the 600px container), optionally linked.
+           The visual lead of the email; the headline block (hero.html) follows it.
+  BRD mapping: WK-S4 / MO-S5 (visual lead)
+  Required inputs: [[HERO_IMAGE_URL]], [[HERO_IMAGE_ALT]] (meaningful alt — CS-11)
+  Optional inputs: [[HERO_IMAGE_LINK]] (wrap the image in a link; omit the <a> when absent)
+  Fallback behavior: a hero image is optional — omit this component entirely for a text-led send.
+                     If used, [[HERO_IMAGE_ALT]] is mandatory (accessibility + image-blocked clients);
+                     never ship an empty or decorative-only alt for the lead image.
+  Dependencies: none. line-height:0 / font-size:0 on the cell prevents gaps below the image.
+-->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" style="background:[[BODY_BG]];">
+  <tr>
+    <td align="center" style="line-height:0; font-size:0;">
+      <a href="[[HERO_IMAGE_LINK]]" target="_blank">
+        <img src="[[HERO_IMAGE_URL]]" alt="[[HERO_IMAGE_ALT]]" width="600" style="display:block; width:100%; max-width:600px; height:auto; margin:0 auto;" />
+      </a>
+    </td>
+  </tr>
+</table>
