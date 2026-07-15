@@ -1,5 +1,74 @@
 # RDD-2026-W29 — Review & QA Notes
 
+## Revision — 2026-07-13 (rev 6, implement tiny orange corner logo — Bruce experiment, RDD-only)
+Authored as `Draft/RDD-2026-W29-draft-v5.html`, QA'd, promoted to `Output/RDD-2026-W29.html`. RDD-only.
+Superseding rev 5's "not adopted" call: per new instruction the logo is now IMPLEMENTED, using a placement
+that avoids the earlier height/whitespace problem.
+- **Asset used:** approved **`RDD Favicon-Orange`** (orange RD monogram, transparent PNG) from the RDD
+  Klaviyo library (XAUdQX): `https://d3k81ch9hvuctc.cloudfront.net/company/XAUdQX/images/6bd02fd5-d5cc-4fc2-8c60-219830e7175e.png`. Not generated/recreated/modified.
+- **Placement/size:** tiny **15px-wide** mark, **upper-right corner** of every product card, `opacity:0.85`,
+  consistent across all 10 cards. Implemented as a thin right-aligned row whose height is offset by removing
+  the image cell's top padding (16px → 1px), so net card height increases only ~6–7px and the previously
+  EMPTY top padding is now occupied by the mark (no new empty white space; no strip like the rejected rev-5
+  approach which added ~30px).
+- **Compact text→price spacing preserved:** unchanged — name still sits ~12px above the orange price INSIDE
+  the card (the logo only affects the card's top area, not the name/price block).
+- **Mobile fix:** the responsive `.pc img { width:100% }` rule initially blew the mark up to full width on
+  mobile; fixed with a higher-specificity override `.pc img.brandmark { width:15px !important; max-width:15px !important; }`
+  + `class="brandmark"` on each mark. Verified mark stays tiny on mobile.
+- **QA:** 10 marks, consistent top-right placement/size · does not compete with product image/name/price ·
+  cards remain aligned per row · compact spacing preserved · tables/tr/td 26/26 · 46/46 · 57/57 · desktop +
+  mobile rendered (mark tiny in both; transient headless image-timeouts seen, all product URLs 200).
+- **CLAUDE.md intentionally NOT updated** — this is an RDD-specific visual experiment, not a universal rule (per instruction).
+- Reference variants: `Draft/RDD-2026-W29-draft-v4.html` (no logo) and `…-draft-v4-logo.html` (rejected strip approach).
+
+---
+
+## Revision — 2026-07-13 (rev 5, Bruce feedback: first-glance + cohesive product cards + logo test)
+Authored as `Draft/RDD-2026-W29-draft-v4.html`, QA'd, promoted to `Output/RDD-2026-W29.html`. RDD-only.
+- **First-glance / above-the-fold.** Kept RDD's brand identity (orange hero band, white RD logo, Trebuchet
+  headline, overlapping lifestyle photo) — did NOT copy SS. Tightened the orange band's vertical spacing
+  (logo margin 22→16, divider 18→16, eyebrow/headline gaps trimmed) so the product photo surfaces sooner,
+  and shortened the intro to one concise, scannable sentence (no em dash): "Retail display and workspace
+  best-sellers to sharpen your space, ready to ship Australia-wide." Stronger impact + clearer reason to scroll.
+- **Product cards redesigned as cohesive units.** Previously the orange price was a DETACHED element below
+  the white card (12px gap) with a 34px row gap. Now the **image + name + orange price sit inside ONE white
+  card** (border-radius 6px), tight rhythm: image →12px→ name →12px→ price. Card padding 16/14; image
+  max-width 180→190px (fills the card, less side white space, no floating); row gap 34→12px;
+  `.prod-name` min-height 52→34px. Result: compact, connected, premium; internal padding consistent across
+  all 10 cards; prices align per row.
+- **Display-name trims (2, links/prices unchanged):** to fit a clean 2-line name block and keep cards even,
+  two over-long labels were shortened for display only — "ErgoDC Portable Projector Screen 100\" 4:3" →
+  "ErgoDC Projector Screen 100\" 4:3"; "ErgoDC Ergonomic Office Chair High Back Full Mesh Fabric Grey" →
+  "ErgoDC High-Back Mesh Office Chair". Product URLs, images and prices are unchanged.
+- **Tiny orange logo test (Bruce #3) — TESTED, NOT ADOPTED.** Built a variant with the approved orange RD
+  mark (`RDD Favicon-Orange`, cloudfront XAUdQX `6bd02fd5…png`) in the card's upper-right. The mark itself
+  is subtle/on-brand and doesn't compete with the product, BUT email-safe placement needs a top header
+  strip that pushes the image down, adds top white space, and (uniformly applied) makes every card taller —
+  directly counter to the "reduce white space / compact cohesive card" goal; partial application creates row
+  asymmetry. Per brief, documented the comparison (`scratchpad/rdd-logo-row1.png` with vs
+  `rdd-v4-full2.png` without) and kept the clean no-logo cards. Variant saved as
+  `Draft/RDD-2026-W29-draft-v4-logo.html` for reference.
+- **QA:** 10 product cards · price now inside card, tight name→price (≈12px, visibly reduced from the old
+  detached ~27px+) · consistent padding/alignment · tables/tr/td 26/26 · 36/36 · 47/47 · all 31 image+link
+  URLs HTTP 200 · desktop + mobile rendered (transient headless image-timeouts seen mid-audit; all URLs
+  re-verified 200 and a long-budget render showed them loading). No SS or other brand touched.
+
+---
+
+## Revision — 2026-07-13 (rev 4, remove redundant CTA — Bruce feedback)
+Authored as `Draft/RDD-2026-W29-draft-v3.html`, QA'd, promoted to `Output/RDD-2026-W29.html`.
+- **Removed the duplicate "See full range" button** under the "Shop by Category" section. The earlier
+  "Learn more →" primary CTA (after the product grid, → `/on-sale-now/`) already serves the same broad
+  navigation purpose, so the second generic CTA was redundant (new CLAUDE.md §6.2 no-duplicate-CTA rule).
+- **Kept:** the 6 category pills, the "Shop by Category" heading + supporting copy, and the earlier
+  "Learn more" CTA. **Spacing preserved** — the pills container bottom padding was raised 6→34px to keep
+  the section's breathing room before the "We've got you covered" trust strip.
+- **QA:** 0 visible "See full range" · "Learn more" CTA intact · 6 category pills intact · tables/tr/td
+  36/36 · 46/46 · 57/57 · desktop render confirms clean pills→trust transition, no layout break.
+
+---
+
 ## Revision — 2026-07-13 (rev 3, layout + product edit)
 Authored as `Draft/RDD-2026-W29-draft-v2.html`, QA'd, then promoted to `Output/RDD-2026-W29.html`
 (per user task instruction; reviewer/approver still ≠ author — human sign-off pending, CR-16/CR-17).

@@ -11,6 +11,12 @@ Per-send assets used by the draft. No binaries stored locally — all are **veri
 Available but **not** used this send (can be swapped in after a visual check):
 `RDD Favicon-White`, `RDD Favicon-Orange.1`, `facebook`, and trust icons `icon-shipping` / `icon-returns` / `icon-service`.
 
+**Orange RD mark (tested rev 5, not adopted):** `RDD Favicon-Orange` =
+`https://d3k81ch9hvuctc.cloudfront.net/company/XAUdQX/images/6bd02fd5-d5cc-4fc2-8c60-219830e7175e.png`
+(and `.1` = `.../4b9ecca7-2899-44a9-9a99-325b1290472e.png`, identical). Tested as a tiny upper-right
+card mark per Bruce; not adopted — its email-safe top-strip placement added card white space / row
+asymmetry, counter to the compact-card goal. See review notes rev 5.
+
 ## Product images — live BigCommerce CDN (store `s-ugqmr0qfvf`)
 | Product | Image URL |
 |---------|-----------|

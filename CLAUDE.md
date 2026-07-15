@@ -78,6 +78,11 @@ product count **only** when the override is **explicitly documented and approved
 - **Product data comes from the brand's approved product source** (per its brand doc). When that source
   is **BigCommerce**, retrieve from BigCommerce and verify each product is **active** and **currently in
   stock / purchasable** per its inventory configuration.
+- **Verify stock on the product page itself, not a category/collection listing.** Category and
+  collection pages routinely misreport availability (an item can show "Add to Cart" in a listing yet be
+  Out of Stock on its own product page, and lazy-loaded listings hide the real image/price). Confirm
+  each selected product's stock, price, URL and image on its **individual product page** before it enters
+  the grid; if an item is out of stock, replace it and re-verify. Never leave an empty card.
 - **Never invent** product names, prices, SKUs, stock status, product URLs, or image URLs (this extends
   the "never invent" rule above to product data). If 10 valid products cannot be retrieved from the
   approved source, **report the blocker** — never fabricate products to reach the count.
@@ -95,6 +100,9 @@ imagery unless explicitly requested and approved.
 - **No repeated messaging** — never repeat the same introduction, campaign message, headline concept, or
   supporting copy across consecutive sections. Each section must have a **distinct purpose** that moves
   the campaign narrative forward.
+- **Fresh each week** — a new weekly send must not reuse the previous week's campaign angle, seasonal
+  theme, eyebrow, headline concept, or hero treatment. Carry forward the proven structure and brand vibe,
+  but the theme and copy must be genuinely new for the current send.
 - **One introduction** — when the main campaign hero has already established the theme and message, do not
   add a second introduction. Hero visuals and later sections **support** the theme, they don't restate the
   opener.
@@ -110,6 +118,134 @@ The authoritative standards are `CS-08`–`CS-15` in the BRD — follow them; do
 Build mechanics only: 600px container, single-column, **table-based layout + inline CSS**, dark-mode
 aware (`color-scheme` meta + `prefers-color-scheme` + `[data-ogsc]`). Brand-specific measurements
 (sizes, radius, spacing) come from that brand's `Design.md`.
+
+### 6.1 Brand-specific header defaults (logo alignment)
+
+Permanent **default** brand rules for the header logo. These are defaults, **not** permanent
+restrictions: the logo position may be changed for an individual campaign when the user explicitly
+requests a different alignment or design.
+
+- **Safety Sector (SS):** Safety Sector (SS) campaign emails must use a **LEFT-aligned logo** in the
+  header by default, following the approved SS campaign reference design.
+- **SectorCare (SC):** SectorCare (SC) campaign emails must use a **LEFT-aligned logo** in the header
+  by default, following the approved SectorCare campaign reference design.
+
+These rules apply to **SS and SC only** — do **not** apply them to RDD or Stack (those brands follow
+their own approved reference designs / brand docs).
+
+### 6.2 Campaign copy & product-grid quality (all brands)
+
+General email-design quality rules for every campaign generation:
+
+- **Introduction copy — no dashes.** Campaign introduction/supporting copy must not use em dashes or
+  dash-based sentence interruptions. Use clean, natural sentences instead. Keep introduction copy
+  concise and visually controlled.
+- **Product-grid balance.** Product grids must always be visually balanced. Product cards within the
+  same row should use consistent image areas, typography, spacing, and price placement. Shorten overly
+  long product descriptions when necessary to prevent uneven card heights, while preserving factual
+  accuracy.
+- **Product cards are cohesive units.** Design each card so the image, product information, and
+  price/CTA feel connected as one unit rather than visually separated. Avoid excessive unused white space
+  inside cards, and keep the vertical spacing between the product text and its price/CTA intentional and
+  compact. Product images must not appear isolated or floating at the top of an oversized image area —
+  rebalance the image, text and price areas together rather than only changing card height.
+- **Subtle brand-decorative elements.** Brand-specific decorative elements (e.g. a small brand mark on a
+  card) may be used subtly when approved, but they must never compete with the product image or damage
+  readability, and must not introduce awkward spacing. If a decorative element makes cards worse, document
+  the comparison instead of forcing it.
+- **No duplicate/redundant CTAs.** Campaign emails must avoid duplicate or redundant CTA concepts. If an
+  earlier primary CTA already provides a broad action such as Learn more, Shop now, Explore the range, or
+  similar, do not add another generic CTA such as See full range later in the email unless it serves a
+  clearly different purpose or destination.
+
+### 6.3 Campaign workflow & first-impression (all brands)
+
+General campaign-generation workflow principles:
+
+- **First impression is a primary objective.** The above-the-fold area must immediately hook the reader
+  and encourage them to keep scrolling. Keep it strong, clean and easy to scan; do not overcrowd the top.
+- **Product visibility as retention.** Showing enough relevant products is a retention mechanism — surface
+  enough of the range to make readers want to keep exploring.
+- **Default recommended product count may be 14–16** when it suits the campaign and the email stays
+  visually balanced and not excessively long (otherwise use fewer).
+- **Formatting & alignment consistency.** Maintain strict, intentional alignment, spacing, width and
+  typography consistency across *all* sections, not just the product grid.
+- **Copy length by campaign type.** Normal campaigns should generally use concise, highly scannable copy;
+  special seasonal / holiday / EOFY / promotional campaigns may justify longer, more emotional or
+  promotional messaging.
+- **Coupons must be verified.** Coupon codes must be confirmed created and active in the relevant commerce
+  platform (e.g. BigCommerce) before send.
+- **Post-build visual QA audit.** Perform a full post-build visual QA (desktop + mobile) before presenting
+  a campaign for review, and complete a final self-QA so the version presented is as close to final as
+  possible.
+- **Preserve what works.** Preserve successful visual direction and the established brand vibe unless new
+  feedback explicitly requires a change.
+
+### 6.4 SectorCare (SC) campaign — promo / coupon rule
+
+Permanent, **SC-only** rule (per Bruce). Do **not** apply to SS, RDD or Stack — those brands follow their
+own promo conventions.
+
+- **Standard SC coupon is a fixed-dollar discount: "$20 off orders over $200"** (offer text
+  "Save $20 on orders over $200" or "$20 off orders over $200"). This is the default for every SC send.
+- **No percentage-based discounts for SC** (e.g. "15% off") unless a **special arrangement or explicit
+  campaign instruction** specifically requires one.
+- If a campaign instruction conflicts with this standard **because of an explicitly approved special
+  arrangement**, follow the approved campaign-specific instruction.
+- **Readability first (older audience).** SC promo sections must be highly readable: avoid very small font
+  sizes for the promo heading, coupon code, offer text, CTA text, and validity/expiry text. Keep a clean,
+  balanced hierarchy (readable, not oversized).
+- **Always verify** the promo section is clear and readable on **both desktop and mobile**.
+- Coupon codes are still subject to the global rule (§6.3): confirmed created and **active** in BigCommerce
+  before send.
+
+### 6.5 Dynamic coupon section (all brands)
+
+The coupon/promo section is **part of the campaign story, not a generic discount block**. For every
+campaign, its title, heading, CTA, and supporting copy must be **freshly written for that campaign** and
+must match its theme, hero message, and customer intent.
+
+- **Never reuse a coupon title or promotional heading from a previous campaign** unless explicitly
+  instructed. Avoid recycled headings such as `WINTER20`, "Winter Offer", or any leftover title from an
+  earlier send.
+- **Generate a unique promo title** that aligns with the current campaign theme and feels like a natural
+  continuation of the hero message (not a bolt-on).
+- **Make all promo copy context-aware** — the promo eyebrow/title, the offer line, the CTA text, and any
+  supporting copy adapt to the current campaign's theme and audience.
+- **Coupon code vs. promo title are separate.** Never invent a coupon *code* (this reinforces the
+  "never invent" rule and §6.3). If the real code has not been provided, use a **clearly-marked
+  placeholder** for the code while still writing an appropriate promo title, offer framing, and copy.
+- Brand-specific offer structure still applies (e.g. SC's fixed-dollar rule, §6.4); this rule governs the
+  *title and messaging*, not the discount mechanics.
+
+Example promo titles (illustrative, adapt per campaign — do not reuse verbatim): "Move Freely. Save More.",
+"Your Mobility Bonus", "Everyday Comfort Savings", "Independence Starts Here", "Better Living Starts Today",
+"Safe Steps, Better Savings", "Comfort That Rewards You".
+
+### 6.6 Email-client link & containment safety (all brands — learned from SS-2026-W29)
+
+Two build defects survive a localhost/desktop preview but break in real email clients / Klaviyo. A
+browser preview is **never** sufficient proof for either — both must be checked in the built markup.
+
+- **Never wrap a `<table>` (or any block-level element) inside an `<a>`.** An anchor is an inline
+  formatting element; wrapping a table in it is invalid nesting. Browsers tolerate it, but **Klaviyo
+  re-parses and rewrites links on import** and detaches the `href` from the block wrapper, so the element
+  renders but is **not clickable after upload** (this is exactly why SS product cards failed while RDD/SC
+  did not). **Rule for clickable product cards:** the anchor must contain **inline content only** — wrap
+  the `<img>` in its own anchor, keep any image-centering `<table>` **outside** all anchors, and put the
+  name/description/price in a **separate** anchor (`<p>`/`<span>` inside an anchor is fine; a `<table>`
+  is not). To make the whole card clickable, use multiple sibling anchors to the same URL — never one
+  anchor around the whole card structure.
+- **Fluid images must sit in tables whose width is set in inline `style`, not only the HTML attribute.**
+  A `<table width="100%">` that carries width **only** as an attribute can be shrunk-to-fit by some mobile
+  clients (Gmail app / Yahoo) when it wraps a fluid `width:100%` image with no intrinsic minimum width —
+  the frame collapses and the image renders smaller on *some* devices only (the SS hero shrink). Always
+  put `width:100%` in the `style` of any structural full-width table, give fluid banner images
+  `max-width:100%` (never a fixed `max-width:NNNpx` ceiling below the container), and add a defensive
+  responsive class (e.g. `.hero-img { width:100% !important; max-width:100% !important; height:auto !important; }`).
+- **QA gate:** before Output, confirm **zero anchors contain a `<table>`** and every structural
+  full-width table carries `width:100%` in its inline style. Verify clickability in a real Klaviyo test
+  import, not only on localhost/desktop.
 
 ## 7. Asset & Reference Workflow
 
@@ -133,13 +269,78 @@ aware (`color-scheme` meta + `prefers-color-scheme` + `[data-ogsc]`). Brand-spec
 - Render the draft, review against `CS-##`, and run the QA Checklist
   (`07-Prompt Library/QA-Checklist.md`).
 - Store rendered-preview screenshots and reviewer notes in `Review/`.
+- **Validate every image URL before finalising — accessibility *and* email-client compatibility.** Confirm
+  each `<img src>` is a public absolute **HTTPS** URL that returns **HTTP 200** with an `image/*`
+  content-type and **no redirects** (Gmail's image proxy dislikes redirects and non-image responses). Never
+  use local paths, `localhost`, relative paths, temporary/expiring links, or HTML-encoded/malformed query
+  strings. **Keep images email-safe in weight:** favour well-compressed JPEGs on the stable product CDN
+  (BigCommerce `stencil/WxH`), avoid multi-hundred-KB PNG photos, and keep total image payload modest —
+  oversized images render on desktop yet break in the Gmail **mobile** app (broken-icon + alt text). A
+  desktop/browser preview is **not** sufficient proof; never approve on local or desktop rendering alone.
+- **Optimising an image must preserve the approved visual creative.** If a campaign image is too large,
+  **compress / resize / re-encode / re-host the *same* asset first** (e.g. same crop and composition, PNG
+  photo → quality-tuned JPEG at the same dimensions). Do **not** swap approved branded/lifestyle creative
+  for a different image (e.g. a plain product photo) purely to cut file size. Any visual substitution is a
+  design change and **requires approval**.
 - QA + independent review is the gate before `Output/`; no approval → no output (`CR-16`, `CR-17`).
+
+### 8.1 Email Client Compatibility Standard (all brands — permanent)
+
+Distilled from the SS-2026-W29 investigation: defects that pass a localhost/browser preview but break
+once a real email client (or Klaviyo) processes the HTML. These are **verification and approval gates**;
+the *build mechanics* that prevent the defects live in §6.6 (link/containment safety) and the image rules
+in §8 — do not restate those, apply them. This section says **what must be proven, and where**, before a
+campaign can move to `Output/`.
+
+**1. Never approve on localhost/browser preview alone.** A local or desktop render is never sufficient
+proof (reinforces §8). Every campaign must additionally be verified in: **Klaviyo Preview · Gmail Web ·
+Gmail Mobile · Apple Mail · Outlook (when available).** Record which clients were checked in the `Review/`
+notes; if a client genuinely cannot be exercised in this environment, say so explicitly and flag it as a
+required manual pre-send step (never imply it passed).
+
+**2. Verify every clickable element *after Klaviyo processes the HTML*, not just in source.** Klaviyo
+re-parses and rewrites links (click-tracking) on import; **never assume a link survives that rewrite.**
+Import the template into Klaviyo and confirm each of these actually navigates to the correct live URL:
+product cards · hero banner · CTA buttons · category images/tiles · logo(s) · promotional/coupon banners.
+(Root cause of a lost link is almost always invalid nesting — see §6.6; the *check* here is behavioural,
+in Klaviyo, not structural in the editor.)
+
+**3. Product-grid clickability gate.** Every product card must use email-safe HTML per §6.6 (anchor wraps
+inline content only; no `<table>` inside an `<a>`). Before approval, confirm on each card: **✓ image is
+clickable · ✓ product title is clickable · ✓ the whole card behaves as expected · ✓ every link opens the
+correct live product page.** A card that renders but does not track/navigate after Klaviyo import is a
+**fail**, even if it looked clickable on localhost.
+
+**4. Hero-banner rendering gate.** The hero must render at a consistent, full size across desktop **and**
+mobile. Build it with responsive, email-safe image containers per §6.6 (full-width table declared in inline
+`style`, `max-width:100%` image, defensive responsive class). Explicitly confirm the hero does **not**
+shrink or collapse on **Gmail Mobile** (the client where the SS hero failed). Do not rely on browser
+rendering; do not "fix" a shrink by merely enlarging the image — resolve the container.
+
+**5. Responsive QA checklist (must all pass before promotion).**
+`✓ Desktop · ✓ Laptop · ✓ Gmail Mobile · ✓ Apple Mail · ✓ Outlook Preview · ✓ Klaviyo Preview.`
+Any layout inconsistency (shrink, overflow, broken stack, mis-alignment) must be **resolved before**
+promotion to `Output/` — never promoted "to fix later".
+
+**6. Output approval gate.** In addition to the recorded approval and immutability rules in §9, HTML may be
+promoted to `Output/` **only** when all of the following are verified and noted in `Review/`:
+`✓ clickability verified (post-Klaviyo) · ✓ responsive rendering verified · ✓ images load correctly ·
+✓ product links work · ✓ CTA links work · ✓ coupon link works.` `Output/` must always be the final
+production-ready version.
+
+**7. Root-cause-first principle.** When an issue is discovered, **do not ship a temporary/symptomatic fix
+first.** Always: (a) identify the true root cause, (b) document the lesson in the send's `Review/` notes,
+and (c) convert any reusable finding into a permanent CLAUDE.md rule (as §6.6 and this §8.1 were). The
+objective is continuous improvement — each completed project should make CLAUDE.md smarter so future
+campaigns avoid the same mistake automatically.
 
 ## 9. Output Rules
 
 - Final approved HTML lives **only** in the send's `Campaigns/<cadence>/Output/` — the single source
   of truth. There is no top-level Output folder.
-- Approval must be recorded before a file lands in `Output/` (`CR-17`); hand-off follows `CR-14`.
+- Approval must be recorded before a file lands in `Output/` (`CR-17`); hand-off follows `CR-14`. The
+  approval must satisfy the **§8.1 Output approval gate** (clickability verified post-Klaviyo, responsive
+  rendering, images/product/CTA/coupon links all confirmed) — recorded approval alone is not enough.
 - **Output files are immutable after approval.** Any requested revision creates a **new `Draft/`
   version** first, which is reviewed/QA'd and only then replaces the file in `Output/`. Never edit an
   approved Output file in place.

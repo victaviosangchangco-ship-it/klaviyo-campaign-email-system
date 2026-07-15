@@ -6,13 +6,19 @@
 > etc.), which remain the **single source of truth**. Any change must be made in the modular
 > source and this file regenerated. Edits made here directly will be lost on the next compile.
 >
-> **Compiled:** 2026-07-10 · **Scope of this compile:** drafted sections only.
+> **Compiled:** 2026-07-14 · **Scope of this compile:** business strategy chapters (new) plus all previously drafted sections.
 
 ## About this document
 
 This is the master Business Requirements Document for the **Weekly & Monthly Email Campaign
 System** — the primary business document and the review copy for sign-off. It logically combines
 the modular documentation into one continuous document.
+
+It is written **for people first** and organised **business-first**: the strategy and planning
+chapters (the *why*) come first in **Part I**, followed by requirements, standards, campaign
+execution, and brands in **Part II**, and finally technical implementation and reference material
+(the *how*) in **Part III**. This BRD is distinct from `CLAUDE.md`, which is the operating manual
+for the assisting tool; the BRD explains strategy and intent, not implementation mechanics.
 
 Because the BRD is still being authored, this compile contains **only the sections that have real
 content**. Sections that are not yet drafted are omitted from the body and listed as
@@ -27,13 +33,20 @@ to sections that are not yet drafted link out to their modular source file.
 | # | Section | Status |
 |---|---------|--------|
 | — | Introduction & orientation (README) | ✅ Drafted |
+| 00 | Executive Vision | ✅ Drafted |
+| 00 | Business Problems | ✅ Drafted |
+| 00 | Campaign Strategy | ✅ Drafted |
+| 00 | Holiday Campaign Framework | ✅ Drafted |
+| 00 | Campaign Planning Framework | ✅ Drafted |
+| 00 | Campaign Psychology | ✅ Drafted |
+| 00 | Human Workflow | ✅ Drafted |
 | 00 | Executive Summary | ✅ Drafted |
 | 00 | Objectives & Goals | ✅ Drafted |
 | 00 | Scope | ✅ Drafted |
 | 00 | Stakeholders | ✅ Drafted |
 | 00 | Campaign Requirements | ✅ Drafted |
 | 00 | Campaign Standards | ✅ Drafted |
-| 00 | Success Metrics & KPIs | ⬜ Not yet drafted — [source](00-Project%20Overview/success-metrics.md) |
+| 00 | Success Metrics & Measurement | ✅ Drafted |
 | 00 | Assumptions & Constraints | ⬜ Not yet drafted — [source](00-Project%20Overview/assumptions-and-constraints.md) |
 | 00 | Audience & Segmentation | ⬜ Not yet drafted — [source](00-Project%20Overview/audience-segmentation.md) |
 | 00 | Content Calendar & Cadence | ⬜ Not yet drafted — [source](00-Project%20Overview/content-calendar.md) |
@@ -45,15 +58,30 @@ to sections that are not yet drafted link out to their modular source file.
 | 03 | Brands — SC | ⬜ Not yet drafted — [source](03-Brands/SC.md) |
 | 03 | Brands — Stack | ⬜ Not yet drafted — [source](03-Brands/Stack.md) |
 | 04 | Technical | ⬜ Not yet drafted — [source](04-Technical/) |
-| 05 | Future / Roadmap | ⬜ Not yet drafted — [source](05-Future/roadmap.md) |
+| 05 | Future / Roadmap | ✅ Drafted |
 | 06 | Assets Library | ⬜ Not yet drafted — [source](06-Assets%20Library/) |
 | 07 | Prompt Library | ⬜ Not yet drafted — [source](07-Prompt%20Library/) |
 | 08 | Glossary | ⬜ Not yet drafted — [source](08-Glossary/Terms.md) |
-| 09 | Architecture Decisions | ⬜ Not yet drafted — [source](09-Architecture%20Decisions/Decision-Log.md) |
+| 09 | Decision Log | ✅ Drafted |
 
 ## Table of contents
 
-- [1. Introduction and Orientation](#1-introduction-and-orientation)
+- [Introduction and Orientation](#introduction-and-orientation)
+
+**Part I — Business Strategy & Planning (the *why*)**
+- [Executive Vision](#executive-vision)
+- [Business Problems](#business-problems)
+- [Business Goals](#business-goals)
+- [Campaign Strategy](#campaign-strategy)
+- [Holiday Campaign Framework](#holiday-campaign-framework)
+- [Campaign Planning Framework](#campaign-planning-framework)
+- [Campaign Psychology](#campaign-psychology)
+- [Success Measurement & KPIs](#success-measurement--kpis)
+- [Human Workflow](#human-workflow)
+- [Decision Log](#decision-log)
+- [Future Roadmap](#future-roadmap)
+
+**Part II — Requirements, Standards, Execution & Brands (the specification)**
 - [2. Project Overview](#2-project-overview)
   - [2.1 Executive Summary](#21-executive-summary)
   - [2.2 Objectives and Goals](#22-objectives-and-goals)
@@ -68,9 +96,12 @@ to sections that are not yet drafted link out to their modular source file.
   - [5.2 SS](#52-ss)
   - [5.3 RDD](#53-rdd)
 
+**Part III — Technical & Reference (the *how*)**
+- [Technical & Reference](#technical--reference)
+
 ---
 
-## 1. Introduction and Orientation
+## Introduction and Orientation
 
 This documentation set is the **primary planning document** for the Weekly & Monthly Email
 Campaign System. It is written before implementation, in line with the agreed "plan first, then
@@ -114,6 +145,293 @@ sections in the order below; the modular source files remain the editable origin
   `WK-S#`/`WK-P#`, monthly structure/process `MO-S#`/`MO-P#`, and architecture decisions `ADR-###`.
 
 ---
+
+# Part I — Business Strategy & Planning
+
+> The chapters in Part I explain **why** the system exists, the **strategy** behind our campaigns,
+> and **how the human team plans and runs** them. They are written for people first. The detailed
+> specification (requirements, standards, execution, brands) follows in Part II, and technical
+> implementation in Part III.
+
+## Executive Vision
+
+To make every scheduled marketing email we send feel like it came from one confident, well-run brand
+family — professionally designed, on-message, and produced quickly enough that the team can focus on
+strategy instead of rebuilding the same email from scratch each week.
+
+We are building a **repeatable campaign engine**, not a collection of one-off emails. Over time this
+engine should let us launch a high-quality campaign for any brand, for any occasion, in a fraction of
+the time it takes today, while raising quality rather than lowering it.
+
+**Why this project exists.** Marketing email is one of the most cost-effective channels we own: it
+reaches customers who already know us, it is measurable, and it drives repeat revenue. Yet its quality
+has depended too much on who happened to build a given send and how much time they had. This project
+turns campaign production into a documented, repeatable system so quality and consistency come from the
+process, not from heroics.
+
+**Why documentation matters.** It makes knowledge shared rather than personal (removing single points of
+failure), makes quality repeatable (a written standard can be reviewed and held to), speeds up
+onboarding of new people and brands, and — in line with our "plan before building" principle — gives us
+the plan we build from.
+
+**Why consistency matters.** Consistency is not sameness. Each brand keeps its own voice and look.
+Consistency means a customer always recognises the brand, always finds the email easy to read, and
+always trusts what they see — in July or December, on a phone or a laptop. Consistent structure also
+compounds: every reusable component we standardise makes the *next* campaign cheaper and better.
+
+**The three-horizon view.** *Now* — a reliable, documented weekly and monthly process across all brands.
+*Next* — a richer toolkit: holiday/seasonal library, brand templates, assisted review. *Later* — a
+measured, semi-automated system (dynamic product selection, analytics, testing). See the
+[Future Roadmap](#future-roadmap). This vision is realised through the objectives in
+[Objectives and Goals](#22-objectives-and-goals) and measured by [Success Measurement & KPIs](#success-measurement--kpis).
+
+## Business Problems
+
+Naming the problems plainly keeps the project honest: every standard and process step should trace back
+to one of these.
+
+1. **Inconsistent email design** — layout, spacing, typography, and buttons varied between sends and
+   brands, eroding trust and making the brands look less professional than they are.
+2. **Repeated campaign themes and messaging** — without a plan, sends repeat the same angle and hero,
+   training customers to ignore us.
+3. **Duplicated work** — the same header, footer, product grid, and coupon block were rebuilt every week.
+4. **Repeated mistakes** — oversized images that break on mobile, unverified coupons, out-of-stock
+   products, broken links — because lessons were never written down.
+5. **Knowledge trapped in one person's head** — critical know-how lived with individuals, a single point
+   of failure.
+6. **No campaign planning system** — campaigns were produced reactively near send date rather than
+   planned against a calendar of seasons, holidays, and priorities.
+7. **Hard to scale across brands** — each new brand multiplied manual effort because nothing was shared.
+8. **Quality depended on time available, not on a standard** — there was no gate a campaign had to pass
+   before going out.
+
+These are commercial problems, not cosmetic ones: inconsistency and repetition reduce open and click
+rates; duplicated work and rework inflate cost and delay sends; trapped knowledge creates risk; and the
+absence of planning means missing the high-intent moments (holidays, seasons, EOFY) that drive the most
+revenue. [Business Goals](#business-goals) defines the outcomes that resolve them.
+
+## Business Goals
+
+The goals below are the outcomes that resolve the [Business Problems](#business-problems). Detailed
+objectives, guiding principles, and non-goals are specified in
+[Objectives and Goals](#22-objectives-and-goals); the measures are in
+[Success Measurement & KPIs](#success-measurement--kpis).
+
+- **Increase campaign quality** — raise and hold a reliable quality bar on every send via
+  [Campaign Standards](#26-campaign-standards) and an enforced review gate.
+- **Improve consistency** — one recognisable, professional experience per brand, every time.
+- **Reduce production time** — standard structure, shared assets, and templates so effort is spent once.
+- **Improve collaboration** — clear roles, briefs, and a shared source of truth (see [Human Workflow](#human-workflow)).
+- **Build reusable assets** — components, templates, and a holiday library that compound over time.
+- **Scale across brands** — a thin brand layer over a shared framework, so new brands add little effort.
+- **Prepare for future automation** — a clean, documented process is the foundation the
+  [Future Roadmap](#future-roadmap) builds on.
+
+## Campaign Strategy
+
+Every campaign should earn its place in the inbox. Before we send, we should be able to answer: *why
+this, why now, and what do we want the customer to do?* Campaigns fall into a small number of repeatable
+**types**; knowing the type sets the tone, offer logic, product mix, and design direction — which is
+what makes production fast and consistent. Two principles run through all types: **right message, right
+moment**, and **value before ask**.
+
+| Type | When to use | Why | Expected customer behaviour |
+|------|-------------|-----|-----------------------------|
+| **Weekly** | Every week (always-on) | Keep the brand present; surface fresh product; steady baseline revenue | Browse, click to explore, incremental purchases |
+| **Monthly** | Once a month | Step back to a theme, category, or brand story | Re-engage, discover, higher-consideration purchases |
+| **Holiday** | Fixed calendar dates | Capture high-intent shopping moments | Time-bound, gift/deal-driven purchases; urgency |
+| **Seasonal** | Turn of a season | Align range with seasonal needs | Needs-based, time-of-year purchasing |
+| **Product launch** | New / hero product | Build awareness and desire for one product | Learn, click to product page, early adoption |
+| **Clearance / sale** | End of range, overstock, promo | Move stock; reward deal-seekers | Fast, price-led purchasing |
+| **Educational** | Range benefits from explanation | Build trust; reduce hesitation | Read, learn, return with confidence |
+| **Customer appreciation** | Loyalty moments | Strengthen relationship; retention | Feel valued; redeem a thank-you offer |
+| **Brand awareness** | Establishing / repositioning a brand | Communicate who the brand is | Recognise and remember; softer response |
+
+**Choosing well:** start from the calendar and the business goal, not the product; keep **one primary
+objective per send**; vary the type week to week to stay fresh; and match copy length to type (concise
+for weekly/clearance, warmer and longer for seasonal/holiday/educational/appreciation). Over time, let
+performance data (see [Success Measurement & KPIs](#success-measurement--kpis)) reshape the mix per brand.
+The fixed calendar anchors are documented in the [Content Calendar](00-Project%20Overview/content-calendar.md).
+
+## Holiday Campaign Framework
+
+Holiday campaigns are among the highest-intent, highest-revenue moments of the year. This is a planning
+library: the Campaign Manager selects an occasion and uses its entry as the starting brief, then adapts
+it to the specific brand (voice, colours, coupon conventions from the [Brands](#5-brands) section) and to
+the current-year dates in the [Content Calendar](00-Project%20Overview/content-calendar.md). The calendar
+is Australian-market first (all brands ship Australia-wide).
+
+**Planning principles:** plan early (weeks ahead, not the final days); respect the mood (celebratory and
+gift-led vs practical and value-led); verify every offer is created and active before send; and for big
+events, plan a short sequence (tease → launch → last chance) rather than a single email.
+
+For each occasion below: **Purpose · Theme · Typical products · Promotion ideas · Design direction ·
+Customer psychology · Business objective.**
+
+- **Christmas** — Capture peak gifting. Warmth and giving. Gift-friendly heroes and bundles. Gift guides,
+  bundles, shipping cut-offs. Festive but on-brand, clear last-order dates. Generosity + time pressure.
+  Maximise Q4 revenue and order value.
+- **New Year** — "Fresh start" motivation. New beginnings and goals. Items supporting new routines,
+  independence, safety. New-year offer. Clean, optimistic. Motivation and optimism. Re-activate after the
+  holiday lull.
+- **Easter** — Long-weekend and autumn transition. Family, home, getting out and about. Family/home and
+  outing items. Long-weekend sale. Light and family-warm. Relaxed break spending. Lift a quieter period.
+- **Black Friday** — The biggest deal moment. Genuine, unmissable savings; urgency. Best-sellers and
+  heroes. Headline storewide offer, tiered discounts, tease→launch→last-chance. Bold, high-contrast,
+  clear code and deadline. Deal-seeking and FOMO. Maximise volume and acquisition.
+- **Cyber Monday** — Extend and close the weekend. "Last chance", online-only. Carry-over best-sellers.
+  Final-hours messaging. Urgent, countdown-led, consistent with Black Friday. Urgency and
+  regret-avoidance. Capture procrastinators.
+- **EOFY (End of Financial Year)** — Capitalise on the strong June "tax-time" mindset. Value and
+  practicality, "sorted before 30 June". Practical/higher-value equipment. EOFY sale, clearance, bundle
+  value. Confident and value-forward. Practicality and deadline. Drive a strong end-of-June peak.
+- **Australia Day** — National moment, local angle. Proudly Australian, local, community. Broad range with
+  "Australian owned" trust signals. Australia Day sale. Clean and tasteful (avoid cliché). Local pride and
+  trust. Reinforce local-supplier positioning; lift January.
+- **Mother's Day** — Gifting for mothers/carers. Care, appreciation, comfort. Comfort and wellbeing items.
+  "For Mum" gift guide and bundles. Warm and soft. Gratitude and care. Capture seasonal gifting.
+- **Father's Day** — Gifting for fathers/carers. Practicality and reliability. Practical, useful items.
+  "For Dad" gift guide. Clean and practical. Appreciation. Capture seasonal gifting.
+- **Labour Day** — Long-weekend sale (date varies by state). A well-earned break/deal. Broad range and
+  best-sellers. Long-weekend sale. Simple and upbeat. Relaxed long-weekend mood. Lift long-weekend sales.
+- **Boxing Day** — Major post-Christmas sale. Big clearance, "treat yourself". Clearance, overstock,
+  best-sellers. Deep clearance, stepped discounts. Bold and high-urgency. Self-gifting and bargain-hunting.
+  Clear stock; capture strong demand.
+
+## Campaign Planning Framework
+
+Every campaign is planned before it is built. We complete a one-page brief for each send — it forces the
+"why" before the "how", keeps campaigns distinct, and gives the reviewer and approver a clear standard.
+
+| Field | What it answers |
+|-------|-----------------|
+| **Campaign goal** | Why are we sending this? (one sentence, tied to a business goal or calendar moment) |
+| **Campaign type** | Which type (see [Campaign Strategy](#campaign-strategy))? |
+| **Target audience** | Who is this for — the brand's customers, or a defined segment? |
+| **Main offer** | The single most important value or hook |
+| **Featured products** | The grid — verified in stock, on-brand, on-theme |
+| **Hero product** | The one product or idea the hero communicates |
+| **Campaign theme** | The unifying idea and tone (must be fresh vs recent sends) |
+| **Primary CTA** | The one action we most want (above the fold) |
+| **Secondary CTA** | Optional; must serve a different purpose/destination (no duplicate CTAs) |
+| **Expected customer emotion** | What they should feel (see [Campaign Psychology](#campaign-psychology)) |
+| **Expected customer action** | Click, browse, buy, read, redeem, save for later |
+| **Success criteria** | How we'll judge it (see [Success Measurement & KPIs](#success-measurement--kpis)) |
+| **Risk assessment** | What could go wrong (offer not active, stock risk, date clash, deliverability, brand-fit) |
+
+A short, consistent brief prevents the two most expensive failure modes: building the wrong thing, and
+discovering a blocker (dead coupon, out-of-stock hero) only at QA. Confirm the risky items — is the
+coupon active? are products in stock? are the dates right? — *early*.
+
+## Campaign Psychology
+
+Good campaigns are built on an understanding of the customer, not just the product. Design every campaign
+against three questions, in order:
+
+1. **What should the customer FEEL?** Emotion drives attention and memory — reassurance and confidence
+   (considered/assistive products), excitement and urgency (sales), warmth and gratitude (appreciation,
+   gifting), or optimism (new year, seasonal).
+2. **What should the customer THINK?** The rational follow-through: *"this is right for me / someone I
+   care about", "this brand is trustworthy and local", "this is a genuine deal", "this will make daily
+   life easier."* Trust signals (Australian owned, fast shipping, support, NDIS where relevant) support
+   the thought.
+3. **What should the customer DO?** One clear action, made obvious and easy, reachable above the fold.
+
+**Emotion in the hero banner.** The hero carries most of the emotional load: it should communicate a
+feeling at a glance before any copy is read, show the *outcome* (a person enjoying a day out) rather than
+just the object, set up the theme, and lead the eye to the primary action.
+
+**Lifestyle photography vs catalogue images.** Lifestyle imagery (people, real settings, outcomes) is
+stronger for emotional, aspirational moments — the hero of seasonal, appreciation, awareness, or
+"everyday outings" campaigns. Catalogue images (clean, on white) are stronger for the product grid, where
+the job is clarity and easy scanning. **Lead with lifestyle to create feeling; support with catalogue to
+enable decisions.** Do not swap approved lifestyle creative for plain product shots merely to save effort.
+
+## Success Measurement & KPIs
+
+Metrics turn the [Business Goals](#business-goals) into something we can track and improve. Targets are
+set per brand; early sends establish the baseline before firm targets are fixed.
+
+**Marketing performance:** Open Rate (subject/timing/reputation), Click-Through Rate (content, offer, CTA
+strength), Conversion Rate (real commercial effectiveness), Revenue (bottom line vs baseline/target),
+Bounce Rate (list quality/deliverability), Unsubscribe Rate (frequency/relevance — an early warning).
+Read them together: high open but low CTR points to content/offer; healthy CTR but low conversion points
+to landing/price; rising unsubscribes suggests too-frequent or off-target sending.
+
+**Operational / quality:** Campaign Production Time (efficiency goal), QA Issues per campaign (quality of
+production), Brand Consistency Score (consistency goal, reviewer-assessed), Rework Rate (gaps in
+briefs/standards/templates), On-Time Send Rate (planning discipline).
+
+We baseline first, review on a cadence, and act on the read — feeding findings into the campaign-type
+mix, templates and standards, and the [Decision Log](#decision-log). Formal analytics, attribution, and
+A/B testing are on the [Future Roadmap](#future-roadmap); until then we use the platform's native
+reporting plus reviewer assessment.
+
+## Human Workflow
+
+How the **human team** takes a campaign from idea to launch and back again. (How the assisting tool
+supports production is documented separately in `CLAUDE.md` and not repeated here.) It is a loop: every
+campaign ends by feeding lessons into the next.
+
+1. **Planning** — the Campaign Manager works from the calendar and decides which campaign to run and why.
+2. **Proposal / Brief** — written up via the [Campaign Planning Framework](#campaign-planning-framework).
+3. **Review of the brief** — sanity-check the offer, stock, freshness, and dates before any design.
+4. **Approval to proceed** — confirm the brief is worth building.
+5. **Design & production** — produced against [Campaign Standards](#26-campaign-standards) and brand
+   rules, using shared assets and templates.
+6. **QA** — an independent reviewer (never the author) checks against the standards and QA checklist,
+   including desktop + mobile rendering.
+7. **Launch / Send** — scheduled and sent; the final approved version is recorded.
+8. **Reporting** — results captured against the brief's success criteria and the programme KPIs.
+9. **Continuous improvement** — lessons fed back into templates, standards, and the [Decision Log](#decision-log).
+
+Responsibilities follow the RACI in [Stakeholders](#24-stakeholders). Core principles: **plan before
+building**; **one quality gate, always**; **fix the system, not just the send**; and **keep humans in
+charge** — a person reviews and approves every campaign before it goes out, with the reviewer/approver
+never being the author.
+
+## Decision Log
+
+A running record of significant business and design decisions — **what** was decided, **why**, and
+**who** owns it — so the team isn't re-litigating settled questions from memory. Entries are never
+deleted; a reversed decision is superseded by a new entry. (Full log maintained in the
+[modular source](09-Architecture%20Decisions/Decision-Log.md).)
+
+| # | Decision | Reason | Date | Owner | Status |
+|---|----------|--------|------|-------|--------|
+| D-01 | Plan before building | Reduce rework; align on direction first | 2026-07-10 | Project Owner | Approved |
+| D-02 | Unified framework, thin brand layer | Eliminate duplication; scale across brands | 2026-07-10 | Project Owner | Approved |
+| D-03 | Keep separate from the Klaviyo Flow project | Distinct lifecycles and ownership | 2026-07-10 | Project Owner | Approved |
+| D-04 | Independent review/approval before send (reviewer ≠ author) | Protect quality; catch author-blind errors | 2026-07-10 | Project Owner | Approved |
+| D-05 | Verify stock on the product page, not category listings | Category pages misreport availability | 2026-07-14 | Reviewer/QA | Approved |
+| D-06 | Keep images email-safe; optimise the *same* approved creative, don't substitute | Oversized images break on mobile; substitutions damage the design | 2026-07-14 | Reviewer/QA | Approved |
+| D-07 | SC coupons are fixed-dollar ("$20 off orders over $200"); no % unless a special arrangement is approved | Aligns with SC's commercial policy | 2026-07-14 | Brand Owner (SC) | Approved |
+| D-08 | Every weekly send uses a fresh angle/theme/hero | Repetition trains customers to disengage | 2026-07-14 | Campaign Manager | Approved |
+
+## Future Roadmap
+
+Everything here is a **proposal**, not a commitment; items move into scope only after stakeholder review
+(see [Scope](#23-scope)). Sequencing follows the three-horizon view in the
+[Executive Vision](#executive-vision). Full detail in the [modular source](05-Future/roadmap.md).
+
+- **Next — enrich the toolkit:** Holiday Campaign Library (ready-to-brief kits per occasion), Brand
+  Templates (approved starting points per brand), AI Review System (assisted pre-QA that flags issues
+  before human review).
+- **Later — reduce manual effort:** Automatic Product Selection (pull in-stock, on-theme products from
+  the commerce platform), Dynamic Hero Banner Generation (assisted, human-reviewed hero creation).
+- **Later — measure & optimise:** Campaign Analytics (consolidated KPI view), A/B Testing Framework
+  (test subject lines, offers, creative, layout), Customer Journey Mapping (coherence with the separate
+  automated flows).
+
+Items graduate from the roadmap only after a proposal is reviewed, approved, moved into scope, and
+recorded in the [Decision Log](#decision-log) — consistent with "plan before building".
+
+---
+
+# Part II — Requirements, Standards, Execution & Brands
+
+> Part II is the detailed specification: the project overview, the functional requirements and quality
+> standards every campaign must meet, the weekly and monthly execution process, and the brand rules.
 
 ## 2. Project Overview
 
@@ -1111,6 +1429,34 @@ screenshots:
 
 ---
 
-_End of compiled content. The SC and Stack brand documents and sections 04–09 are not yet drafted; see
-the [Document status](#document-status) table. Regenerate this file from the modular source after
-further sections are drafted._
+# Part III — Technical & Reference
+
+> Technical and reference material is placed last, on purpose: it is the *implementation detail* that
+> supports the business strategy (Part I) and specification (Part II). Business intent comes first;
+> the mechanics follow. `CLAUDE.md` is the operating manual for the assisting tool and is maintained
+> separately from this BRD.
+
+## Technical & Reference
+
+The following reference material is maintained in its modular source folders and is summarised here as
+an index. Several of these sections are still being drafted (see the
+[Document status](#document-status) table); this index will expand as they are completed.
+
+| Area | What it covers | Source |
+|------|----------------|--------|
+| **Technical implementation** | Assets, product source, dynamic content, integrations, data & segments | [04-Technical](04-Technical/) |
+| **Assets Library** | Standards for banners, buttons, icons, logos, product images, and social assets | [06-Assets Library](06-Assets%20Library/) |
+| **Prompt Library** | Production and QA prompts (weekly/monthly generation, HTML, review, hero banners, QA checklist) | [07-Prompt Library](07-Prompt%20Library/) |
+| **Glossary** | Shared terms and identifiers used across the documentation | [08-Glossary/Terms.md](08-Glossary/Terms.md) |
+| **Decision Log (full)** | The complete, ongoing record of decisions summarised in Part I | [09-Architecture Decisions/Decision-Log.md](09-Architecture%20Decisions/Decision-Log.md) |
+| **Roadmap (full)** | The complete Future Enhancements & Roadmap summarised in Part I | [05-Future/roadmap.md](05-Future/roadmap.md) |
+
+The functional requirements (`CR-##`), quality standards (`CS-##`), and weekly/monthly execution detail
+that govern implementation live in [Part II](#part-ii--requirements-standards-execution--brands).
+
+---
+
+_End of compiled content. Part I (business strategy) and the Success Metrics, Roadmap, and Decision Log
+sections are newly drafted; the SC and Stack brand documents and the detailed Technical/Assets/Prompt/
+Glossary sections remain in their modular sources (see the [Document status](#document-status) table).
+This file is compiled from the modular sources — edit those, then regenerate this document._
