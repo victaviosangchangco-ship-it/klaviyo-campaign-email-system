@@ -1,0 +1,79 @@
+<!--
+  Component: CTA (Cerberus reference)
+  Purpose: Content-width primary call-to-action button — the plain (non-VML) Cerberus pattern.
+  Source: Cerberus "Button" block, all three templates.
+  Required inputs: [[CTA_URL]], [[CTA_LABEL]], [[BUTTON_BG]], [[BUTTON_TEXT_COLOR]]
+  Optional inputs: [[BUTTON_RADIUS]] (default 4px), [[BUTTON_BORDER]] (default = [[BUTTON_BG]]),
+                   [[FONT_STACK]] (default Arial,Helvetica,sans-serif)
+  Fallback behavior: with no [[BUTTON_RADIUS]], square corners — acceptable everywhere.
+  Dependencies: ResponsiveUtilities.html (.button-td, .button-a, .tap, dark-mode rules)
+
+  REFERENCE ONLY — production CTAs are Components/CTA.html and CTA-secondary.html.
+  For a true rounded button in Outlook, use BulletproofButton.html (adds VML).
+
+  THE CORE INSIGHT — why styles are duplicated on the <td> AND the <a>
+  Desktop Outlook and Office 365 on Windows do NOT treat anchors as block-level elements, so the
+  anchor's padding and background are ignored. Styling the <td> to match reproduces the button
+  shape there; the <a> styling produces it everywhere else. The whole cell is the click target in
+  Outlook; the anchor is the click target elsewhere. Both sets must be kept in sync.
+
+  WHY THE WRAPPER TABLE HAS NO width ATTRIBUTE
+  A <table> with no width collapses to its content in EVERY client — Gmail (web and app), Apple
+  Mail, Outlook, Yahoo — and does so whether or not <head> CSS is honoured. That is what keeps the
+  button content-width rather than stretched. Never add a % width (Gmail/Outlook shrink-wrap it
+  unpredictably) and never a hardcoded desktop pixel width.
+
+  display:block ON THIS ANCHOR IS CORRECT AND SAFE
+  Campaign §6.6 / Flow §8.2 prohibit display:block only on an anchor that WRAPS AN IMAGE — Apple
+  Mail iOS resolves the block height before the image decodes and collapses it. A TEXT anchor has
+  no decode step and no such failure mode. See Cerberus-Best-Practices.md §5.5.
+-->
+
+<!-- CTA : BEGIN -->
+<tr>
+  <td align="center" style="padding:0 28px 32px 28px;" class="mp">
+
+    <table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:0 auto;">
+      <tr>
+        <td class="button-td button-td-primary" align="center"
+            bgcolor="[[BUTTON_BG]]"
+            style="border-radius:[[BUTTON_RADIUS]]; background:[[BUTTON_BG]];">
+          <a class="button-a button-a-primary tap" href="[[CTA_URL]]" target="_blank"
+             style="display:block; background:[[BUTTON_BG]]; border:1px solid [[BUTTON_BORDER]];
+                    border-radius:[[BUTTON_RADIUS]]; font-family:[[FONT_STACK]]; font-size:15px;
+                    font-weight:700; line-height:15px; letter-spacing:0.4px; padding:15px 28px;
+                    color:[[BUTTON_TEXT_COLOR]]; text-decoration:none;">[[CTA_LABEL]]</a>
+        </td>
+      </tr>
+    </table>
+
+  </td>
+</tr>
+<!-- CTA : END -->
+
+<!--
+  CHECKLIST
+  ☐ bgcolor attribute AND inline background on the <td>  (Gmail mobile drops CSS background)
+  ☐ fill, radius and border duplicated on <td> and <a>   (Outlook anchors are not block-level)
+  ☐ wrapper table has NO width attribute                 (content-width in every client)
+  ☐ padding ≥15px vertical → ≥44px tap target            (accessibility; via padding, never width)
+  ☐ [[CTA_LABEL]] is destination-descriptive             ("Shop the Ramps Range", not "Click Here")
+  ☐ [[CTA_URL]] verified HTTP 200                        (Campaign §6.7 — never "#", never a placeholder)
+  ☐ anchor contains INLINE CONTENT ONLY                  (never a <table> — Klaviyo detaches the href)
+
+  ON LABEL COPY
+  Cerberus's accessibility guidance is to avoid "Click Here" and "Learn More" — poor for screen
+  readers and dictation, and weaker with spam filters. Campaign §6.2 mentions "Learn more" as an
+  example of a broad PRIMARY CTA; that guidance is about CTA duplication, not link-text quality.
+  Prefer a label that names the destination.
+
+  DARK MODE
+  Handled by the .button-td-primary rules in ResponsiveUtilities.html — the button inverts to a
+  white fill with dark text. Verify contrast stays WCAG AA in both modes.
+
+  FULL-WIDTH VARIANT
+  A deliberately full-width CTA (e.g. a closing "Explore the Collection" bar) is a legitimate
+  exception to the content-width rule — but it must be INTENTIONALLY wide. Give the wrapper table
+  width="100%" and style="width:100%" explicitly, so it can never be mistaken for the Gmail-mobile
+  stretch defect that Campaign §6.17 exists to prevent.
+-->

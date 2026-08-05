@@ -1,63 +1,55 @@
 <!--
   Component: product-grid
-  Purpose: One row of TWO product cards, 2-up on desktop and stacking to 1 on mobile. This is the
-           repeatable unit: generation clones the row per pair of products (2 products → 1 row,
-           6 products → 3 rows). Cards use fixed name/description heights so prices align across the row.
+  Purpose: One row of TWO product cards, 2-up on desktop and stacking to 1 on mobile. The repeatable
+           unit: generation clones the row per pair (2 products → 1 row, 6 → 3 rows). Cards use
+           fixed-height <td> regions so images/titles/prices align across the row, and a shrink-to-fit
+           price badge that never stretches on mobile. Built to CLAUDE.md §6.6/§6.8/§6.9/§6.17/§6.18.
   BRD mapping: WK-S6 / MO-S7 (multi-product use)
   Required inputs (per card, suffix _1 = left, _2 = right): [[PRODUCT_n_IMAGE_URL]],
                    [[PRODUCT_n_TITLE]], [[PRODUCT_n_URL]]
-  Optional inputs: [[PRODUCT_n_DESC]], [[PRODUCT_n_PRICE]]; [[CARD_BORDER_COLOR]] (default #ececec),
-                   [[CARD_BG]] (default #ffffff), [[CARD_RADIUS]] (default 12px),
-                   [[IMAGE_RADIUS]] (default 8px), [[META_SIZE]] (default 13px),
-                   [[SMALL_SIZE]] (default 12px), [[BODY_SIZE]] (default 15px)
-  Fallback behavior: never fabricate products, prices, or images — if no real product data is
-                     available, STOP and report (CLAUDE.md §5). Odd final product: render only the _1
-                     cell and delete the _2 cell (the remaining card sits left; it does not stretch).
-  Future (not yet approved — CLAUDE.md §11): to bind live catalog data, replace the two static cells
-                     with a Klaviyo loop over the store's catalog, e.g.
-                       {% for item in catalog_items %} …card markup, break to a new row every 2… {% endfor %}
-                     mapping img={{ item.image_url }} title={{ item.title }} price={{ item.price }}
-                     url={{ item.url }}. Do not enable until integrations are approved.
-  Dependencies: shared .pc (stack), .prod-name / .prod-sub (equal-height) from base-head. Card markup
-                mirrors product-card.html inline (independence rule, Components/README).
+  Optional inputs: [[PRODUCT_n_DESC]], [[PRODUCT_n_PRICE]], [[PRODUCT_n_IMAGE_W]]/[[PRODUCT_n_IMAGE_H]]
+                   (default 188/188), [[BRANDMARK_URL]], [[SECTION_BG]] (grid field, default #f2f1ee),
+                   [[CARD_BORDER_COLOR]] (default #e9e7e2), [[CARD_BG]] (default #ffffff),
+                   [[CARD_RADIUS]] (default 6px), [[IMAGE_RADIUS]] (default 8px),
+                   [[BUTTON_BG]] (default [[ACCENT_COLOR]]), [[BUTTON_TEXT_COLOR]] (default #ffffff),
+                   [[BUTTON_RADIUS]] (default 4px), [[META_SIZE]] (default 13px), [[SMALL_SIZE]] (default 11px)
+  Fallback behavior: never fabricate products, prices, or images — if no real product data is available,
+                     STOP and report (CLAUDE.md §5/§5.1). Odd final product: DO NOT leave a lone left card.
+                     Center it — give the row cell colspan="2" and wrap the UNCHANGED _1 card in a nested
+                     table align="center" at a fixed one-column width with class="center-half" (CLAUDE §6.9).
+  RESPONSIVE STANDARD (do not deviate — CLAUDE.md §6.18): identical to product-card.html —
+     fixed-height <td> regions (not min-height), THREE sibling anchors per card (never one anchor around
+     the card, never a <table> inside an <a>), and the shrink-to-fit centred-<table> price badge (never a
+     bare inline-block anchor or %/fixed-width button). Every coloured table AND its content <td> carry the
+     bgcolor attribute so Gmail mobile paints continuous backgrounds with no white seam (§6.16).
+  Future (not yet approved — CLAUDE.md §11): to bind live catalog data, replace the two static cells with a
+     Klaviyo loop over the catalog, breaking to a new row every 2 items. Do not enable until approved.
+  Dependencies: shared .pc (stack), .pimg/.pnc/.pdc (mobile height reset), .pricebtn (mobile badge),
+                .pc img / .pc img.brandmark from base-head.html. Card markup mirrors product-card.html.
 -->
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" style="background:[[BODY_BG]];">
-  <tr>
-    <td style="padding:12px 16px 0 16px;">
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <!-- LEFT card -->
-          <td class="pc" width="50%" valign="top" style="padding:0 6px 16px 6px;">
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid [[CARD_BORDER_COLOR]]; border-radius:[[CARD_RADIUS]]; background:[[CARD_BG]];">
-              <tr>
-                <td style="padding:12px 12px 16px 12px;">
-                  <a href="[[PRODUCT_1_URL]]" style="text-decoration:none;">
-                    <img src="[[PRODUCT_1_IMAGE_URL]]" alt="[[PRODUCT_1_TITLE]]" width="100%" style="display:block; width:100%; height:auto; margin-bottom:12px; border-radius:[[IMAGE_RADIUS]];" />
-                    <p class="prod-name dm-text" style="margin:0 0 3px 0; font-family:[[FONT_STACK]]; font-size:[[META_SIZE]]; font-weight:700; line-height:1.4; color:[[TEXT_COLOR]];">[[PRODUCT_1_TITLE]]</p>
-                    <p class="prod-sub" style="margin:0 0 8px 0; font-family:[[FONT_STACK]]; font-size:[[SMALL_SIZE]]; line-height:1.45; color:[[MUTED_TEXT_COLOR]];">[[PRODUCT_1_DESC]]</p>
-                    <p class="dm-text" style="margin:0; font-family:[[FONT_STACK]]; font-size:[[BODY_SIZE]]; font-weight:700; color:[[TEXT_COLOR]];">[[PRODUCT_1_PRICE]]</p>
-                  </a>
-                </td>
-              </tr>
-            </table>
-          </td>
-          <!-- RIGHT card (delete this cell for an odd final product) -->
-          <td class="pc" width="50%" valign="top" style="padding:0 6px 16px 6px;">
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid [[CARD_BORDER_COLOR]]; border-radius:[[CARD_RADIUS]]; background:[[CARD_BG]];">
-              <tr>
-                <td style="padding:12px 12px 16px 12px;">
-                  <a href="[[PRODUCT_2_URL]]" style="text-decoration:none;">
-                    <img src="[[PRODUCT_2_IMAGE_URL]]" alt="[[PRODUCT_2_TITLE]]" width="100%" style="display:block; width:100%; height:auto; margin-bottom:12px; border-radius:[[IMAGE_RADIUS]];" />
-                    <p class="prod-name dm-text" style="margin:0 0 3px 0; font-family:[[FONT_STACK]]; font-size:[[META_SIZE]]; font-weight:700; line-height:1.4; color:[[TEXT_COLOR]];">[[PRODUCT_2_TITLE]]</p>
-                    <p class="prod-sub" style="margin:0 0 8px 0; font-family:[[FONT_STACK]]; font-size:[[SMALL_SIZE]]; line-height:1.45; color:[[MUTED_TEXT_COLOR]];">[[PRODUCT_2_DESC]]</p>
-                    <p class="dm-text" style="margin:0; font-family:[[FONT_STACK]]; font-size:[[BODY_SIZE]]; font-weight:700; color:[[TEXT_COLOR]];">[[PRODUCT_2_PRICE]]</p>
-                  </a>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-      </table>
-    </td>
-  </tr>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-panel" bgcolor="[[SECTION_BG]]" style="width:100%; background:[[SECTION_BG]];">
+  <tr><td style="padding:14px 18px 6px 18px;" bgcolor="[[SECTION_BG]]">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="[[SECTION_BG]]"><tr>
+      <!-- LEFT card -->
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="[[SECTION_BG]]">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="[[CARD_BG]]" style="background:[[CARD_BG]]; border:1px solid [[CARD_BORDER_COLOR]]; border-radius:[[CARD_RADIUS]]; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="[[CARD_BG]]" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="[[BRANDMARK_URL]]" width="15" height="15" alt="[[LOGO_ALT]]" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="[[CARD_BG]]" style="height:200px; padding:2px 14px 8px 14px;"><a href="[[PRODUCT_1_URL]]" target="_blank" style="text-decoration:none;"><img src="[[PRODUCT_1_IMAGE_URL]]" alt="[[PRODUCT_1_TITLE]]" width="[[PRODUCT_1_IMAGE_W]]" height="[[PRODUCT_1_IMAGE_H]]" style="display:block; width:[[PRODUCT_1_IMAGE_W]]px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:[[IMAGE_RADIUS]]; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="[[CARD_BG]]" style="height:40px; padding:0 12px;"><a href="[[PRODUCT_1_URL]]" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:[[FONT_STACK]]; font-size:[[META_SIZE]]; font-weight:700; line-height:1.3; color:[[TEXT_COLOR]]; text-align:center;">[[PRODUCT_1_TITLE]]</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="[[CARD_BG]]" style="height:34px; padding:2px 12px 0 12px;"><a href="[[PRODUCT_1_URL]]" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:[[FONT_STACK]]; font-size:[[SMALL_SIZE]]; line-height:1.45; color:[[MUTED_TEXT_COLOR]]; text-align:center;">[[PRODUCT_1_DESC]]</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="[[CARD_BG]]" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="[[BUTTON_BG]]" style="background:[[BUTTON_BG]]; border-radius:[[BUTTON_RADIUS]];"><a href="[[PRODUCT_1_URL]]" target="_blank" class="pricebtn" style="display:inline-block; font-family:[[FONT_STACK]]; font-size:[[META_SIZE]]; font-weight:800; line-height:1; color:[[BUTTON_TEXT_COLOR]]; padding:11px 22px; text-decoration:none;">[[PRODUCT_1_PRICE]]</a></td></tr></table></td></tr>
+        </table>
+      </td>
+      <!-- RIGHT card (for an odd final product, center the lone _1 card per §6.9 instead of deleting this cell) -->
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="[[SECTION_BG]]">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="[[CARD_BG]]" style="background:[[CARD_BG]]; border:1px solid [[CARD_BORDER_COLOR]]; border-radius:[[CARD_RADIUS]]; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="[[CARD_BG]]" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="[[BRANDMARK_URL]]" width="15" height="15" alt="[[LOGO_ALT]]" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="[[CARD_BG]]" style="height:200px; padding:2px 14px 8px 14px;"><a href="[[PRODUCT_2_URL]]" target="_blank" style="text-decoration:none;"><img src="[[PRODUCT_2_IMAGE_URL]]" alt="[[PRODUCT_2_TITLE]]" width="[[PRODUCT_2_IMAGE_W]]" height="[[PRODUCT_2_IMAGE_H]]" style="display:block; width:[[PRODUCT_2_IMAGE_W]]px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:[[IMAGE_RADIUS]]; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="[[CARD_BG]]" style="height:40px; padding:0 12px;"><a href="[[PRODUCT_2_URL]]" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:[[FONT_STACK]]; font-size:[[META_SIZE]]; font-weight:700; line-height:1.3; color:[[TEXT_COLOR]]; text-align:center;">[[PRODUCT_2_TITLE]]</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="[[CARD_BG]]" style="height:34px; padding:2px 12px 0 12px;"><a href="[[PRODUCT_2_URL]]" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:[[FONT_STACK]]; font-size:[[SMALL_SIZE]]; line-height:1.45; color:[[MUTED_TEXT_COLOR]]; text-align:center;">[[PRODUCT_2_DESC]]</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="[[CARD_BG]]" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="[[BUTTON_BG]]" style="background:[[BUTTON_BG]]; border-radius:[[BUTTON_RADIUS]];"><a href="[[PRODUCT_2_URL]]" target="_blank" class="pricebtn" style="display:inline-block; font-family:[[FONT_STACK]]; font-size:[[META_SIZE]]; font-weight:800; line-height:1; color:[[BUTTON_TEXT_COLOR]]; padding:11px 22px; text-decoration:none;">[[PRODUCT_2_PRICE]]</a></td></tr></table></td></tr>
+        </table>
+      </td>
+    </tr></table>
+  </td></tr>
 </table>

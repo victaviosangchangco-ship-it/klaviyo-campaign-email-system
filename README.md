@@ -1,6 +1,8 @@
 # Klaviyo Campaign Email System
 
-The single, unified repository for every Weekly & Monthly Klaviyo campaign, across all brands. It
+The single, unified repository for every Klaviyo campaign — **all ten campaign types** (Weekly, Monthly,
+Product Launch, Holiday, Seasonal, Category, Clearance, Brand Story, Educational, Automation), across all
+brands. Start any task at [`07-Prompt Library/00-START-HERE.md`](07-Prompt%20Library/00-START-HERE.md). It
 holds **both** the planning documentation (the BRD and its sections) **and** the file-driven
 production workspace where campaigns are briefed, generated, reviewed, and shipped. It is a
 completely separate project from the Klaviyo Flow project and mirrors that project's philosophy
@@ -32,9 +34,10 @@ Klaviyo Campaign Email System/
 ├── 04-Technical/              Assets, product source, dynamic content, integrations, data
 ├── 05-Future/                 Roadmap / deferred enhancements
 ├── 06-Assets Library/         Asset standards (logos, icons, banners, buttons, product, social)
-├── 07-Prompt Library/         Reusable generation/review/QA prompts
+├── 07-Prompt Library/         00-START-HERE + per-type Generate-* prompts + QA checklists
 ├── 08-Glossary/               Terms
 ├── 09-Architecture Decisions/ ADR log (ADR-###)
+├── Playbooks/                 One strategy playbook per campaign type (12 sections each)
 │
 │   # ---- Production (the framework + work) ----
 ├── Templates/                 Reusable email skeletons + brief scaffolds
@@ -45,7 +48,7 @@ Klaviyo Campaign Email System/
 ├── Brands/                    Brand-specific production WORK (SS, RDD, SC, Stack)
 │   └── <CODE>/
 │       ├── Assets/            evergreen brand assets (Logos, Icons, References)
-│       └── Campaigns/<Weekly|Monthly>/  Brief · References · Assets · Draft · Review · Output
+│       └── Campaigns/<Type>/  (all 10 types)  Brief · References · Assets · Draft · Review · Output
 ├── Shared/                    Brand-agnostic resources (Assets, Snippets, Fonts)
 └── Scripts/                   Future automation (deferred)
 ```
@@ -67,7 +70,7 @@ framework/token reference: [`Components/README.md`](Components/README.md).
 
 ## The campaign pipeline (per send)
 
-Every send moves through six stages in `Brands/<CODE>/Campaigns/<Weekly|Monthly>/`, mapped to the BRD
+Every send moves through six stages in `Brands/<CODE>/Campaigns/<Type>/`, mapped to the BRD
 process steps:
 
 | Stage | Folder | BRD step |
@@ -79,7 +82,10 @@ process steps:
 | 5. Review + QA | `Review/` | WK-P5–P6 · MO-P5–P6 |
 | 6. Output | `Output/` | WK-P7–P8 · MO-P7–P8 |
 
-Final HTML lives **only** in each send's `Output/` — the single source of truth. No top-level Output.
+The **latest generated HTML** lives in each send's `Output/` (un-versioned), kept in sync with the newest
+`Draft/` version and used for preview/QA/review. `Draft/` keeps the full `-vN` history. Presence in
+`Output/` is **not** sending approval — that status is tracked in `Brief/` + `Review/` and gated by §8.1
+(CLAUDE.md §4.1/§9). No top-level Output.
 
 ## Asset scope ladder
 
@@ -91,9 +97,15 @@ Shared/Assets            all brands
 
 ## Current status
 
-- Weekly framework built (`Components/`, `Shared/Snippets`, `Templates/Weekly`). Monthly pending.
-- BRD: sections 00–03 substantially drafted; 04–09 and brand docs RDD/SC/Stack in progress.
-- Brand facts sourced from approved `BrandConfig.md` / `Design.md` (Flow project) + `03-Brands`;
-  whether those become owned here is deferred until after BRD review.
+- **File-Driven System V2 (2026-07-16):** all four brands now support **all ten campaign types**; each
+  type has a Playbook (`Playbooks/`), a generate prompt (`07-Prompt Library/Generate-*`), and a QA path.
+  Universal entry point: `07-Prompt Library/00-START-HERE.md`.
+- Weekly framework built (`Components/`, `Shared/Snippets`, `Templates/Weekly`); Product Launch template
+  reference added (`Templates/Product Launch/`). Monthly skeleton pending.
+- First Product Launch (RDD Access & Site-Safety range) is at **Draft** stage — 4 of 13 products
+  send-ready, 9 hidden in BigCommerce. The latest build is in `Output/` for preview; it is **not approved
+  to send** until those 9 are published + re-verified.
+- BRD: Part I now includes Campaign Types, Product Launch Workflow, Holiday Workflow, File-Driven
+  Architecture, Execution Order, and Campaign Playbooks.
 
-_Last updated: 2026-07-10._
+_Last updated: 2026-07-16._

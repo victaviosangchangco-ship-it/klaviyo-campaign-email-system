@@ -1,0 +1,192 @@
+<!--
+  Component: ProductGrid (Cerberus reference, ecommerce-hardened)
+  Purpose: 2-column product grid — hybrid stacking, equal-height cards, three sibling anchors per
+           card, shrink-to-fit price badge, centred odd last card.
+  Source: Cerberus "2 Even Columns" (hybrid variant) + our Campaign §6.6/§6.8/§6.9/§6.17 hardening.
+  Required inputs (per card): [[PRODUCT_URL]], [[PRODUCT_IMG]], [[PRODUCT_NAME]], [[PRODUCT_PRICE]]
+  Optional inputs: [[PRODUCT_DESC]], [[CARD_BG]] (default #ffffff),
+                   [[CARD_BORDER_COLOR]], [[CARD_RADIUS]] (default 12px), [[ACCENT_COLOR]]
+  Fallback behavior: NEVER render an empty card. If fewer verified products are available than the
+                     grid expects, reduce the row count and report the shortfall as a blocker
+                     (Campaign §5.1). Never fabricate product data to fill a slot.
+  Dependencies: ResponsiveUtilities.html (.pc, .pimg, .pnc, .pdc, .ppc, .pricebtn, .center-half)
+
+  REFERENCE ONLY — production grid is Components/product-grid.html.
+
+  ═══════════════════════════════════════════════════════════════════════════════
+  Cerberus has NO product card. This component is our ecommerce card built ON TOP of
+  Cerberus's hybrid column mechanism. Four requirements Cerberus does not address, each
+  learned from a production defect:
+
+  1. CLICKABILITY — three sibling anchors, never one wrapping the card  (Campaign §6.6)
+     Klaviyo re-parses and rewrites links on import and DETACHES the href from a block-level
+     wrapper. A card wrapped in a single <a> renders, looks clickable, and is dead after upload.
+     An anchor may contain INLINE CONTENT ONLY. Any centring <table> stays OUTSIDE all anchors.
+
+  2. EQUAL HEIGHT — fixed-height <td>, never min-height  (Campaign §6.8)
+     min-height is ignored by Outlook's Word engine, so cards drift there while looking fine
+     elsewhere. <td height="N"> + height:Npx inline is the one sizing primitive Outlook honours.
+     Content must NEVER determine card height. Shortening a product name is polish, not the
+     mechanism.
+
+  3. PRICE BADGE — shrink-to-fit table, never a bare inline-block anchor  (Campaign §6.17)
+     The Gmail mobile app coerces background-filled inline-block anchors toward full width. On
+     RDD-2026-W31 the badges were correct on desktop and stretched across the card on Gmail
+     Android and iOS. A table with no width attribute collapses to its content in every client,
+     with or without <head> CSS.
+
+  4. ODD LAST CARD — colspan, then centre  (Campaign §6.9)
+     A lone <td> WITHOUT colspan occupies only the first column, so centring inside it centres
+     within that half and the card stays left-aligned. This is the #1 cause of "still not
+     centred". Span all columns first, then centre a BYTE-FOR-BYTE IDENTICAL card inside a
+     fixed-pixel-width nested table. Never a % width (shrink-wrapped by Gmail/Outlook), never
+     empty spacer <td>s (they collapse).
+
+  ⚠️ NEVER put height and padding on the SAME cell. <td height="36" style="height:36px;padding-top:14px">
+     is 50px in content-box engines and 36px in border-box engines — the region silently changes
+     size per client. Put the gap in its own sized spacer row (Flow §8.3).
+  ═══════════════════════════════════════════════════════════════════════════════
+
+  HYBRID MATHS — 600px container, 8px parent padding, 2 columns
+      inner width I = 600 − 16 = 584   → ghost table width
+      column max  M = 584 / 2  = 292   → each ghost <td>, and the centred lone card
+      column min  m ≈ 175              → forces the wrap on narrow screens
+-->
+
+<!-- Product grid row (2 cards) : BEGIN -->
+<tr>
+  <td align="center" valign="top" bgcolor="[[SECTION_BG]]"
+      style="background:[[SECTION_BG]]; font-size:0; padding:8px;">
+    <!--                ↑ font-size:0 kills the whitespace gap between inline-block columns.
+                          Every text cell inside a card restates its own font-size. -->
+
+    <!--[if mso]>
+    <table role="presentation" border="0" cellspacing="0" cellpadding="0" width="584">
+    <tr>
+    <td valign="top" width="292">
+    <![endif]-->
+
+    <div class="pc" style="display:inline-block; margin:0 -1px; width:100%; min-width:175px; max-width:292px; vertical-align:top;">
+      <!-- ══ CARD ══ -->
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%"
+             bgcolor="[[CARD_BG]]"
+             style="width:100%; height:100%; background:[[CARD_BG]]; border:1px solid [[CARD_BORDER_COLOR]]; border-radius:[[CARD_RADIUS]];">
+        <!--                    ↑ height:100% is a defensive backstop: if content ever exceeds a
+                                  reserved height, the shorter card stretches to match rather than
+                                  leaving a short border. -->
+
+        <!-- IMAGE — fixed height, anchor #1 -->
+        <tr>
+          <td class="pimg" align="center" valign="top" height="196" bgcolor="[[CARD_BG]]"
+              style="height:196px; background:[[CARD_BG]];"><a href="[[PRODUCT_URL]]" target="_blank" style="text-decoration:none;"><img src="[[PRODUCT_IMG]]" width="176" height="176" alt="[[PRODUCT_NAME]]" border="0" style="display:block; width:176px; max-width:100%; height:auto; margin:0 auto; border:0; outline:none; text-decoration:none; border-radius:8px; background:#f2f2f2; font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:16px; color:#555555;"></a></td>
+        </tr>
+
+        <!-- NAME — fixed height reserving 2 lines, anchor #2 -->
+        <tr>
+          <td class="pnc" align="center" valign="top" height="38" bgcolor="[[CARD_BG]]"
+              style="height:38px; background:[[CARD_BG]]; font-family:[[FONT_STACK]]; font-size:13px; line-height:19px; font-weight:700; color:[[TEXT_COLOR]];">
+            <a href="[[PRODUCT_URL]]" target="_blank" style="color:[[TEXT_COLOR]]; text-decoration:none; font-weight:700;">[[PRODUCT_NAME]]</a>
+          </td>
+        </tr>
+
+        <!-- DESCRIPTION — fixed height reserving 2 lines -->
+        <tr>
+          <td class="pdc" align="center" valign="top" height="36" bgcolor="[[CARD_BG]]"
+              style="height:36px; background:[[CARD_BG]]; font-family:[[FONT_STACK]]; font-size:12px; line-height:18px; color:[[MUTED_TEXT_COLOR]];">
+            [[PRODUCT_DESC]]
+          </td>
+        </tr>
+
+        <!-- SPACER — the gap lives in its OWN sized row, never as padding on a fixed-height cell -->
+        <tr>
+          <td aria-hidden="true" height="10" bgcolor="[[CARD_BG]]"
+              style="height:10px; background:[[CARD_BG]]; font-size:0; line-height:0; mso-line-height-rule:exactly;">&nbsp;</td>
+        </tr>
+
+        <!-- PRICE BADGE — shrink-to-fit table, anchor #3 -->
+        <tr>
+          <td class="ppc" align="center" valign="middle" bgcolor="[[CARD_BG]]"
+              style="background:[[CARD_BG]]; padding:0 12px 16px 12px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;">
+              <!--        ↑ NO width attribute. This is what makes the badge content-width in every
+                            client, with or without <head> CSS. -->
+              <tr>
+                <td align="center" bgcolor="[[ACCENT_COLOR]]" style="background:[[ACCENT_COLOR]]; border-radius:4px;">
+                  <a href="[[PRODUCT_URL]]" target="_blank" class="pricebtn"
+                     style="display:inline-block; font-family:[[FONT_STACK]]; font-size:13px; font-weight:800;
+                            line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">[[PRODUCT_PRICE]]</a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+      <!-- ══ /CARD ══ -->
+    </div>
+
+    <!--[if mso]>
+    </td>
+    <td valign="top" width="292">
+    <![endif]-->
+
+    <div class="pc" style="display:inline-block; margin:0 -1px; width:100%; min-width:175px; max-width:292px; vertical-align:top;">
+      <!-- ══ CARD 2 — byte-for-byte identical structure ══ -->
+    </div>
+
+    <!--[if mso]>
+    </td>
+    </tr>
+    </table>
+    <![endif]-->
+
+  </td>
+</tr>
+<!-- Product grid row (2 cards) : END -->
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     ODD LAST CARD — centred across the full grid width
+     The colspan is the essential part. Without it the cell occupies only column 1.
+     Note this row is a plain table row (not hybrid) so colspan is available.
+     ═══════════════════════════════════════════════════════════════════════════ -->
+
+<tr>
+  <td colspan="2" align="center" valign="top" bgcolor="[[SECTION_BG]]"
+      style="background:[[SECTION_BG]]; padding:8px;">
+    <!--   ↑ colspan spans ALL grid columns first. Only then does centring work. -->
+
+    <table align="center" role="presentation" cellpadding="0" cellspacing="0" border="0"
+           width="292" class="center-half" style="width:292px; max-width:100%;">
+      <!--   ↑ FIXED PIXEL width equal to exactly one grid column — never a % (Gmail and Outlook
+               shrink-wrap a %-width wrapper, rendering the card smaller than its siblings).
+               .center-half goes to 100% on mobile. -->
+      <tr>
+        <td>
+          <!-- The SAME card markup, unchanged. Only the wrapper handles centring —
+               never resize the card, image, fonts, padding or width to make it fit. -->
+        </td>
+      </tr>
+    </table>
+
+  </td>
+</tr>
+
+<!--
+  PRE-OUTPUT CHECKLIST  (Campaign §6.8 / §6.9 / §6.17 QA gates)
+  ☐ Every card in a row is identical height
+  ☐ Every image, title, description and price begins at the same vertical position
+  ☐ Every price badge sits on the same horizontal line
+  ☐ Each section's last row ends at the same height, so the next section starts consistently
+  ☐ Zero anchors contain a <table>
+  ☐ Zero image-wrapping anchors carry display:block
+  ☐ Every image has explicit width + height attributes
+  ☐ Price badges are compact and centred on Gmail Android AND iOS — never full-width
+  ☐ Odd last card is centred, identical to its siblings, and its row cell has colspan
+  ☐ Cards stack cleanly to full width on mobile with no horizontal scroll
+  ☐ Brand marks not enlarged by the mobile .pc img rule (.brandmark exclusion)
+  ☐ Every product URL verified HTTP 200; image, title and price all link to the SAME page
+  ☐ Clickability verified after a real Klaviyo import, not in source
+
+  Verified on: Gmail desktop + Android + iOS · Apple Mail incl. iPhone · Outlook desktop.
+  Record the result in Review/.
+-->

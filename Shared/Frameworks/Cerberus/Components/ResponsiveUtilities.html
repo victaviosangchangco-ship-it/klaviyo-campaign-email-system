@@ -1,0 +1,195 @@
+<!--
+  Component: ResponsiveUtilities (Cerberus reference)
+  Purpose: The complete <head> scaffold — meta, MSO settings, web-font guard, CSS reset,
+           responsive utilities, and dark-mode utility classes.
+  Source: cerberus-fluid / -responsive / -hybrid <head>, merged; hardened for Klaviyo + Gmail mobile.
+  Required inputs: [[SUBJECT_LINE]]
+  Optional inputs: [[DARK_BODY_BG]] (default #111111), [[DARK_SECTION_BG]] (default #222222),
+                   [[DARK_TEXT_COLOR]] (default #F7F7F9)
+  Fallback behavior: with no dark tokens, the documented defaults above apply.
+  Dependencies: none. This is the head every other reference component assumes.
+
+  REFERENCE ONLY — production head lives in Shared/Snippets/base-head.html.
+
+  ⚠️ DELIBERATE OMISSION: Cerberus's reset includes `table { table-layout: fixed !important; }`.
+     It is NOT included here. It disables intrinsic sizing, which breaks the shrink-to-fit price
+     badge (Campaign §6.17) and the centred odd last card (Campaign §6.9).
+     See Cerberus-Best-Practices.md §5.7.
+-->
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:v="urn:schemas-microsoft-com:vml"
+      xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!-- Stops iOS Mail auto-scaling the whole message. -->
+  <meta name="x-apple-disable-message-reformatting">
+  <!-- Stops iOS auto-linking phone numbers, addresses, dates. -->
+  <meta name="format-detection" content="telephone=no,address=no,email=no,date=no,url=no">
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
+  <!-- Shown in some Android notification previews — never ship this empty. -->
+  <title>[[SUBJECT_LINE]]</title>
+
+  <!-- Makes background images render at the correct size in 72ppi Outlook. -->
+  <!--[if gte mso 9]>
+  <xml>
+    <o:OfficeDocumentSettings>
+      <o:PixelsPerInch>96</o:PixelsPerInch>
+    </o:OfficeDocumentSettings>
+  </xml>
+  <![endif]-->
+
+  <!-- Web font guard. Outlook chokes on web-font references and falls back to Times New Roman
+       for the WHOLE document, so force a safe family for it and hide the reference. -->
+  <!--[if mso]>
+  <style>
+    * { font-family: Arial, Helvetica, sans-serif !important; }
+  </style>
+  <![endif]-->
+  <!--[if !mso]><!-->
+  <!-- Optional web-font <link> goes here. Policy: the email-safe stack is the real design;
+       a brand face is enhancement only (Shared/Fonts/font-stacks.md). -->
+  <!--<![endif]-->
+
+  <style>
+    /* ===================== CSS RESET — every rule fixes a named client bug ===================== */
+
+    /* Declares dark-mode participation in CSS as well as in <meta>; clients read one or the other. */
+    :root { color-scheme: light dark; supported-color-schemes: light dark; }
+
+    /* Removes the padding some clients add around the message. */
+    html, body { margin: 0 auto !important; padding: 0 !important; height: 100% !important; width: 100% !important; }
+
+    /* Stops clients auto-inflating small text. */
+    * { -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; }
+
+    /* Android 4.4 injects `margin: 16px 0` on a wrapper div. */
+    div[style*="margin: 16px 0"] { margin: 0 !important; }
+
+    /* Samsung Mail otherwise renders narrower than the viewport. */
+    #MessageViewBody, #MessageWebViewDiv { width: 100% !important; }
+
+    /* Outlook adds horizontal spacing around tables. */
+    table, td { mso-table-lspace: 0pt !important; mso-table-rspace: 0pt !important; }
+
+    /* <th> is used as a stacking column cell; kill its default bold. */
+    th { font-weight: normal; }
+
+    /* WebKit table padding. NOTE: table-layout:fixed deliberately omitted — see header comment. */
+    table { border-spacing: 0 !important; border-collapse: collapse !important; margin: 0 auto !important; }
+
+    /* Better image downscaling in IE/Word renderers. */
+    img { -ms-interpolation-mode: bicubic; }
+
+    /* Windows 10 Mail underlines links despite inline CSS. */
+    a { text-decoration: none; }
+
+    /* iOS and Gmail auto-detect dates/addresses/phones and style them as blue links. The link
+       cannot be removed, but it can be made to look like the surrounding body text.
+       Apply class="unstyle-auto-detected-links" to any block containing an address or phone. */
+    a[x-apple-data-detectors],        /* iOS   */
+    .unstyle-auto-detected-links a,   /* opt-in */
+    .aBn {                            /* Gmail */
+      border-bottom: 0 !important; cursor: default !important; color: inherit !important;
+      text-decoration: none !important; font-size: inherit !important; font-family: inherit !important;
+      font-weight: inherit !important; line-height: inherit !important;
+    }
+
+    /* Gmail overlays a download button on large, unlinked images. */
+    .a6S { display: none !important; opacity: 0.01 !important; }
+    /* Fallback: tag the image class="g-img" and hide the injected sibling div. */
+    img.g-img + div { display: none !important; }
+
+    /* Gmail recolours text inside a conversation thread. */
+    .im { color: inherit !important; }
+
+    /* Removes the right-hand gutter in the Gmail iOS app. One block per viewport supported.
+       `u ~ div` matches only in Gmail iOS, which injects a <u> ahead of the body. */
+    @media only screen and (min-device-width: 320px) and (max-device-width: 374px) {
+      u ~ div .email-container { min-width: 320px !important; }
+    }
+    @media only screen and (min-device-width: 375px) and (max-device-width: 413px) {
+      u ~ div .email-container { min-width: 375px !important; }
+    }
+    @media only screen and (min-device-width: 414px) {
+      u ~ div .email-container { min-width: 414px !important; }
+    }
+
+    /* ===================== PROGRESSIVE ENHANCEMENT ===================== */
+    /* Everything below REFINES the layout. Nothing below may CARRY it —
+       the Gmail app strips <head> CSS for non-Google accounts. */
+
+    .button-td, .button-a { transition: all 100ms ease-in; }
+    .button-td-primary:hover, .button-a-primary:hover { background: #555555 !important; border-color: #555555 !important; }
+
+    @media screen and (max-width: 600px) {
+      .email-container { width: 100% !important; margin: auto !important; }
+
+      /* Force table cells / hybrid columns into full-width rows.
+         `direction: ltr` resets the dir="rtl" order-swap so stack order stays source order. */
+      .stack-column,
+      .stack-column-center {
+        display: block !important; width: 100% !important;
+        max-width: 100% !important; direction: ltr !important;
+      }
+      .stack-column-center { text-align: center !important; }
+
+      /* Generic centring for images, buttons and nested tables. */
+      .center-on-narrow {
+        text-align: center !important; display: block !important;
+        margin-left: auto !important; margin-right: auto !important; float: none !important;
+      }
+      table.center-on-narrow { display: inline-block !important; }
+
+      /* Improve small-screen readability. */
+      .email-container p { font-size: 17px !important; }
+
+      /* Fixed-height card regions release so stacked cards size naturally (Campaign §6.8). */
+      .pimg, .pnc, .pdc, .ppc { height: auto !important; }
+
+      /* Product cards stack full width. Mobile-only — must never alter the desktop grid. */
+      .pc { display: block !important; width: 100% !important; box-sizing: border-box !important; }
+      .pc img { width: 100% !important; height: auto !important; }
+      /* Never enlarge small decorative brand marks with the rule above (Campaign §6.17). */
+      .pc img.brandmark { width: 15px !important; max-width: 15px !important; height: auto !important; }
+
+      /* Price badge stays content-width; this only tunes the tap size (Campaign §6.17). */
+      .pricebtn { display: inline-block !important; width: auto !important; padding: 12px 26px !important; }
+
+      /* Centred odd last card goes full width. */
+      .center-half { width: 100% !important; }
+
+      /* ≥44px tap targets, achieved with padding — never by widening the element. */
+      .tap { min-height: 44px !important; line-height: 44px !important; }
+    }
+
+    /* ===================== DARK MODE ===================== */
+    @media (prefers-color-scheme: dark) {
+      .email-bg    { background: [[DARK_BODY_BG]] !important; }
+      .darkmode-bg { background: [[DARK_SECTION_BG]] !important; }
+      h1, h2, h3, p, li,
+      .darkmode-text,
+      .email-container a:not([class]) { color: [[DARK_TEXT_COLOR]] !important; }
+      td.button-td-primary, td.button-td-primary a {
+        background: #ffffff !important; border-color: #ffffff !important; color: #222222 !important;
+      }
+      .footer td { color: #aaaaaa !important; }
+      /* Light/dark image swap. The dark image MUST be wrapped in [if !mso] in the body,
+         or Outlook renders both. */
+      .display-only-in-dark-mode  { display: inline-block !important; }
+      .display-only-in-light-mode { display: none !important; }
+    }
+
+    /* Outlook.com does not honour prefers-color-scheme; it exposes [data-ogsc] instead.
+       Cerberus does not cover this — it is ours and it stays. */
+    [data-ogsc] .email-bg    { background: [[DARK_BODY_BG]] !important; }
+    [data-ogsc] .darkmode-bg { background: [[DARK_SECTION_BG]] !important; }
+    [data-ogsc] .darkmode-text,
+    [data-ogsc] h1, [data-ogsc] h2, [data-ogsc] h3, [data-ogsc] p, [data-ogsc] li { color: [[DARK_TEXT_COLOR]] !important; }
+    [data-ogsc] .display-only-in-dark-mode  { display: inline-block !important; }
+    [data-ogsc] .display-only-in-light-mode { display: none !important; }
+  </style>
+</head>

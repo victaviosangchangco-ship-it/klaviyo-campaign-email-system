@@ -1,0 +1,102 @@
+<!--
+  Component: BulletproofButton (Cerberus reference + VML)
+  Purpose: A button that renders with its true corner radius in EVERY client, Outlook included.
+  Source: Cerberus "Button" block + VML roundrect (Outlook's only rounded-corner primitive).
+  Required inputs: [[CTA_URL]], [[CTA_LABEL]], [[BUTTON_BG]], [[BUTTON_TEXT_COLOR]]
+  Optional inputs: [[BUTTON_RADIUS]] (default 8px), [[BUTTON_ARCSIZE]] (VML % equivalent),
+                   [[BUTTON_W]] (VML fixed width, px), [[BUTTON_H]] (VML fixed height, px),
+                   [[FONT_STACK]] (default Arial,Helvetica,sans-serif)
+  Fallback behavior: without VML values, fall back to CTA.html — Outlook then shows square corners,
+                     which is acceptable. Never ship a button that VANISHES in Outlook.
+  Dependencies: xmlns:v declared on <html> (see ResponsiveUtilities.html); .button-td / .button-a
+
+  REFERENCE ONLY — production is Components/CTA.html.
+
+  WHY VML
+  Outlook's Word engine ignores border-radius entirely. Cerberus's plain button therefore renders
+  square there. Where a brand's radius is part of its identity (RDD: 8px / arcsize 15%), VML
+  <v:roundrect> is the only way to reproduce it.
+
+  ARCSIZE — the conversion that trips people up
+  VML arcsize is a PERCENTAGE OF THE SHORTER SIDE, not a pixel value.
+
+      arcsize % ≈ (radius_px / (height_px / 2)) × 50
+
+  Worked: 8px radius on a 52px-tall button → 8 / 26 × 50 ≈ 15%  →  arcsize="15%"
+          4px radius on a 44px-tall button → 4 / 22 × 50 ≈ 9%   →  arcsize="9%"
+
+  THE VML BLOCK MUST BE FIXED-SIZE
+  VML cannot compute from content — width and height are hard pixel values. Set them to the
+  button's rendered desktop size. If the label changes length, RECHECK the width or Outlook will
+  clip or pad it.
+
+  KEEP THE THREE FILLS IN SYNC
+  [[BUTTON_BG]] appears in the VML fillcolor, the VML inner <center> style, the <td> bgcolor, the
+  <td> inline background, and the <a> inline background. All five must be the same hex.
+-->
+
+<!-- Bulletproof CTA : BEGIN -->
+<tr>
+  <td align="center" style="padding:0 28px 32px 28px;" class="mp">
+
+    <!--[if mso]>
+    <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word"
+                 href="[[CTA_URL]]"
+                 style="height:[[BUTTON_H]]px; v-text-anchor:middle; width:[[BUTTON_W]]px;"
+                 arcsize="[[BUTTON_ARCSIZE]]" stroke="f" fillcolor="[[BUTTON_BG]]">
+      <w:anchorlock/>
+      <center style="color:[[BUTTON_TEXT_COLOR]]; font-family:Arial,Helvetica,sans-serif; font-size:15px; font-weight:bold;">[[CTA_LABEL]]</center>
+    </v:roundrect>
+    <![endif]-->
+
+    <!--[if !mso]><!-->
+    <table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:0 auto;">
+      <tr>
+        <td class="button-td button-td-primary" align="center"
+            bgcolor="[[BUTTON_BG]]"
+            style="border-radius:[[BUTTON_RADIUS]]; background:[[BUTTON_BG]];">
+          <a class="button-a button-a-primary tap" href="[[CTA_URL]]" target="_blank"
+             style="display:block; background:[[BUTTON_BG]]; border-radius:[[BUTTON_RADIUS]];
+                    font-family:[[FONT_STACK]]; font-size:15px; font-weight:700; line-height:15px;
+                    letter-spacing:0.4px; padding:15px 28px; color:[[BUTTON_TEXT_COLOR]];
+                    text-decoration:none;">[[CTA_LABEL]]</a>
+        </td>
+      </tr>
+    </table>
+    <!--<![endif]-->
+
+  </td>
+</tr>
+<!-- Bulletproof CTA : END -->
+
+<!--
+  STRUCTURE
+  Outlook sees ONLY the <v:roundrect>. Every other client sees ONLY the table. The two are mutually
+  exclusive via [if mso] / [if !mso], so the button is never doubled.
+
+  ⚠️ The [if !mso] delimiters are asymmetric: <!--[if !mso]><!-->  …  <!--<![endif]-->
+     Get them wrong and the button disappears for EVERYONE except Outlook.
+
+  VML ATTRIBUTES
+    href              the anchor — VML carries its own; the HTML <a> is not involved in Outlook
+    v-text-anchor     vertically centres the label
+    arcsize           corner radius as a % of the shorter side (see conversion above)
+    stroke="f"        no border. For an OUTLINE button use stroke="t" strokecolor="#hex"
+                      with fillcolor="none"
+    fillcolor         must match [[BUTTON_BG]] exactly
+    <w:anchorlock/>   locks the text so Outlook cannot make it separately selectable
+    <center>          the label. Its colour/font must be restated — VML inherits nothing.
+
+  CHECKLIST
+  ☐ arcsize computed from the ACTUAL button height, not guessed
+  ☐ [[BUTTON_W]] / [[BUTTON_H]] match the rendered desktop size; rechecked after any label change
+  ☐ all five occurrences of the fill colour are identical
+  ☐ label text identical in the VML <center> and the HTML <a>
+  ☐ xmlns:v declared on <html>
+  ☐ verified in Outlook desktop — a VANISHED button is a hard fail; square corners are not
+
+  SECONDARY / OUTLINE VARIANT
+    VML : stroke="t" strokecolor="[[ACCENT_COLOR]]" fillcolor="none"
+          + <center style="color:[[ACCENT_COLOR]]; …">
+    HTML: <td> background transparent, <a> border:2px solid [[ACCENT_COLOR]]; color:[[ACCENT_COLOR]]
+-->

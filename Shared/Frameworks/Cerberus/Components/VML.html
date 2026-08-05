@@ -1,0 +1,189 @@
+<!--
+  Component: VML (Cerberus reference)
+  Purpose: Every VML pattern in one file — background images and rounded buttons for Outlook's
+           Word engine, which supports neither in CSS.
+  Source: Cerberus "Background Image with Text" (responsive + hybrid variants) + roundrect.
+  Required inputs: vary per pattern — see each block.
+  Optional inputs: see each block.
+  Fallback behavior: without VML, Outlook shows the background COLOUR only (never the image) and
+                     SQUARE buttons. Both are acceptable degradations. A vanished element is not.
+  Dependencies: xmlns:v="urn:schemas-microsoft-com:vml" and
+                xmlns:o="urn:schemas-microsoft-com:office:office" declared on <html>.
+
+  REFERENCE ONLY.
+
+  ═══════════════════════════════════════════════════════════════════════════════
+  WHAT VML IS
+  Vector Markup Language — a 1998 W3C submission that Microsoft never removed from Word. Outlook
+  2007–2021 on Windows renders with the Word engine, so VML is the only way to draw a rounded
+  shape or composite a background image there. No other client understands it, which is why every
+  VML block sits inside <!--[if gte mso 9]> … <![endif]-->.
+
+  THE RULE OF TWO
+  Anything VML draws must ALSO be declared in CSS for every other client. The two declarations are
+  independent and must be kept in sync — image URL, dimensions, and fallback colour.
+
+  ⚠️ Outlook CANNOT SCALE a background image. Supply the VML src at @1x, at exactly the box size.
+     Other clients scale fine, so the CSS background-image may be @2x.
+
+  ⚠️ VML IGNORES PADDING. The width/height on <v:rect> / <v:image> must be the FULL container box.
+  ═══════════════════════════════════════════════════════════════════════════════
+-->
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     PATTERN 1 — Background image with text over it (tiled fill)
+     Cerberus's responsive-template variant. Simpler; use when the image is a texture or the
+     box size is fixed and known.
+     Inputs: [[BG_IMG_URL]], [[BG_FALLBACK_COLOR]], [[BG_W]], [[BG_H]], [[OVERLAY_COPY]]
+     ═══════════════════════════════════════════════════════════════════════════ -->
+
+<tr>
+  <td valign="middle" bgcolor="[[BG_FALLBACK_COLOR]]"
+      style="text-align:center; background-color:[[BG_FALLBACK_COLOR]];
+             background-image:url('[[BG_IMG_URL]]');
+             background-position:center center !important; background-size:cover !important;">
+    <!--        ↑ background-color is MANDATORY, not optional. It is what keeps the overlaid text
+                  legible when the image is blocked or fails. This is the accessibility argument
+                  FOR background images over foreground images. -->
+
+    <!--[if gte mso 9]>
+    <v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false"
+            style="width:[[BG_W]]px; height:[[BG_H]]px; background-position:center center !important;">
+    <v:fill type="tile" src="[[BG_IMG_URL]]" color="[[BG_FALLBACK_COLOR]]" />
+    <v:textbox inset="0,0,0,0">
+    <![endif]-->
+
+    <div>
+      <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="width:100%;">
+        <tr>
+          <td valign="middle"
+              style="text-align:center; padding:40px 28px; font-family:[[FONT_STACK]];
+                     font-size:15px; line-height:22px; color:#ffffff;">
+            <p style="margin:0;">[[OVERLAY_COPY]]</p>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!--[if gte mso 9]>
+    </v:textbox>
+    </v:rect>
+    <![endif]-->
+
+  </td>
+</tr>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     PATTERN 2 — Background image, cover-fit, with a constrained text box
+     Cerberus's hybrid-template variant. Use when the image is photographic and must fill the box,
+     and the text needs its own width inside it.
+     The v:image paints the picture; the transparent v:rect (opacity 0%) hosts the text on top.
+     ═══════════════════════════════════════════════════════════════════════════ -->
+
+<tr>
+  <td bgcolor="[[BG_FALLBACK_COLOR]]"
+      style="text-align:center; background-color:[[BG_FALLBACK_COLOR]];
+             background-image:url('[[BG_IMG_URL]]');
+             background-position:center center !important; background-size:cover !important;">
+
+    <!--[if gte mso 9]>
+    <v:image xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false"
+             style="border:0; display:inline-block; width:[[BG_W]]px; height:[[BG_H]]px;"
+             src="[[BG_IMG_URL]]" />
+    <v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false"
+            style="border:0; display:inline-block; position:absolute; width:[[BG_W]]px; height:[[BG_H]]px;">
+    <v:fill opacity="0%" color="[[BG_FALLBACK_COLOR]]" />
+    <![endif]-->
+
+    <div>
+      <!--[if mso]>
+      <table align="center" role="presentation" border="0" cellspacing="0" cellpadding="0" width="500">
+      <tr>
+      <td width="500">
+      <![endif]-->
+      <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:500px; margin:auto;">
+        <tr>
+          <td style="text-align:center; padding:40px 20px; font-family:[[FONT_STACK]]; font-size:15px; line-height:22px; color:#ffffff;">
+            <p style="margin:0;">[[OVERLAY_COPY]]</p>
+          </td>
+        </tr>
+      </table>
+      <!--[if mso]>
+      </td>
+      </tr>
+      </table>
+      <![endif]-->
+    </div>
+
+    <!--[if gte mso 9]>
+    </v:fill>
+    </v:rect>
+    </v:image>
+    <![endif]-->
+
+  </td>
+</tr>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     PATTERN 3 — Rounded button (roundrect)
+     Full documentation and the arcsize conversion are in BulletproofButton.html.
+     ═══════════════════════════════════════════════════════════════════════════ -->
+
+<!--[if mso]>
+<v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word"
+             href="[[CTA_URL]]" style="height:52px; v-text-anchor:middle; width:240px;"
+             arcsize="15%" stroke="f" fillcolor="[[BUTTON_BG]]">
+  <w:anchorlock/>
+  <center style="color:[[BUTTON_TEXT_COLOR]]; font-family:Arial,Helvetica,sans-serif; font-size:15px; font-weight:bold;">[[CTA_LABEL]]</center>
+</v:roundrect>
+<![endif]-->
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     PATTERN 4 — Outlook pixel-density fix (belongs in <head>)
+     Without it, Outlook treats background images as 72ppi and renders them oversized.
+     ═══════════════════════════════════════════════════════════════════════════ -->
+
+<!--[if gte mso 9]>
+<xml>
+  <o:OfficeDocumentSettings>
+    <o:PixelsPerInch>96</o:PixelsPerInch>
+  </o:OfficeDocumentSettings>
+</xml>
+<![endif]-->
+
+
+<!--
+  ═══════════════════════════════════════════════════════════════════════════════
+  WHERE THESE PATTERNS APPLY IN OUR TWO SYSTEMS
+
+  CAMPAIGN — background images are NOT for hero banners.
+  Campaign §6.15 requires the hero to be a single embedded artwork with eyebrow, headline, intro
+  and CTA baked INTO the image, wrapped in one anchor. Do not recreate HTML overlay text over a
+  campaign hero unless explicitly requested. Patterns 1–2 are for SECONDARY bands only.
+
+  FLOW — background images ARE the right tool for the hero.
+  Flow §8.5 requires the opposite: "keep personalised, dynamic and offer copy in HTML, not baked
+  into the artwork," because a flow hero must carry {{ first_name }}, dynamic product data and a
+  changeable offer, and must stay readable with images blocked. A flow hero with live text over
+  artwork is exactly Pattern 1 or 2 — and the mandatory background-color is what makes the
+  images-blocked case work.
+
+  ═══════════════════════════════════════════════════════════════════════════════
+  CHECKLIST
+  ☐ xmlns:v and xmlns:o declared on <html>
+  ☐ background-color set in CSS AND as the VML fill color — identical hex
+  ☐ VML width/height = the FULL container box (VML ignores padding)
+  ☐ VML src supplied at @1x (Outlook cannot scale a background image)
+  ☐ Overlay text legible against the fallback colour with images OFF — test it
+  ☐ WCAG AA contrast against BOTH the image and the fallback colour
+  ☐ Verified in Outlook desktop: image OR fallback colour paints, and the text is readable
+  ☐ Conditional delimiters correct — [if gte mso 9] for VML, [if mso] for ghost tables
+
+  DEGRADATION IS FINE, DISAPPEARANCE IS NOT
+  If VML fails, Outlook must still show the fallback colour with legible text. A section that
+  renders empty or invisible in Outlook is a hard fail.
+-->

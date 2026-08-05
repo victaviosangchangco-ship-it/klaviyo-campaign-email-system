@@ -1,21 +1,98 @@
 <!--
   Component: hero-image
   Purpose: Full-width hero banner image (edge-to-edge inside the 600px container), optionally linked.
-           The visual lead of the email; the headline block (hero.html) follows it.
+           The visual lead of the email; the headline block (hero.html) follows it IMMEDIATELY.
   BRD mapping: WK-S4 / MO-S5 (visual lead)
-  Required inputs: [[HERO_IMAGE_URL]], [[HERO_IMAGE_ALT]] (meaningful alt — CS-11)
+  Required inputs: [[HERO_IMAGE_URL]], [[HERO_IMAGE_ALT]] (meaningful alt — CS-11),
+                   [[HERO_IMAGE_HEIGHT]] (real pixel height of the exported artwork)
   Optional inputs: [[HERO_IMAGE_LINK]] (wrap the image in a link; omit the <a> when absent)
   Fallback behavior: a hero image is optional — omit this component entirely for a text-led send.
                      If used, [[HERO_IMAGE_ALT]] is mandatory (accessibility + image-blocked clients);
                      never ship an empty or decorative-only alt for the lead image.
-  Dependencies: none. line-height:0 / font-size:0 on the cell prevents gaps below the image.
+                     [[HERO_IMAGE_HEIGHT]] must be the artwork's REAL exported pixel height — never
+                     guess or derive it; a wrong value distorts the banner in Outlook.
+                     If [[HERO_IMAGE_LINK]] is absent, emit the <img> with NO anchor — never an
+                     href="#", never a guessed URL (§6.7).
+  Dependencies: shared .hero-img class from base-head (defensive responsive backstop).
+
+  CERBERUS MIGRATION — Phase 2, component 3a of 6 (2026-07-28).
+  Reference: Shared/Frameworks/Cerberus/Components/Hero.html · CLAUDE.md §6.14 / §6.15 / §6.6.
+  Structural only. No colour, dimension, spacing or artwork changed.
+
+  ON HYBRID: Cerberus's hybrid pattern stacks MULTI-COLUMN rows. The hero is single-column, so
+  there is nothing to stack and no ghost table belongs here — the 600px lock is applied ONCE by
+  the template's MSO ghost table around .email-container. Nesting a second ghost table inside it
+  would double-wrap Outlook. What this component takes from Cerberus is the fluid-image contract
+  and the edge-to-edge cell, not the column mechanism.
+
+  MOBILE CONTRACT (must never regress):
+  · The banner SCALES, it never CROPS — width:100%; height:auto only. No background-image, no
+    background-size:cover, no fixed pixel height, no max-height. Cropping is what those cause.
+  · The banner never SEPARATES from the headline block. This component emits no trailing spacer
+    and no bottom padding; hero.html follows it directly in the skeleton with nothing between.
+  · The banner never REPOSITIONS. Single-column source order is the render order in every client.
+
+  WHITESPACE IS SIGNIFICANT: <td>, <a> and <img> sit on ONE line with zero whitespace between them.
+  The previous version had them on separate indented lines, which creates text nodes at a container
+  boundary — a Ghost-Element trigger (§8.2) and a source of stray gaps.
 -->
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" style="background:[[BODY_BG]];">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="[[BODY_BG]]" style="width:100%; background:[[BODY_BG]];">
   <tr>
-    <td align="center" style="line-height:0; font-size:0;">
-      <a href="[[HERO_IMAGE_LINK]]" target="_blank">
-        <img src="[[HERO_IMAGE_URL]]" alt="[[HERO_IMAGE_ALT]]" width="600" style="display:block; width:100%; max-width:600px; height:auto; margin:0 auto;" />
-      </a>
-    </td>
+    <td align="center" bgcolor="[[BODY_BG]]" style="padding:0; margin:0; background:[[BODY_BG]]; font-size:0; line-height:0; mso-line-height-rule:exactly;"><a href="[[HERO_IMAGE_LINK]]" target="_blank" style="text-decoration:none;"><img src="[[HERO_IMAGE_URL]]" alt="[[HERO_IMAGE_ALT]]" width="600" height="[[HERO_IMAGE_HEIGHT]]" border="0" class="hero-img g-img" style="display:block; width:100%; max-width:600px; height:auto; margin:0 auto; border:0; outline:none; text-decoration:none; font-family:Arial,Helvetica,sans-serif; font-size:15px; line-height:20px; color:[[TEXT_COLOR]];" /></a></td>
   </tr>
 </table>
+
+<!--
+  MIGRATION NOTES — what changed and why
+
+  1. height="[[HERO_IMAGE_HEIGHT]]" attribute added.  HIGHEST-RISK FIX.
+     Apple Mail on iOS resolves layout before the image decodes. With width but no height there is
+     no aspect box to reserve, so it DROPS the hero entirely — while desktop and Gmail Android look
+     correct. This is the exact SS-2026-W29 failure mode (§6.6).
+
+  2. Zero whitespace between <td>, <a> and <img>.
+     Previously each sat on its own indented line. Those newlines become text nodes at a container
+     boundary: a Ghost-Element trigger (§8.2) and a classic source of an unexplained gap under a
+     banner. Collapsing them is the §6.14 hardening.
+
+  3. mso-line-height-rule:exactly added to the cell.
+     The cell already had line-height:0/font-size:0 to kill the image baseline gap, but Outlook's
+     Word engine does not reliably honour a zeroed line-height without this. Without it, Outlook
+     can still render the thin white strip under the banner (§6.14).
+
+  4. padding:0; margin:0 stated explicitly on the cell.
+     A no-op visually (cellpadding="0" already applied) but it makes the edge-to-edge contract
+     explicit and prevents a future edit from silently reintroducing a gutter (§6.14).
+
+  5. width:100% added to the table's inline style (it carried the attribute only).
+     An attribute-only width can be shrink-to-fit collapsed by Gmail app / Yahoo around a fluid
+     image with no intrinsic minimum — the SS hero-shrink defect (§6.6).
+
+  6. bgcolor attribute on the <table> AND the <td>, alongside the inline background.
+     Gmail mobile drops CSS background and paints the CELL; without this a white seam can appear
+     between the header and the banner (§6.16).
+
+  7. class="hero-img" — defensive responsive backstop, now defined centrally in base-head rather
+     than redefined inline by each build (§6.6).
+
+  8. class="g-img" — suppresses Gmail's download-button overlay, which it draws on large unlinked
+     images. The hero is 600px wide, comfortably over the ~300px threshold where Gmail does this.
+
+  9. border="0" + border:0; outline:none; text-decoration:none on the image.
+     Removes the blue outline some clients draw around a linked image.
+
+ 10. Anchor carries style="text-decoration:none" and stays INLINE.
+     display:block on an image-wrapping anchor makes Apple Mail iOS resolve the block height before
+     decode, collapse it to zero, and never paint the image (§6.6). The <img> is the block element.
+
+ 11. Alt-text styling (font-family / font-size / line-height / colour) so a blocked banner degrades
+     to readable brand-coloured text.
+     NOTE: Cerberus also sets background:#dddddd on the alt box. NOT adopted — [[BODY_BG]] varies by
+     brand and a fixed grey could clash or fail contrast. Text properties give the readability
+     benefit with zero risk. A per-brand alt-box background can be tokenised later if wanted.
+
+  NOT ADDED
+  · MSO ghost table — see the ON HYBRID note above; the template already locks 600px once.
+  · Any fixed height, max-height, background-image or background-size on the banner. Those are the
+    mechanisms that CROP on mobile, which the mobile contract forbids.
+-->

@@ -1,0 +1,118 @@
+<!--
+  Component: ThreeColumn (Cerberus reference)
+  Purpose: Three even columns — icon/feature/trust rows that stack cleanly on mobile.
+  Source: Cerberus "3 Even Columns" (hybrid variant).
+  Required inputs (×3): [[ICON_URL]], [[ICON_ALT]], [[COL_HEADING]], [[COL_COPY]]
+  Optional inputs: [[SECTION_BG]] (default #ffffff), [[ICON_SIZE]] (default 48)
+  Fallback behavior: if an icon asset is missing or fails QA, substitute a clean stand-in from a
+                     single consistent family and keep the layout byte-identical — never delete the
+                     column (Flow §3.2).
+  Dependencies: ResponsiveUtilities.html (.stack-column, .center-on-narrow)
+
+  REFERENCE ONLY — closest production equivalents are Components/trust-strip.html (4-up → 2×2)
+  and the Flow system's Trust Indicator component.
+
+  HYBRID MATHS — 600px container, 10px parent padding, 3 columns
+      inner width I = 600 − 20 = 580   → ghost table width
+      column max  M = 580 / 3  ≈ 193   → each ghost <td>
+      column min  m ≈ 140              → forces the wrap on narrow screens
+
+  WHY min-width MATTERS MOST AT 3 COLUMNS
+  With three columns the wrap has two possible steps (3 → 2 → 1). A min-width that is too low lets
+  all three squeeze to unreadable widths instead of wrapping; too high and the row wraps to 1
+  column on a tablet. 140px at a 193px max is the tested ratio.
+
+  ⚠️ THE 3-COLUMN "ORPHAN" PROBLEM
+  When a 3-column row wraps to 2, the third item lands alone on the second line — the same orphan
+  the Campaign §6.9 rule exists to prevent in product grids. That is acceptable for icon/trust rows,
+  where all three items are equal-weight and small, and NOT acceptable for product cards. Use a
+  2-column grid with a centred odd last card (ProductGrid.html) for anything commercial.
+-->
+
+<!-- Three even columns : BEGIN -->
+<tr>
+  <td align="center" valign="top" bgcolor="[[SECTION_BG]]"
+      style="background:[[SECTION_BG]]; font-size:0; padding:10px;" class="darkmode-bg">
+    <!--                ↑ font-size:0 removes the whitespace gap between inline-block columns -->
+
+    <!--[if mso]>
+    <table role="presentation" border="0" cellspacing="0" cellpadding="0" width="580">
+    <tr>
+    <td valign="top" width="193">
+    <![endif]-->
+
+    <!-- ══ COLUMN 1 ══ -->
+    <div class="stack-column" style="display:inline-block; margin:0 -1px; max-width:193px; min-width:140px; vertical-align:top; width:100%;">
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="width:100%;">
+        <tr>
+          <td align="center" style="padding:10px;">
+            <img src="[[ICON_URL]]" width="[[ICON_SIZE]]" height="[[ICON_SIZE]]" alt="[[ICON_ALT]]" border="0"
+                 class="center-on-narrow"
+                 style="display:block; width:[[ICON_SIZE]]px; max-width:[[ICON_SIZE]]px; height:auto; margin:0 auto; border:0; outline:none;">
+            <!-- ↑ Fixed-size icon: real width/height attributes, no fluid scaling. The mobile
+                  .pc img{width:100%} rule must NOT catch decorative marks (Campaign §6.17). -->
+          </td>
+        </tr>
+        <!-- Reserved heading height so all three columns align (Campaign §6.8) -->
+        <tr>
+          <td align="center" valign="top" height="24"
+              style="height:24px; font-family:[[HEADING_FONT_STACK]]; font-size:14px; line-height:20px; font-weight:700; color:[[TEXT_COLOR]];">
+            [[COL_HEADING]]
+          </td>
+        </tr>
+        <!-- Reserved copy height (2 lines) -->
+        <tr>
+          <td align="center" valign="top" height="40" class="center-on-narrow"
+              style="height:40px; font-family:[[FONT_STACK]]; font-size:12px; line-height:18px; color:[[MUTED_TEXT_COLOR]]; padding:4px 6px 10px 6px;">
+            [[COL_COPY]]
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!--[if mso]>
+    </td>
+    <td valign="top" width="193">
+    <![endif]-->
+
+    <!-- ══ COLUMN 2 — identical structure ══ -->
+    <div class="stack-column" style="display:inline-block; margin:0 -1px; max-width:193px; min-width:140px; vertical-align:top; width:100%;">
+      <!-- … -->
+    </div>
+
+    <!--[if mso]>
+    </td>
+    <td valign="top" width="193">
+    <![endif]-->
+
+    <!-- ══ COLUMN 3 — identical structure ══ -->
+    <div class="stack-column" style="display:inline-block; margin:0 -1px; max-width:193px; min-width:140px; vertical-align:top; width:100%;">
+      <!-- … -->
+    </div>
+
+    <!--[if mso]>
+    </td>
+    </tr>
+    </table>
+    <![endif]-->
+
+  </td>
+</tr>
+<!-- Three even columns : END -->
+
+<!--
+  4-COLUMN VARIANT (trust strips)
+      inner width I = 580 · column max M = 145 · column min m ≈ 130
+  At 145px a column is too narrow for two lines of readable copy, so a 4-up strip should be
+  icon + one short label only. Our production trust-strip goes 4-up → 2×2 on mobile via a media
+  query; the hybrid equivalent is a min-width that permits exactly two per row.
+
+  CHECKLIST
+  ☐ Ghost table width = sum of ghost <td> widths (580 = 3 × 193, rounding absorbed by margin:0 -1px)
+  ☐ font-size:0 on the parent; every text cell restates its own font-size
+  ☐ Reserved heights on heading and copy cells so all columns align (Campaign §6.8)
+  ☐ Never height AND padding on the same cell — put the gap in its own sized row (Flow §8.3)
+  ☐ Icons are equal-dimension raster (PNG), never SVG (Flow §9.4)
+  ☐ Icons come from ONE consistent family; a substituted icon is marked temporary in Design.md
+  ☐ Verified stacking on Gmail Android/iOS and Outlook desktop
+-->

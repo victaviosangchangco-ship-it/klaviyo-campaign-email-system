@@ -1,0 +1,91 @@
+<!--
+  Component: Divider (Cerberus reference, derived)
+  Purpose: A visible horizontal rule between sections — full-width, inset, or short accent.
+  Source: Derived from Cerberus's spacer + background-colour patterns. Cerberus ships no divider;
+          this applies its rules to the shape.
+  Required inputs: [[DIVIDER_COLOR]]
+  Optional inputs: [[SECTION_BG]], [[DIVIDER_HEIGHT]] (default 1), [[ACCENT_COLOR]]
+  Fallback behavior: with no [[DIVIDER_COLOR]], omit the divider — never guess a brand hairline.
+  Dependencies: none.
+
+  REFERENCE ONLY.
+
+  ═══════════════════════════════════════════════════════════════════════════════
+  WHY A COLOURED CELL, NOT <hr> AND NOT border-top
+
+  <hr>          Styling is inconsistent across clients; Outlook renders its own 3D groove and
+                ignores most CSS on it. Never use it in email.
+  border-top    Better, but Outlook's Word engine handles borders on table cells unevenly,
+                especially at sub-pixel widths, and a 1px border can disappear entirely.
+  A sized cell  A <td> with an explicit height and a bgcolor ATTRIBUTE renders identically
+                everywhere, including Outlook. This is the same primitive as Spacer.html —
+                the only difference is that this one is painted.
+
+  This is also why Campaign §6.10 specifies nav underlines as centred table cells rather than
+  text-decoration:underline.
+  ═══════════════════════════════════════════════════════════════════════════════
+-->
+
+<!-- Full-width hairline : BEGIN -->
+<tr>
+  <td aria-hidden="true" height="[[DIVIDER_HEIGHT]]" bgcolor="[[DIVIDER_COLOR]]"
+      style="height:[[DIVIDER_HEIGHT]]px; background:[[DIVIDER_COLOR]]; font-size:0; line-height:0; mso-line-height-rule:exactly;">&nbsp;</td>
+</tr>
+<!-- Full-width hairline : END -->
+
+
+<!-- Inset hairline — respects the content inset rather than running edge to edge -->
+<tr>
+  <td bgcolor="[[SECTION_BG]]" style="background:[[SECTION_BG]]; padding:0 28px;" class="mp">
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="width:100%;">
+      <tr>
+        <td aria-hidden="true" height="1" bgcolor="[[DIVIDER_COLOR]]"
+            style="height:1px; background:[[DIVIDER_COLOR]]; font-size:0; line-height:0; mso-line-height-rule:exactly;">&nbsp;</td>
+      </tr>
+    </table>
+  </td>
+</tr>
+
+
+<!-- Short centred accent rule — a brand mark under a section heading.
+     Fixed pixel width, centred by the align attribute. Never a % width (Gmail and Outlook
+     shrink-wrap a %-width wrapper unpredictably — Campaign §6.9). -->
+<tr>
+  <td align="center" bgcolor="[[SECTION_BG]]" style="background:[[SECTION_BG]]; padding:0 0 18px 0;">
+    <table role="presentation" align="center" cellspacing="0" cellpadding="0" border="0" width="48" style="width:48px;">
+      <tr>
+        <td aria-hidden="true" width="48" height="3" bgcolor="[[ACCENT_COLOR]]"
+            style="width:48px; height:3px; background:[[ACCENT_COLOR]]; font-size:0; line-height:0; mso-line-height-rule:exactly;">&nbsp;</td>
+      </tr>
+    </table>
+  </td>
+</tr>
+
+
+<!-- Spacer + divider + spacer — the usual section break.
+     Keep the divider's own row free of padding so its height stays unambiguous (Flow §8.3). -->
+<tr><td aria-hidden="true" height="28" style="height:28px; font-size:0; line-height:0; mso-line-height-rule:exactly;">&nbsp;</td></tr>
+<tr><td aria-hidden="true" height="1" bgcolor="[[DIVIDER_COLOR]]" style="height:1px; background:[[DIVIDER_COLOR]]; font-size:0; line-height:0; mso-line-height-rule:exactly;">&nbsp;</td></tr>
+<tr><td aria-hidden="true" height="28" style="height:28px; font-size:0; line-height:0; mso-line-height-rule:exactly;">&nbsp;</td></tr>
+
+<!--
+  CHECKLIST
+  ☐ bgcolor ATTRIBUTE as well as inline background — Gmail mobile drops CSS background and the
+    divider silently disappears (Campaign §6.16)
+  ☐ Explicit height attribute AND inline height — Outlook honours the attribute
+  ☐ font-size:0; line-height:0; mso-line-height-rule:exactly — or the &nbsp; inflates the rule
+  ☐ &nbsp; present — some clients collapse an empty cell to zero regardless of declared height
+  ☐ aria-hidden="true" — a divider is decoration, not content
+  ☐ Never <hr>, never border-top as the mechanism
+  ☐ Short accent rules use a FIXED pixel width, centred with align — never a %
+  ☐ WCAG: a divider must never be the only thing conveying meaning (never colour alone)
+
+  DARK MODE
+  A hairline tuned for a white background usually vanishes on a dark one. Add a dark-mode class
+  and give it a lighter value, or accept that the divider disappears — do not leave it to chance:
+
+      @media (prefers-color-scheme: dark) { .divider-td { background: #3a3a3a !important; } }
+
+  Note RDD's keep-light exception (Design.md > Dark Mode): sections forced to stay light keep
+  their light-mode divider colour, so no dark-mode variant is needed there.
+-->

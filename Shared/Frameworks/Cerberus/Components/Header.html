@@ -1,0 +1,46 @@
+<!--
+  Component: Header (Cerberus reference)
+  Purpose: Logo bar with light/dark swap and a styled alt-text box.
+  Source: Cerberus "Email Header" block; hardened with our light/dark swap and link rules.
+  Required inputs: [[LOGO_URL]], [[LOGO_ALT]], [[HOMEPAGE_URL]], [[LOGO_WIDTH]], [[LOGO_HEIGHT]]
+  Optional inputs: [[LOGO_DARK_URL]] (omit the dark <img> if absent),
+                   [[HEADER_BG]] (default #ffffff), [[HEADER_ALIGN]] (left | center)
+  Fallback behavior: with no [[LOGO_DARK_URL]], ship the light logo only and record the
+                     missing dark asset as a blocker in Review/.
+  Dependencies: ResponsiveUtilities.html (.display-only-in-*-mode, .darkmode-bg, .g-img)
+
+  REFERENCE ONLY — production header is Components/header.html.
+
+  WHAT CERBERUS CONTRIBUTES HERE
+  · The alt-text box styling on the <img> (background + font properties). When images are blocked
+    the alt text renders inside a styled box instead of as naked default-serif text. New to us.
+  · border="0" to kill the blue outline on a linked logo.
+
+  WHAT WE ADD OVER CERBERUS
+  · The logo is LINKED (Cerberus leaves it bare).
+  · Light/dark swap, with the dark image guarded by [if !mso] — Outlook supports neither
+    prefers-color-scheme nor the display toggle and would render BOTH logos.
+  · bgcolor attribute alongside the inline background (Gmail mobile drops CSS background).
+  · Brand default alignment: SS and SC use a LEFT-aligned logo (Campaign §6.1). RDD and Stack
+    follow their own approved reference designs.
+-->
+
+<tr>
+  <td align="[[HEADER_ALIGN]]" bgcolor="[[HEADER_BG]]"
+      style="background:[[HEADER_BG]]; padding:20px 28px; text-align:[[HEADER_ALIGN]];"
+      class="darkmode-bg mp">
+
+    <a href="[[HOMEPAGE_URL]]" target="_blank" style="text-decoration:none;"><img src="[[LOGO_URL]]" width="[[LOGO_WIDTH]]" height="[[LOGO_HEIGHT]]" alt="[[LOGO_ALT]]" border="0" class="display-only-in-light-mode" style="display:block; width:[[LOGO_WIDTH]]px; max-width:100%; height:auto; border:0; outline:none; text-decoration:none; background:#dddddd; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:18px; color:#555555;"></a><!--
+      ↑ The anchor stays INLINE and the <img> is the block element. Never display:block on an
+        image-wrapping anchor — Apple Mail iOS resolves the block height before the image decodes,
+        collapses it to zero, and never paints the image (Campaign §6.6).
+      ↑ background + font properties style the ALT-TEXT BOX when images are blocked.
+      ↑ Explicit width/height attributes are mandatory — Apple Mail iOS drops images without a box.
+    -->
+
+    <!--[if !mso]><!-->
+    <a href="[[HOMEPAGE_URL]]" target="_blank" style="text-decoration:none;"><img src="[[LOGO_DARK_URL]]" width="[[LOGO_WIDTH]]" height="[[LOGO_HEIGHT]]" alt="[[LOGO_ALT]]" border="0" class="display-only-in-dark-mode" style="display:none; width:[[LOGO_WIDTH]]px; max-width:100%; height:auto; border:0; outline:none; text-decoration:none;"></a>
+    <!--<![endif]-->
+
+  </td>
+</tr>

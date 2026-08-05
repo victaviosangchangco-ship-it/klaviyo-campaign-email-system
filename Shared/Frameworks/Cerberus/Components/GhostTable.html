@@ -1,0 +1,259 @@
+<!--
+  Component: GhostTable (Cerberus reference)
+  Purpose: Every MSO conditional "ghost table" shape in one file — the structures Outlook's Word
+           engine sees instead of the fluid markup every other client renders.
+  Source: cerberus-fluid / -responsive / -hybrid MSO conditionals + docs/content/outlook.md
+  Required inputs: none (structural reference)
+  Optional inputs: none
+  Fallback behavior: n/a — conditionals are inert in every non-Outlook client.
+  Dependencies: none.
+
+  REFERENCE ONLY.
+
+  WHY GHOST TABLES EXIST
+  Outlook 2007–2021 on Windows renders with the Microsoft Word engine. It supports none of
+  `max-width`, `min-width`, `display:inline-block`, or media queries. Ghost tables hand it a real,
+  old-fashioned, fixed-width table while every other client sees the fluid version.
+
+  ⚠️ These conditionals are FUNCTIONAL, not descriptive. When stripping comments from a production
+     file for Gmail's ~102 KB clip threshold (Campaign §8.3), `[if mso]` blocks are KEPT.
+-->
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     SHAPE 1 — Container width lock
+     The single most important ghost table. Outlook ignores `max-width`, so without
+     this the email spans the full window width.
+     ═══════════════════════════════════════════════════════════════════════════ -->
+
+<!--[if mso]>
+<table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" width="600">
+<tr>
+<td>
+<![endif]-->
+
+  <div style="max-width:600px; margin:0 auto;" class="email-container">
+    <!-- Fluid content every other client renders. -->
+  </div>
+
+<!--[if mso]>
+</td>
+</tr>
+</table>
+<![endif]-->
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     SHAPE 2 — Page-background wrapper (Outlook + Windows 10 Mail)
+     Cerberus declares the page background in three places: <body>, <center>, and this
+     conditional. We ADD a real full-width wrapper table with a bgcolor attribute
+     (Campaign §6.16) because Gmail mobile drops CSS background — this conditional
+     covers the Outlook/IE half.
+     ═══════════════════════════════════════════════════════════════════════════ -->
+
+<!--[if mso | IE]>
+<table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%"
+       bgcolor="#f0f0f0" style="background-color:#f0f0f0;" class="email-bg">
+<tr>
+<td>
+<![endif]-->
+
+  <!-- Body content -->
+
+<!--[if mso | IE]>
+</td>
+</tr>
+</table>
+<![endif]-->
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     SHAPE 3 — Two-column hybrid row
+     THE core hybrid pattern. The <div>s stack on their own via inline-block wrapping;
+     Outlook ignores them entirely and gets real <td> cells instead.
+
+     Maths at a 600px container with 10px parent-cell padding:
+       inner width I = 600 − 20        = 580   → ghost table width
+       column max  M = 580 / 2         = 290   → each ghost <td> width
+       column min  m ≈ 0.6 × M         ≈ 175   → forces the wrap on narrow screens
+     ═══════════════════════════════════════════════════════════════════════════ -->
+
+<tr>
+  <td align="center" valign="top" style="font-size:0; padding:10px;">
+    <!--                       ↑ font-size:0 kills the whitespace gap between inline-block columns.
+                                 Every text cell INSIDE a column must restate its own font-size. -->
+
+    <!--[if mso]>
+    <table role="presentation" border="0" cellspacing="0" cellpadding="0" width="580">
+    <tr>
+    <td valign="top" width="290">
+    <![endif]-->
+    <div class="stack-column"
+         style="display:inline-block; margin:0 -1px; width:100%; min-width:175px; max-width:290px; vertical-align:top;">
+      <!-- Column 1 -->
+    </div>
+    <!--[if mso]>
+    </td>
+    <td valign="top" width="290">
+    <![endif]-->
+    <div class="stack-column"
+         style="display:inline-block; margin:0 -1px; width:100%; min-width:175px; max-width:290px; vertical-align:top;">
+      <!-- Column 2 -->
+    </div>
+    <!--[if mso]>
+    </td>
+    </tr>
+    </table>
+    <![endif]-->
+
+  </td>
+</tr>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     SHAPE 4 — Three-column hybrid row
+       I = 580 · M = 193 · m ≈ 140
+     ═══════════════════════════════════════════════════════════════════════════ -->
+
+<tr>
+  <td align="center" valign="top" style="font-size:0; padding:10px;">
+    <!--[if mso]>
+    <table role="presentation" border="0" cellspacing="0" cellpadding="0" width="580">
+    <tr>
+    <td valign="top" width="193">
+    <![endif]-->
+    <div class="stack-column" style="display:inline-block; margin:0 -1px; width:100%; min-width:140px; max-width:193px; vertical-align:top;">
+      <!-- Column 1 -->
+    </div>
+    <!--[if mso]>
+    </td>
+    <td valign="top" width="193">
+    <![endif]-->
+    <div class="stack-column" style="display:inline-block; margin:0 -1px; width:100%; min-width:140px; max-width:193px; vertical-align:top;">
+      <!-- Column 2 -->
+    </div>
+    <!--[if mso]>
+    </td>
+    <td valign="top" width="193">
+    <![endif]-->
+    <div class="stack-column" style="display:inline-block; margin:0 -1px; width:100%; min-width:140px; max-width:193px; vertical-align:top;">
+      <!-- Column 3 -->
+    </div>
+    <!--[if mso]>
+    </td>
+    </tr>
+    </table>
+    <![endif]-->
+  </td>
+</tr>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     SHAPE 5 — Asymmetric row (thumbnail + text)
+       220 / 360 inside a 580 inner width.
+     ═══════════════════════════════════════════════════════════════════════════ -->
+
+<td dir="ltr" height="100%" valign="top" width="100%" style="font-size:0;">
+  <!--[if mso]>
+  <table role="presentation" border="0" cellspacing="0" cellpadding="0" width="580" style="width:580px;">
+  <tr>
+  <td valign="top" width="220" style="width:220px;">
+  <![endif]-->
+  <div class="stack-column" style="display:inline-block; margin:0 -1px; max-width:220px; min-width:160px; vertical-align:top; width:100%;">
+    <!-- Thumbnail -->
+  </div>
+  <!--[if mso]>
+  </td>
+  <td valign="top" width="360" style="width:360px;">
+  <![endif]-->
+  <div class="stack-column" style="display:inline-block; margin:0 -1px; max-width:360px; min-width:280px; vertical-align:top;">
+    <!-- Text -->
+  </div>
+  <!--[if mso]>
+  </td>
+  </tr>
+  </table>
+  <![endif]-->
+</td>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     SHAPE 6 — Full-bleed background section
+     Background table sits OUTSIDE the container; content is re-constrained inside it.
+     ═══════════════════════════════════════════════════════════════════════════ -->
+
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%"
+       bgcolor="#709f2b" style="width:100%; background-color:#709f2b;">
+  <tr>
+    <td bgcolor="#709f2b" style="background-color:#709f2b;">
+      <!--            ↑ bgcolor on the CELL as well as the table — Gmail mobile paints the cell
+                        and drops CSS background (Campaign §6.16). Identical hex, so desktop is
+                        byte-identical. This is our hardening; Cerberus sets style only. -->
+      <div align="center" style="max-width:600px; margin:auto;" class="email-container">
+        <!--[if mso]>
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" align="center">
+        <tr>
+        <td>
+        <![endif]-->
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="width:100%;">
+          <tr><td style="padding:20px; font-family:Arial,Helvetica,sans-serif; font-size:15px; line-height:20px; color:#ffffff;">
+            <p style="margin:0;">Content constrained to 600px; the colour runs edge to edge.</p>
+          </td></tr>
+        </table>
+        <!--[if mso]>
+        </td>
+        </tr>
+        </table>
+        <![endif]-->
+      </div>
+    </td>
+  </tr>
+</table>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     SHAPE 7 — Hide content FROM Outlook
+     Note the asymmetric delimiters. Non-Outlook clients see the inner markup as
+     ordinary HTML; Outlook sees the whole thing as a comment. Getting these wrong
+     hides the content from EVERYONE.
+     Primary use: the dark-mode logo, which Outlook would otherwise render alongside
+     the light one (it supports neither prefers-color-scheme nor the display toggle).
+     ═══════════════════════════════════════════════════════════════════════════ -->
+
+<!--[if !mso]><!-->
+<img src="[[LOGO_DARK_URL]]" width="200" height="50" alt="" border="0"
+     class="display-only-in-dark-mode" style="display:none; width:200px; max-width:100%; height:auto;">
+<!--<![endif]-->
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     SHAPE 8 — Outlook-only <style>
+     Outlook DOES support CSS in <head>, so version-specific overrides can be scoped here.
+     ═══════════════════════════════════════════════════════════════════════════ -->
+
+<!--[if mso]>
+<style>
+  /* Outlook-only overrides. Common use: forcing a safe font family so an unguarded
+     web-font reference cannot drop the whole document to Times New Roman. */
+  * { font-family: Arial, Helvetica, sans-serif !important; }
+</style>
+<![endif]-->
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     VERSION TARGETING REFERENCE
+     ═══════════════════════════════════════════════════════════════════════════
+
+       All Windows Outlook      <!--[if mso]>            … <![endif]-->
+       Outlook 2000             <!--[if mso 9]>          … <![endif]-->
+       Outlook 2002             <!--[if mso 10]>         … <![endif]-->
+       Outlook 2003             <!--[if mso 11]>         … <![endif]-->
+       Outlook 2007             <!--[if mso 12]>         … <![endif]-->
+       Outlook 2010             <!--[if mso 14]>         … <![endif]-->
+       Outlook 2013             <!--[if mso 15]>         … <![endif]-->
+       Outlook 2016+            <!--[if mso 16]>         … <![endif]-->
+       2010 and above           <!--[if gte mso 14]>     … <![endif]-->
+       Below 2010               <!--[if lt mso 14]>      … <![endif]-->
+       2007 or 2016             <!--[if (mso 12)|(mso 16)]> … <![endif]-->
+       Everything except Outlook<!--[if !mso]><!-->      … <!--<![endif]-->
+       VML (needs mso 9+)       <!--[if gte mso 9]>      … <![endif]-->
+-->

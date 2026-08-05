@@ -89,6 +89,61 @@ Components assume only the shared `<style>` from `Shared/Snippets/base-head.html
 document head (provided by the Template). `product-grid.html` mirrors the structure of
 `product-card.html` inline rather than depending on it.
 
+## Responsive component standards & fix-once propagation (CLAUDE.md §6.17 / §6.18)
+
+These components **are** the reusable design system. Two permanent rules:
+
+1. **Copy, never recreate.** Build every campaign by copying these components (and the latest approved
+   reference rendering) and injecting `[[TOKEN]]`s — never hand-author a one-off Product Card, Product
+   Grid, Price Badge, CTA, Coupon/Promo bar or Hero. Change **tokens** for a brand's look, not the
+   structural pattern.
+2. **Fix-once, propagate immediately.** When a responsive/structural bug is fixed in any campaign,
+   **back-port the fix into the corresponding file here in the same change** (`Components/<file>.html` for
+   markup, `Shared/Snippets/base-head.html` for a shared class), and note it below. An un-propagated fix
+   is incomplete — the next campaign/brand copies the library, so the bug would return.
+
+Non-negotiable patterns baked into `product-card.html` / `product-grid.html` (do not deviate):
+- **Equal height = fixed-height `<td>` cells** (`.pimg/.pnc/.pdc`), not `min-height` (Outlook-safe, §6.8).
+- **Clickability = three sibling anchors** (image / title / price) to the same URL; never one anchor around
+  the whole card, never a `<table>` inside an `<a>` (§6.6).
+- **Price badge = shrink-to-fit centred `<table>`** (fill+radius on the `<td>`); stays compact on Gmail
+  mobile and never stretches to card width; never a bare `display:inline-block` anchor or `%`/fixed width
+  (§6.17). Mobile tuning via the shared `.pricebtn` class.
+- **Backgrounds** carry the `bgcolor` attribute on both `<table>` and content `<td>` (Gmail-mobile seams,
+  §6.16); **brand marks** are excluded from the mobile `.pc img{width:100%}` rule via `.pc img.brandmark`.
+- Every product image carries explicit `width`/`height` attributes + `display:block` (Apple Mail iOS, §6.6).
+
+### Cerberus reference library (CLAUDE.md §6.20)
+
+`Shared/Frameworks/Cerberus/Components/` holds **13 reference components** extracted from the Cerberus
+framework and hardened with our production lessons. They are **reference only** — the files in *this*
+folder remain the production source of truth for markup. Use the reference library to **check** a
+component against the canonical pattern before changing it, and to build the two patterns we do not yet
+have (`TwoColumn.html` — `dir="rtl"` order swap; `VML.html` — text over a background image).
+
+| Production component | Cerberus reference | Check it for |
+|---|---|---|
+| `header.html` | `Header.html` | alt-text-box styling on the logo `<img>` |
+| `hero-image.html` | `Hero.html` | ours is stricter — no change |
+| `CTA.html` / `CTA-secondary.html` | `CTA.html`, `BulletproofButton.html` | arcsize conversion; `<td>`+`<a>` style duplication |
+| `product-card.html` / `product-grid.html` | `ProductGrid.html` | hybrid stacking under the existing card rules |
+| `trust-strip.html` | `ThreeColumn.html` | hybrid stacking |
+| `footer.html` | `Footer.html` | **`unstyle-auto-detected-links` on the address block** |
+| `Shared/Snippets/base-head.html` | `ResponsiveUtilities.html` | the eight missing reset rules |
+| *(none — recommended additions)* | `TwoColumn.html`, `VML.html` | — |
+
+⚠️ Three things in Cerberus source must **never** be copied into a production component:
+`table { table-layout: fixed !important; }` (disables intrinsic sizing — breaks the shrink-to-fit price
+badge and the centred odd card), `<webversion>` / `<unsubscribe>` (Campaign Monitor tags; inert text in
+Klaviyo), and `via.placeholder.com` image URLs (defunct service). Reasoning:
+`Shared/Frameworks/Cerberus/Cerberus-Best-Practices.md` §5.
+
+**Change log (propagated fixes):**
+- 2026-07 (RDD-2026-W31): rebuilt `product-card.html` + `product-grid.html` to fixed-height cells, 3 sibling
+  anchors, and the shrink-to-fit responsive price badge; added `.pimg/.pnc/.pdc/.pricebtn` +
+  `.pc img.brandmark` to `base-head.html`. Replaces the earlier single-anchor / `min-height` card that
+  reintroduced the SS-2026-W29 (§6.6) and Gmail-mobile price-stretch (§6.17) defects.
+
 ## Components in this library
 
 | File | BRD block | Role |
@@ -101,8 +156,8 @@ document head (provided by the Template). `product-grid.html` mirrors the struct
 | `CTA.html` | WK-S5 / MO-S6 | Bulletproof **primary** button (+ VML) |
 | `CTA-secondary.html` | WK-S5 / MO-S6 | **Secondary** outline button (CTA hierarchy) |
 | `section-heading.html` | WK-S6 / MO-S7 | Tinted section title panel + subhead + optional badge |
-| `product-card.html` | WK-S6 / MO-S7 | Single bordered product card (image, name, desc, price) |
-| `product-grid.html` | WK-S6 / MO-S7 | 2-up product row (repeatable), equal-height cards |
+| `product-card.html` | WK-S6 / MO-S7 | Single product card — fixed-height cells, 3 sibling anchors, shrink-to-fit price badge (§6.8/§6.6/§6.17) |
+| `product-grid.html` | WK-S6 / MO-S7 | 2-up product row (repeatable), equal-height cards, responsive price badges, centred odd card (§6.8/§6.9/§6.17) |
 | `coupon.html` | offer/promo | Promo block — dashed code chip + offer + CTA + fine print |
 | `announcement.html` | offer/promo | Simple text offer bar (lighter alternative to coupon) |
 | `trust-strip.html` | supporting | 4-card credibility grid (4-up → 2×2) |

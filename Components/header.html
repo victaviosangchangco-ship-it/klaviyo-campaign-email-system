@@ -2,19 +2,89 @@
   Component: header
   Purpose: Brand logo bar at the top of the email, with light/dark-mode logo swap.
   BRD mapping: WK-S3 / MO-S3
-  Required inputs: [[LOGO_URL]], [[LOGO_ALT]]
+  Required inputs: [[LOGO_URL]], [[LOGO_ALT]], [[LOGO_HEIGHT]]
   Optional inputs: [[LOGO_DARK_URL]] (dark-mode logo), [[LOGO_WIDTH]] (default 220),
-                   [[HEADER_BG]] (default [[BODY_BG]])
+                   [[HEADER_BG]] (default [[BODY_BG]]), [[LOGO_LINK_URL]] (default: brand homepage),
+                   [[HEADER_ALIGN]] (default center; SS and SC default to left per CLAUDE §6.1)
   Fallback behavior: if [[LOGO_DARK_URL]] is absent, generation sets it equal to [[LOGO_URL]]
                      (the same logo shows in both modes). If [[LOGO_URL]] is absent, STOP and
-                     request it — never ship a placeholder logo.
-  Dependencies: none. Uses shared .dm-logo-light / .dm-logo-dark classes from base-head.
+                     request it — never ship a placeholder logo. If [[LOGO_LINK_URL]] is absent,
+                     render the <img> with NO anchor — never an href="#" or a guessed URL (§6.7).
+                     [[LOGO_HEIGHT]] must come from the asset's real pixel dimensions — never guess
+                     an aspect ratio; a wrong height distorts the logo in Outlook.
+  Dependencies: none. Uses shared .dm-logo-light / .dm-logo-dark / .dm-bg classes from base-head.
+
+  CERBERUS MIGRATION — Phase 2, component 2 of 6 (2026-07-28).
+  Reference: Shared/Frameworks/Cerberus/Components/Header.html · CLAUDE.md §6.20.
+  Structural only. No colour, size, spacing, typography or alignment default was changed —
+  [[HEADER_ALIGN]] defaults to center, reproducing the previous output exactly.
+  The migrated markup matches the pattern already shipping in the newest approved output
+  (Brands/RDD/Campaigns/Weekly/Output/RDD-2026-W31.html), which this component had fallen behind.
+
+  WHITESPACE IS SIGNIFICANT: the <a> and <img> sit on one line with zero whitespace between them,
+  so no stray text node can render at a container boundary (§8.2 Ghost Element Inspection).
+
+  DARK-MODE LOGO — why the [if !mso] guard is mandatory:
+  Outlook's Word engine supports neither prefers-color-scheme nor the display toggle, so without
+  the guard Outlook renders BOTH logos stacked. Outlook therefore always shows the light logo —
+  the accepted Cerberus limitation. The anchor sits inside the conditional too, so Outlook is
+  never left with an empty anchor (§8.2).
+
+  !! DO NOT place a descriptive HTML comment immediately before the "if !mso" conditional opener. !!
+  That opener deliberately ends with a bare, unclosed comment token, so a naive comment-stripping
+  regex treats it as the start of a NEW comment and deletes everything up to the next comment
+  terminator — silently removing the dark-mode logo. CLAUDE §8.3 requires stripping descriptive
+  comments before Output; that stripper must be conditional-aware. Keep all explanation in THIS
+  header block, never inline beside the conditional.
+
+  (Note: an HTML comment may not contain the two-hyphen close token, so the conditional syntax is
+  described in words above rather than quoted literally — quoting it here would terminate this
+  comment early and leak the remaining text into the rendered email.)
 -->
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" style="background:[[HEADER_BG]];">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="[[HEADER_BG]]" style="width:100%; background:[[HEADER_BG]];">
   <tr>
-    <td align="center" style="padding:24px 40px;">
-      <img src="[[LOGO_URL]]" alt="[[LOGO_ALT]]" width="[[LOGO_WIDTH]]" class="dm-logo-light" style="display:block; width:[[LOGO_WIDTH]]px; max-width:100%; height:auto;" />
-      <img src="[[LOGO_DARK_URL]]" alt="[[LOGO_ALT]]" width="[[LOGO_WIDTH]]" class="dm-logo-dark" style="display:none; width:[[LOGO_WIDTH]]px; max-width:100%; height:auto;" />
-    </td>
+    <td align="[[HEADER_ALIGN]]" bgcolor="[[HEADER_BG]]" style="padding:24px 40px; background:[[HEADER_BG]]; text-align:[[HEADER_ALIGN]];"><a href="[[LOGO_LINK_URL]]" target="_blank" style="text-decoration:none;"><img src="[[LOGO_URL]]" alt="[[LOGO_ALT]]" width="[[LOGO_WIDTH]]" height="[[LOGO_HEIGHT]]" border="0" class="dm-logo-light" style="display:block; width:[[LOGO_WIDTH]]px; max-width:100%; height:auto; border:0; outline:none; text-decoration:none; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:18px; color:[[TEXT_COLOR]];" /></a><!--[if !mso]><!--><a href="[[LOGO_LINK_URL]]" target="_blank" style="text-decoration:none;"><img src="[[LOGO_DARK_URL]]" alt="[[LOGO_ALT]]" width="[[LOGO_WIDTH]]" height="[[LOGO_HEIGHT]]" border="0" class="dm-logo-dark" style="display:none; width:[[LOGO_WIDTH]]px; max-width:100%; height:auto; border:0; outline:none; text-decoration:none;" /></a><!--<![endif]--></td>
   </tr>
 </table>
+
+<!--
+  MIGRATION NOTES — what changed and why
+
+  1. bgcolor ATTRIBUTE on both the <table> and the <td>, alongside the inline background.
+     Gmail's mobile apps drop CSS `background` on tables and cells but honour the attribute, and
+     they paint the CELL. Without cell-level bgcolor a coloured header shows a white strip on the
+     right and a white seam against the section below (§6.16). Identical hex → desktop unchanged.
+
+  2. width:100% added to the table's inline style (it previously carried the attribute only).
+     An attribute-only width can be shrink-to-fit collapsed by some mobile clients around a fluid
+     image (§6.6).
+
+  3. Explicit height attribute on both <img> tags.
+     Apple Mail on iOS has no intrinsic box to reserve without width AND height, and DROPS the
+     image. This was the single highest-risk defect in the previous component (§6.6).
+
+  4. border="0" on both images — removes the blue outline some clients draw on a linked image.
+
+  5. Optional anchor around the logo. Every approved output (RDD-W31, SS-W30, SC-W30) links its
+     logo to the brand homepage; the component did not, so generated markup diverged from shipped
+     markup. The anchor is INLINE and the <img> is the block element — never display:block on an
+     image-wrapping anchor (§6.6, Apple Mail iOS zero-height collapse).
+
+  6. [if !mso] guard on the dark-mode logo — see the inline note above. Fixes a real double-logo
+     risk: the previous version relied on inline display:none, which Outlook honours unreliably.
+
+  7. Alt-text styling (font-family / font-size / line-height / color) on the light logo, so a
+     blocked image degrades to readable brand-coloured text instead of default serif.
+     NOTE: Cerberus also sets background:#dddddd on the alt box. Deliberately NOT adopted here —
+     a grey block behind a logo would clash with a coloured header (e.g. RDD's orange). Text
+     properties give the readability benefit without introducing a visible box. The hero component
+     is a different case and will take the background too.
+
+  8. [[HEADER_ALIGN]] token, default `center`. Previously hardcoded center, which conflicted with
+     the SS/SC left-aligned default in §6.1. The default reproduces the previous output exactly;
+     only a brand that explicitly sets `left` renders differently.
+
+  NOT ADDED
+  · class="g-img" — Gmail's download-button overlay affects images wider than ~300px. The default
+    logo is 220px. Add it per-send if a brand ships a logo above that width.
+-->

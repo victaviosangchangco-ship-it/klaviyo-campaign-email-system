@@ -1,0 +1,126 @@
+<!--
+  Component: TwoColumn (Cerberus reference)
+  Purpose: Thumbnail + text row, with the dir="rtl" trick to alternate image-left / image-right
+           from IDENTICAL source order.
+  Source: Cerberus "Thumbnail Left, Text Right" / "Thumbnail Right, Text Left" (hybrid variant).
+  Required inputs: [[IMG_URL]], [[IMG_ALT]], [[HEADING]], [[BODY_COPY]]
+  Optional inputs: [[CTA_URL]] + [[CTA_LABEL]] (omit the button block if absent),
+                   [[SECTION_BG]] (default #ffffff)
+  Fallback behavior: with no CTA tokens, render heading + copy only. Never an href="#".
+  Dependencies: ResponsiveUtilities.html (.stack-column, .center-on-narrow — the stack rule MUST
+                include direction: ltr !important)
+
+  REFERENCE ONLY. No equivalent exists in either production library — this is a recommended
+  ADDITION for Brand Story, Educational, and Post Purchase layouts.
+
+  ═══════════════════════════════════════════════════════════════════════════════
+  THE dir TRICK — the most elegant idea in Cerberus
+
+  Most templates duplicate an entire block to alternate image-left / image-right. Cerberus writes
+  the markup ONCE and flips it with the HTML `dir` attribute on the wrapper cell:
+
+      dir="ltr"  →  image LEFT,  text right
+      dir="rtl"  →  image RIGHT, text left      ← same source order, reversed rendering
+
+  Each inner column then resets itself with dir="ltr" so its CONTENT still reads left-to-right,
+  and the mobile stack rule carries `direction: ltr !important` so the stack order stays natural.
+
+  THE PAYOFF: source order — and therefore MOBILE STACK ORDER and SCREEN-READER ORDER — stays
+  image-then-text in BOTH variants, while desktop alternates.
+
+  ⚠️ Omit `direction: ltr !important` from the stack rule and the right-thumbnail row stacks
+     text-above-image on mobile, breaking the reading order. That reset is not optional.
+  ═══════════════════════════════════════════════════════════════════════════════
+
+  HYBRID MATHS — 600px container, 10px parent padding
+      inner width I = 580 · thumbnail 220 · text 360
+-->
+
+<!-- Two-column row : BEGIN -->
+<!-- Change dir="ltr" → dir="rtl" on the cell below to flip the desktop arrangement. -->
+<tr>
+  <td bgcolor="[[SECTION_BG]]" style="background:[[SECTION_BG]]; font-size:0; padding:10px; text-align:left;" class="darkmode-bg">
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="width:100%;">
+      <tr>
+        <td dir="ltr" height="100%" valign="top" width="100%">
+          <!-- ↑ THE SWITCH: dir="ltr" = image left · dir="rtl" = image right -->
+
+          <!--[if mso]>
+          <table role="presentation" border="0" cellspacing="0" cellpadding="0" width="580" style="width:580px;">
+          <tr>
+          <td valign="top" width="220" style="width:220px;">
+          <![endif]-->
+
+          <!-- ══ THUMBNAIL COLUMN ══ -->
+          <div class="stack-column" style="display:inline-block; margin:0 -1px; max-width:220px; min-width:160px; vertical-align:top; width:100%;">
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="width:100%;">
+              <tr>
+                <td dir="ltr" style="padding:0 10px 10px 10px;">
+                  <!-- ↑ dir="ltr" resets the content direction inside an rtl parent --><a href="[[CTA_URL]]" target="_blank" style="text-decoration:none;"><img src="[[IMG_URL]]" width="200" height="200" alt="[[IMG_ALT]]" border="0" class="center-on-narrow g-img" style="display:block; width:100%; max-width:200px; height:auto; border:0; outline:none; text-decoration:none; border-radius:8px; background:#dddddd; font-family:Arial,Helvetica,sans-serif; font-size:13px; line-height:17px; color:#555555;"></a>
+                </td>
+              </tr>
+            </table>
+          </div>
+
+          <!--[if mso]>
+          </td>
+          <td valign="top" width="360" style="width:360px;">
+          <![endif]-->
+
+          <!-- ══ TEXT COLUMN ══ -->
+          <div class="stack-column" style="display:inline-block; margin:0 -1px; max-width:360px; min-width:280px; vertical-align:top;">
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="width:100%;">
+              <tr>
+                <td dir="ltr" class="center-on-narrow"
+                    style="font-family:[[FONT_STACK]]; font-size:15px; line-height:22px; color:[[TEXT_COLOR]]; padding:10px 10px 0 10px; text-align:left;">
+                  <!-- ↑ font properties RESTATED, not inherited (Outlook resets them across nested
+                        tables) — and the parent cell is font-size:0, so this is mandatory. -->
+
+                  <h2 style="margin:0 0 10px 0; font-family:[[HEADING_FONT_STACK]]; font-size:20px; line-height:26px; color:[[TEXT_COLOR]]; font-weight:[[HEADING_WEIGHT]];">[[HEADING]]</h2>
+                  <p style="margin:0 0 14px 0;">[[BODY_COPY]]</p>
+
+                  <!-- Button — content-width, centred on mobile via .center-on-narrow -->
+                  <table role="presentation" cellspacing="0" cellpadding="0" border="0" class="center-on-narrow" style="float:left;">
+                    <tr>
+                      <td class="button-td button-td-primary" align="center" bgcolor="[[BUTTON_BG]]"
+                          style="border-radius:[[BUTTON_RADIUS]]; background:[[BUTTON_BG]];">
+                        <a class="button-a button-a-primary tap" href="[[CTA_URL]]" target="_blank"
+                           style="display:block; background:[[BUTTON_BG]]; border-radius:[[BUTTON_RADIUS]];
+                                  font-family:[[FONT_STACK]]; font-size:14px; font-weight:700; line-height:14px;
+                                  padding:14px 24px; color:[[BUTTON_TEXT_COLOR]]; text-decoration:none;">[[CTA_LABEL]]</a>
+                      </td>
+                    </tr>
+                  </table>
+
+                </td>
+              </tr>
+            </table>
+          </div>
+
+          <!--[if mso]>
+          </td>
+          </tr>
+          </table>
+          <![endif]-->
+
+        </td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<!-- Two-column row : END -->
+
+<!--
+  CHECKLIST
+  ☐ The stack rule in <head> carries `direction: ltr !important`   ← without it, rtl rows stack backwards
+  ☐ font-size:0 on the outer cell; every text cell restates its own font-size
+  ☐ Inner cells carry dir="ltr" so content direction is reset inside an rtl parent
+  ☐ Ghost table widths reconcile: 220 + 360 = 580 = ghost table width
+  ☐ The image anchor is INLINE; display:block is on the <img>
+  ☐ Explicit width/height attributes on the image
+  ☐ Both variants verified on mobile — image must stack ABOVE text in each
+
+  WHEN TO USE
+  Alternating feature rows: Brand Story, Educational, Post Purchase, Welcome Series email 2.
+  NOT for product grids — those need equal-height cards and price badges (ProductGrid.html).
+-->

@@ -1,5 +1,66 @@
 # SS-2026-W29 — Review & QA Notes
 
+## Revision — 2026-07-16 (rev 16, ROOT-CAUSE FIX: Apple Mail iPhone fails to render hero + product images)
+Authored as `Draft/SS-2026-W29-draft-v16.html`, structural QA'd, promoted to `Output/SS-2026-W29.html`. SS-only.
+Reviewer/approver ≠ author (CR-16); human sign-off + on-device Apple Mail verification pending before send (see gate).
+
+**Trigger / evidence supplied.** Hero banner + multiple product images fail to render in **Apple Mail on iPhone**,
+while: ✓ desktop browsers, ✓ VS Code, ✓ Gmail Android all render them; URLs valid + publicly accessible. Directed
+to treat this as an Apple Mail HTML-rendering issue, NOT a hosting issue.
+
+**Hosting ruled out empirically.** `curl -IL` on every asset: all return **HTTP 200, correct `image/*`
+content-type, zero redirects**. Sizes: hero JPEG 68 KB · product JPEGs 15–20 KB · category PNG **604 KB** · logo
+5 KB. Decisive: the **604 KB category tile renders on the iPhone while the 15–68 KB hero + product images fail** —
+the heaviest asset works, the lightest fail. Not weight, not hosting, not accessibility. Confirmed markup/CSS.
+
+**Root cause (structural — the variable that perfectly partitions pass/fail).** Every image was wrapped in an
+anchor, but the FAILING images were wrapped in a **block-level anchor** `<a style="…; display:block;">` while the
+RENDERING images used a default **inline** anchor:
+
+| Element | Anchor | img sizing | iPhone Apple Mail |
+|---|---|---|---|
+| Logo | inline | `width:130px; height:auto` (has `width` attr) | ✓ renders |
+| Category tile | inline | `width:100%; max-width:264px; height:auto` (has `width` attr) | ✓ renders |
+| **Hero** | **`display:block`** | `width:100%; height:auto` | ✗ fails |
+| **Product** | **`display:block`** | `max-height:176px; width:auto; height:auto` (NO `width`/`height` attr) | ✗ fails |
+
+`display:block` on the wrapping `<a>` was the single factor common to both failing groups and absent from both
+working groups. **Mechanism:** an `<a>` is inline by default; forcing `display:block` on an anchor that contains
+only an image creates a block box whose height Apple Mail (iOS WebKit, mail sandbox) resolves *before* the image
+decodes. With no explicit box on the anchor it collapses that block to **zero height** and never paints the child
+image. Desktop Safari / Gmail-Android decode-then-reflow and recover; iOS Mail does not reflow the collapsed block.
+The product images compounded this with a second independently iOS-fragile pattern — sizing by
+`max-height:176px; width:auto` with **no `width`/`height` HTML attributes**, so iOS Mail had no intrinsic box to
+reserve. (This is the SS-only pattern; RDD/SC never used block anchors — consistent with earlier revs.)
+
+**Fix (rebuilt image components to ESP-proven pattern — Mailchimp/Klaviyo/Litmus convention).**
+- **All 15 image anchors** (hero + 14 products): removed `display:block` → inline anchor wrapping inline `<img>` only.
+- **14 product images:** removed `max-height/width:auto` sizing; now carry explicit `width="176" height="176"`
+  attributes + `display:block; width:176px; max-width:100%; height:auto; margin:0 auto` (centered via `align="center"`
+  td). Square 728×728 sources display 176×176 exactly as before — visually identical, but with a reserved box iOS
+  Mail honours. Mobile still fluid via `.pc img{width:100%!important}`.
+- **Hero:** added explicit `height="294"` (matches 528×294 = source 1167×651 ratio) so iOS reserves the aspect box;
+  kept fluid `width:100%; max-width:100%; height:auto` + `.hero-img` responsive class.
+- Added `border:0; line-height:100%` to every fixed image (belt-and-braces vs client borders/gaps).
+- Category tiles + logo left unchanged (they render; "preserve what works").
+
+**Structural QA — PASS.** block-level anchors remaining: **0** · `max-height:176` remaining: **0** · `width:auto`
+imgs remaining: **0** · product imgs with `width×height` attrs: **14/14** · hero `height=294`: **1** · img tags:
+**21** (unchanged) · anchors wrapping a `<table>`: **0** (§6.6) · tag balance table 63/63, td 79/79, a 39/39.
+
+**⚠️ OUTSTANDING §8.1 GATE (required before send — cannot be exercised in this environment).** This fix targets the
+identified structural root cause; it has NOT yet been rendered on a physical device here. Before send, verify on
+**Apple Mail iPhone** (the failing client) + **Gmail iOS · Gmail Android · Gmail Web · Outlook · Yahoo · Klaviyo
+Preview** that the hero and all 14 product images render at full size, and re-confirm clickability post-Klaviyo
+import. Do not mark §8.1 responsive/rendering gate PASS until that on-device check is done.
+
+**CLAUDE.md rule candidate (root-cause-first, §8.1.7):** "Never put `display:block` on an `<a>` that wraps an image;
+keep the anchor inline and make the `<img>` the block element. Give every fixed-size image explicit `width`/`height`
+attributes — Apple Mail iOS collapses a block anchor / attribute-less image to zero height and never paints it,
+even though desktop and Gmail Android render it."
+
+---
+
 ## Revision — 2026-07-15 (rev 15, ROOT-CAUSE FIX: product-card clickability in Klaviyo + hero mobile shrink)
 Authored as `Draft/SS-2026-W29-draft-v15.html`, QA'd, promoted to `Output/SS-2026-W29.html`. SS-only.
 Reviewer/approver ≠ author (CR-16); human sign-off pending before send.

@@ -1,0 +1,141 @@
+<!--
+  Component: Footer (Cerberus reference, Klaviyo-corrected)
+  Purpose: Brand blurb, social links, postal address, and compliance links.
+  Source: Cerberus "Email Footer" block — with its ESP tags REPLACED (see the warning below).
+  Required inputs: [[COMPANY_NAME]], [[COMPANY_ADDRESS]], [[FOOTER_BG]], [[FOOTER_TEXT_COLOR]]
+  Optional inputs: [[FOOTER_DESCRIPTION]], [[FACEBOOK_URL]], [[INSTAGRAM_URL]],
+                   [[FB_ICON_URL]], [[IG_ICON_URL]], [[PRIVACY_URL]]
+  Fallback behavior: omit the social row entirely if no profile URLs are confirmed — never link a
+                     social icon to a homepage as a stand-in (Campaign §6.7).
+  Dependencies: ResponsiveUtilities.html (.unstyle-auto-detected-links, .footer, .tap)
+
+  REFERENCE ONLY — production footer is Components/footer.html.
+
+  ═══════════════════════════════════════════════════════════════════════════════
+  ⚠️⚠️ DO NOT COPY CERBERUS'S FOOTER TAGS
+
+  Cerberus ships:
+      <webversion style="…">View as a Web Page</webversion>
+      <unsubscribe style="…">unsubscribe</unsubscribe>
+
+  Those are CAMPAIGN MONITOR custom elements. In Klaviyo they render as unknown elements —
+  visible text, no link, no compliance. Copying them ships a legally non-compliant email.
+
+  ⚠️⚠️ AND NEVER PUT AN HTML-EMITTING TAG INSIDE AN ATTRIBUTE  (Flow §8.7)
+
+  {% unsubscribe %} and {% manage_preferences %} return a COMPLETE <a> ELEMENT, not a URL. So:
+
+      <a href="{% unsubscribe %}" style="…">Unsubscribe</a>          ← BROKEN
+
+  expands to an anchor nested inside another anchor's href. The parser closes href at the injected
+  quote, ends the tag at the injected >, renders the text, hits the injected </a> — and EVERYTHING
+  AFTER THAT BECOMES PLAIN TEXT ON SCREEN:
+
+      Unsubscribe" style="color:#6B7280;text-decoration:underline;" target="_blank">Unsubscribe
+
+  This shipped once and survived seven template revisions. Inside href, src or background use only
+  URL-RETURNING tags: {% unsubscribe_link %} and {% manage_preferences_link %}.
+
+  The bare {% unsubscribe %} form is valid ONLY standalone in body content, where the engine
+  supplies the whole anchor itself.
+
+  ⚠️ A tag inside an attribute is INVISIBLE TO SOURCE REVIEW. The markup only breaks after
+     expansion, so reading the template proves nothing — it must be rendered.
+  ═══════════════════════════════════════════════════════════════════════════════
+
+  WHAT CERBERUS DOES CONTRIBUTE HERE
+  class="unstyle-auto-detected-links" on the address block. iOS and Gmail auto-link postal
+  addresses and phone numbers and style them as blue links. The link cannot be removed, but this
+  makes it look like the surrounding text. Every one of our footers carries a postal address and
+  none of them has this class. Straightforward improvement.
+-->
+
+<!-- Footer : BEGIN -->
+<tr>
+  <td bgcolor="[[FOOTER_BG]]" style="background:[[FOOTER_BG]]; padding:32px 28px;" class="footer mp">
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="width:100%;">
+
+      <!-- Brand blurb -->
+      <tr>
+        <td align="center"
+            style="font-family:[[FONT_STACK]]; font-size:13px; line-height:20px; color:[[FOOTER_TEXT_COLOR]]; padding-bottom:18px;">
+          [[FOOTER_DESCRIPTION]]
+        </td>
+      </tr>
+
+      <!-- Social icons — content-width, centred. Omit this row entirely if URLs are unconfirmed. -->
+      <tr>
+        <td align="center" style="padding-bottom:18px;">
+          <table role="presentation" align="center" cellspacing="0" cellpadding="0" border="0" style="margin:0 auto;">
+            <tr>
+              <td align="center" style="padding:0 7px;"><a href="[[FACEBOOK_URL]]" target="_blank" style="text-decoration:none;"><img src="[[FB_ICON_URL]]" width="28" height="28" alt="Facebook" border="0" style="display:block; width:28px; height:28px; border:0; outline:none;"></a></td>
+              <td align="center" style="padding:0 7px;"><a href="[[INSTAGRAM_URL]]" target="_blank" style="text-decoration:none;"><img src="[[IG_ICON_URL]]" width="28" height="28" alt="Instagram" border="0" style="display:block; width:28px; height:28px; border:0; outline:none;"></a></td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+
+      <!-- Sender identity + postal address.
+           unstyle-auto-detected-links neutralises iOS/Gmail's automatic blue linking. -->
+      <tr>
+        <td align="center" class="unstyle-auto-detected-links"
+            style="font-family:[[FONT_STACK]]; font-size:12px; line-height:18px; color:[[FOOTER_TEXT_COLOR]]; padding-bottom:16px;">
+          [[COMPANY_NAME]]<br>[[COMPANY_ADDRESS]]
+        </td>
+      </tr>
+
+      <!-- Compliance links — real anchors, URL-returning Klaviyo tags only. -->
+      <tr>
+        <td align="center"
+            style="font-family:[[FONT_STACK]]; font-size:12px; line-height:20px; color:[[FOOTER_TEXT_COLOR]];">
+          <a href="{% unsubscribe_link %}" target="_blank" class="tap" style="color:[[FOOTER_TEXT_COLOR]]; text-decoration:underline;">Unsubscribe</a>
+          &nbsp;&middot;&nbsp;
+          <a href="{% manage_preferences_link %}" target="_blank" class="tap" style="color:[[FOOTER_TEXT_COLOR]]; text-decoration:underline;">Manage Preferences</a>
+          &nbsp;&middot;&nbsp;
+          <a href="[[PRIVACY_URL]]" target="_blank" class="tap" style="color:[[FOOTER_TEXT_COLOR]]; text-decoration:underline;">Privacy Policy</a>
+        </td>
+      </tr>
+
+    </table>
+  </td>
+</tr>
+<!-- Footer : END -->
+
+<!--
+  ═══════════════════════════════════════════════════════════════════════════════
+  MANDATORY PRE-PRODUCTION CHECKPOINT  (Flow §8.7 — a HARD GATE, not a warning)
+
+  Verify in Klaviyo Preview · Gmail Web · Gmail Mobile · Apple Mail · Outlook:
+    ✓ Unsubscribe displays correctly (link text only)
+    ✓ Manage Preferences displays correctly (link text only)
+    ✓ Privacy Policy displays correctly (link text only)
+    ✓ No raw HTML or stray attribute fragments anywhere in the email
+    ✓ Every footer link is clickable AND navigates to the right destination
+    ✓ No malformed anchors — unbalanced quotes, markup inside an attribute list, nested anchors
+
+  Automated checks on the built file BEFORE any render:
+    ✓ anchor open/close counts match
+    ✓ no "<" inside any attribute list
+    ✓ no odd quote count in any tag
+    ✓ no href="" and no href="#"
+    ✓ no anchor nested inside another anchor
+
+  If ANY check fails the email stays in Draft/ and is NOT promoted to Output/.
+
+  ⚠️ Verify every tag name against Klaviyo's personalization reference — never infer one from a
+     pattern. An undefined variable fails SILENTLY: it renders as an empty string, so a
+     plausible-looking href="{{ made_up_name }}" becomes href="" — a dead link that looks correct
+     in preview AND in source. {{ manage_preferences_url }} is a real example: plausible,
+     undocumented, invalid, and it survived seven revisions and 40 markdown files undetected.
+  ═══════════════════════════════════════════════════════════════════════════════
+
+  OTHER CHECKS
+  ☐ bgcolor attribute AND inline background on the footer cell (Gmail mobile — Campaign §6.16)
+  ☐ Social icons are raster PNG, never SVG (Flow §9.4)
+  ☐ Social icon anchors are INLINE; display:block is on the <img> (Campaign §6.6)
+  ☐ Every icon has explicit width/height attributes
+  ☐ unstyle-auto-detected-links on the address block
+  ☐ Footer text meets WCAG AA against [[FOOTER_BG]] — footers are the most common contrast failure
+  ☐ Tap targets ≥44px on the compliance links (.tap)
+  ☐ Footer visible WITHOUT Gmail's "View entire message" — keep the file under ~102 KB (Campaign §8.3)
+-->

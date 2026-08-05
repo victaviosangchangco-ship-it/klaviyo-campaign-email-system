@@ -1,29 +1,38 @@
 <!--
   Component: product-card
-  Purpose: A single product card — bordered tile with image, name, two-line description, price,
-           and a whole-card link. The atomic unit that product-grid repeats.
+  Purpose: A single product card — bordered white tile with a subtle brand mark, product image, title,
+           optional one/two-line description, and a compact orange price badge. The atomic unit that
+           product-grid repeats. Built to the current responsive standard (CLAUDE.md §6.6/§6.8/§6.17).
   BRD mapping: WK-S6 / MO-S7 (single-product use)
   Required inputs: [[PRODUCT_IMAGE_URL]], [[PRODUCT_TITLE]], [[PRODUCT_URL]]
-  Optional inputs: [[PRODUCT_DESC]] (two short benefit lines, use <br> between; omit for none),
-                   [[PRODUCT_PRICE]], [[CARD_BORDER_COLOR]] (default #ececec), [[CARD_BG]]
-                   (default #ffffff), [[CARD_RADIUS]] (default 12px), [[IMAGE_RADIUS]] (default 8px),
-                   [[META_SIZE]] (default 13px), [[SMALL_SIZE]] (default 12px),
-                   [[BODY_SIZE]] (default 15px)
+  Optional inputs: [[PRODUCT_DESC]] (one short benefit line; omit for none), [[PRODUCT_PRICE]],
+                   [[BRANDMARK_URL]] (small decorative brand mark; omit to drop that row),
+                   [[PRODUCT_IMAGE_W]]/[[PRODUCT_IMAGE_H]] (explicit img dims, default 188/188 — REQUIRED
+                   attrs for Apple Mail iOS, §6.6), [[CARD_BORDER_COLOR]] (default #e9e7e2),
+                   [[CARD_BG]] (default #ffffff), [[CARD_RADIUS]] (default 6px), [[IMAGE_RADIUS]]
+                   (default 8px), [[BUTTON_BG]] (default [[ACCENT_COLOR]]), [[BUTTON_TEXT_COLOR]]
+                   (default #ffffff), [[BUTTON_RADIUS]] (default 4px), [[META_SIZE]] (default 13px),
+                   [[SMALL_SIZE]] (default 11px)
   Fallback behavior: never fabricate a product. If real product data is unavailable, STOP and report
-                     (per Product Sourcing Rules, CLAUDE.md §5). [[PRODUCT_DESC]]/[[PRODUCT_PRICE]]
-                     may be omitted; the card still renders.
-  Dependencies: shared .prod-name / .prod-sub (equal-height) from base-head. product-grid.html mirrors
-                this markup inline for multi-product rows (independence rule, Components/README).
+                     (CLAUDE.md §5/§5.1). Verify [[PRODUCT_URL]] is HTTP 200 and the image is a public
+                     200 image/* (§8, §6.7). [[PRODUCT_DESC]]/[[PRODUCT_PRICE]]/[[BRANDMARK_URL]] may be
+                     omitted; the card still renders and stays equal-height with its row.
+  RESPONSIVE STANDARD (do not deviate — CLAUDE.md §6.18):
+    - Equal height comes from fixed-height <td> cells (.pimg/.pnc/.pdc), NOT min-height (Outlook-safe, §6.8).
+    - CLICKABILITY: image, title and price are THREE SEPARATE sibling anchors to the same URL. NEVER wrap
+      the whole card in one <a>, and NEVER put a <table> inside an <a> (§6.6).
+    - PRICE BADGE: a shrink-to-fit centred <table> (fill+radius on the <td>), so it stays a compact badge
+      and never stretches to card width on Gmail mobile (§6.17). Do not replace it with a bare inline-block
+      anchor or a %/fixed-width button.
+    - Image carries explicit width/height attributes + display:block (§6.6).
+  Dependencies: shared .pimg/.pnc/.pdc (mobile height reset), .pricebtn (mobile badge), .pc img /
+                .pc img.brandmark (mobile image + brandmark exclusion) from base-head.html.
+                product-grid.html mirrors this markup inline for multi-product rows (independence rule).
 -->
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" style="border:1px solid [[CARD_BORDER_COLOR]]; border-radius:[[CARD_RADIUS]]; background:[[CARD_BG]];">
-  <tr>
-    <td style="padding:12px 12px 16px 12px;">
-      <a href="[[PRODUCT_URL]]" style="text-decoration:none;">
-        <img src="[[PRODUCT_IMAGE_URL]]" alt="[[PRODUCT_TITLE]]" width="100%" style="display:block; width:100%; height:auto; margin-bottom:12px; border-radius:[[IMAGE_RADIUS]];" />
-        <p class="prod-name dm-text" style="margin:0 0 3px 0; font-family:[[FONT_STACK]]; font-size:[[META_SIZE]]; font-weight:700; line-height:1.4; color:[[TEXT_COLOR]];">[[PRODUCT_TITLE]]</p>
-        <p class="prod-sub" style="margin:0 0 8px 0; font-family:[[FONT_STACK]]; font-size:[[SMALL_SIZE]]; line-height:1.45; color:[[MUTED_TEXT_COLOR]];">[[PRODUCT_DESC]]</p>
-        <p class="dm-text" style="margin:0; font-family:[[FONT_STACK]]; font-size:[[BODY_SIZE]]; font-weight:700; color:[[TEXT_COLOR]];">[[PRODUCT_PRICE]]</p>
-      </a>
-    </td>
-  </tr>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="[[CARD_BG]]" style="background:[[CARD_BG]]; border:1px solid [[CARD_BORDER_COLOR]]; border-radius:[[CARD_RADIUS]]; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+  <tr><td align="right" bgcolor="[[CARD_BG]]" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="[[BRANDMARK_URL]]" width="15" height="15" alt="[[LOGO_ALT]]" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+  <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="[[CARD_BG]]" style="height:200px; padding:2px 14px 8px 14px;"><a href="[[PRODUCT_URL]]" target="_blank" style="text-decoration:none;"><img src="[[PRODUCT_IMAGE_URL]]" alt="[[PRODUCT_TITLE]]" width="[[PRODUCT_IMAGE_W]]" height="[[PRODUCT_IMAGE_H]]" style="display:block; width:[[PRODUCT_IMAGE_W]]px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:[[IMAGE_RADIUS]]; margin:0 auto;" /></a></td></tr>
+  <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="[[CARD_BG]]" style="height:40px; padding:0 12px;"><a href="[[PRODUCT_URL]]" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:[[FONT_STACK]]; font-size:[[META_SIZE]]; font-weight:700; line-height:1.3; color:[[TEXT_COLOR]]; text-align:center;">[[PRODUCT_TITLE]]</p></a></td></tr>
+  <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="[[CARD_BG]]" style="height:34px; padding:2px 12px 0 12px;"><a href="[[PRODUCT_URL]]" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:[[FONT_STACK]]; font-size:[[SMALL_SIZE]]; line-height:1.45; color:[[MUTED_TEXT_COLOR]]; text-align:center;">[[PRODUCT_DESC]]</p></a></td></tr>
+  <tr><td class="ppc" align="center" valign="top" bgcolor="[[CARD_BG]]" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="[[BUTTON_BG]]" style="background:[[BUTTON_BG]]; border-radius:[[BUTTON_RADIUS]];"><a href="[[PRODUCT_URL]]" target="_blank" class="pricebtn" style="display:inline-block; font-family:[[FONT_STACK]]; font-size:[[META_SIZE]]; font-weight:800; line-height:1; color:[[BUTTON_TEXT_COLOR]]; padding:11px 22px; text-decoration:none;">[[PRODUCT_PRICE]]</a></td></tr></table></td></tr>
 </table>

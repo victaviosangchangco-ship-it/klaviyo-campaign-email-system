@@ -1,28 +1,99 @@
 <!--
   Component: hero
   Purpose: Headline block — optional eyebrow/kicker, the primary H1, and an optional lead line.
-           Sits directly below the hero image (hero-image.html) or the header.
+           Sits directly below the hero image (hero-image.html) or the header. Together with
+           hero-image.html this forms ONE hero section: same background, zero gap between them.
   BRD mapping: WK-S4 / MO-S5
   Required inputs: [[HERO_HEADING]]
-  Optional inputs: [[EYEBROW_TEXT]] (uppercase kicker; omit the <p> when absent),
-                   [[HERO_BODY]] (single lead line; for multi-paragraph copy use intro.html instead),
+  Optional inputs: [[EYEBROW_TEXT]] (uppercase kicker; OMIT THE WHOLE <p> when absent),
+                   [[HERO_BODY]] (single lead line; OMIT THE WHOLE SECOND <tr> when absent —
+                   for multi-paragraph copy use intro.html instead),
                    [[HERO_ALIGN]] (default left), [[EYEBROW_SIZE]] (default 11px),
                    [[H1_SIZE]] (default 32px), [[HEADING_WEIGHT]] (default 700; serif brands set 400),
                    [[BODY_SIZE]] (default 15px)
   Fallback behavior: [[EYEBROW_TEXT]] and [[HERO_BODY]] are optional; if [[HERO_HEADING]] is absent,
                      STOP and request it. Never fabricate a headline.
-  Dependencies: shared .hh (mobile headline size) from base-head.
+                     ⚠️ An absent optional value must remove its ELEMENT, not render an empty one.
+                     An empty <p> or an empty <td> is a Ghost Element (§8.2) — it can collapse
+                     unpredictably in Gmail/Outlook and trigger rendering artifacts. The ASSEMBLE
+                     markers below tell generation exactly what to drop.
+  Dependencies: shared .hh (mobile headline size), .mp (mobile inset), .dm-text, .dm-bg from base-head.
+
+  CERBERUS MIGRATION — Phase 2, component 3b of 6 (2026-07-28).
+  Reference: Shared/Frameworks/Cerberus/Components/Hero.html · CLAUDE.md §6.20.
+  Structural only. Every font size, weight, colour, letter-spacing, line-height and padding value
+  is unchanged from the pre-migration component.
+
+  ON HYBRID: single-column block — no columns to stack, so no hybrid divs and no ghost table here
+  (the template locks 600px once around .email-container). What this takes from Cerberus is the
+  typography contract: restate inherited font properties, use margin for typography and padding for
+  cells, and never let a client's default styling leak in.
+
+  PERSONALIZATION / DYNAMIC CONTENT:
+  [[HERO_HEADING]], [[EYEBROW_TEXT]] and [[HERO_BODY]] are injected verbatim and may contain Klaviyo
+  Liquid — e.g. {{ first_name|default:'there' }} or a {% if %} block. Nothing here escapes, encodes
+  or re-wraps that content, so a greeting placed in the eyebrow or lead line passes through intact.
+  Per CLAUDE §6.5 / Flow §6.2 a personalization tag must always carry a default: never ship copy
+  that can render "Hi ,".
+  NOTE: there is no dedicated [[GREETING]] slot in this component today. If a standing greeting row
+  is wanted, that is a new element and needs approval — I have not invented one.
+
+  MOBILE CONTRACT (must never regress):
+  · Eyebrow, headline and lead line stay in source order, in one column, in one block. No reflow.
+  · .mp reduces the horizontal inset 28px → 16px; it never changes vertical rhythm, so the block
+    cannot separate from the banner above or the CTA below.
+  · .hh reduces only the H1 size on mobile (32px → 28px). No other value is touched.
 -->
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" style="background:[[BODY_BG]];">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="[[BODY_BG]]" style="width:100%; background:[[BODY_BG]];">
+  <!-- Eyebrow + H1. If [[EYEBROW_TEXT]] is absent, generation removes the <p> below — not just its text. -->
   <tr>
-    <td class="mp" align="[[HERO_ALIGN]]" style="padding:30px 28px 8px 28px;">
-      <p style="margin:0 0 12px 0; font-family:[[FONT_STACK]]; font-size:[[EYEBROW_SIZE]]; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:[[ACCENT_COLOR]];">[[EYEBROW_TEXT]]</p>
+    <td class="mp" align="[[HERO_ALIGN]]" bgcolor="[[BODY_BG]]" style="padding:30px 28px 8px 28px; background:[[BODY_BG]]; text-align:[[HERO_ALIGN]];">
+      <p style="margin:0 0 12px 0; font-family:[[FONT_STACK]]; font-size:[[EYEBROW_SIZE]]; font-weight:700; letter-spacing:2px; text-transform:uppercase; line-height:1.2; color:[[ACCENT_COLOR]];">[[EYEBROW_TEXT]]</p>
       <h1 class="hh dm-text" style="margin:0; font-family:[[HEADING_FONT_STACK]]; font-size:[[H1_SIZE]]; font-weight:[[HEADING_WEIGHT]]; line-height:1.15; letter-spacing:-0.3px; color:[[TEXT_COLOR]];">[[HERO_HEADING]]</h1>
     </td>
   </tr>
+  <!-- Lead line. If [[HERO_BODY]] is absent, generation removes this ENTIRE <tr> — an empty cell is a Ghost Element (§8.2). -->
   <tr>
-    <td class="mp" align="[[HERO_ALIGN]]" style="padding:12px 28px 24px 28px;">
+    <td class="mp" align="[[HERO_ALIGN]]" bgcolor="[[BODY_BG]]" style="padding:12px 28px 24px 28px; background:[[BODY_BG]]; text-align:[[HERO_ALIGN]];">
       <p class="dm-text" style="margin:0; font-family:[[FONT_STACK]]; font-size:[[BODY_SIZE]]; line-height:1.6; color:[[TEXT_COLOR]];">[[HERO_BODY]]</p>
     </td>
   </tr>
 </table>
+
+<!--
+  MIGRATION NOTES — what changed and why
+
+  1. bgcolor attribute on the <table> AND both <td>s, alongside the inline background.
+     Gmail mobile drops CSS background and paints the CELL. Without cell-level bgcolor the headline
+     block can render on white while the banner above keeps its colour — a visible seam mid-hero,
+     which is exactly the "hero must not separate" failure the mobile contract forbids (§6.16).
+
+  2. width:100% added to the table's inline style (it carried the attribute only) — §6.6.
+
+  3. text-align added alongside the align attribute on both cells.
+     Outlook honours the attribute; most other clients honour the CSS. Declaring both means the
+     headline cannot drift to a different alignment between clients. [[HERO_ALIGN]] default is
+     unchanged (left), so output is identical.
+
+  4. line-height:1.2 added to the eyebrow <p>.
+     It was the only text element with no explicit line-height, so it inherited the client default —
+     which varies. 1.2 is the value already documented for the eyebrow in Shared/design-tokens.md §1,
+     so this makes the shipped rhythm match the token contract rather than changing it.
+
+  5. Explicit ghost-element instructions on both optional elements.
+     The fallback text said "omit the <p> when absent" but the markup gave generation no marker.
+     Both are now called out inline: an absent eyebrow removes the <p>; an absent lead line removes
+     the whole <tr>. An empty <p> or empty <td> collapses unpredictably in Gmail and Outlook (§8.2).
+
+  6. Documented the personalization contract and the hero/hero-image pairing, so a future edit
+     cannot silently break Liquid pass-through or insert a spacer between the two components.
+
+  UNCHANGED — verified by machine diff, zero style declarations dropped:
+  padding 30px 28px 8px 28px · padding 12px 28px 24px 28px · margin 0 0 12px 0 · margin 0 ·
+  font sizes, weights, letter-spacing 2px / -0.3px, line-height 1.15 / 1.6, text-transform,
+  and every colour token.
+
+  NOT ADDED
+  · MSO ghost table / hybrid columns — single-column block; see the ON HYBRID note above.
+  · A [[GREETING]] slot — that is a new design element, not a migration. Needs approval.
+-->

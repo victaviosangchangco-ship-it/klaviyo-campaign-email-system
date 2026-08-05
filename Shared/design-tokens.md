@@ -75,4 +75,64 @@ padding is always the content inset. Do not invent one-off padding values — pu
 | `.prod-name` / `.prod-sub` | fixed heights so prices align across a row (reset on mobile) |
 | `.dm-bg` / `.dm-text` / `.dm-logo-light` / `.dm-logo-dark` | dark-mode swaps |
 
+## 6. Spacing & typography **mechanisms** (Cerberus-aligned — CLAUDE.md §6.20)
+
+Sections 1–2 define *how much* space and *what size* type. This section defines **how those values are
+applied in markup**, so a component never reaches for a mechanism that fails in a given client.
+Reference: `Shared/Frameworks/Cerberus/Cerberus-Techniques.md` §10, §13.
+
+### 6.1 Which spacing mechanism for which job
+
+| Need space… | Use | Never use |
+|-------------|-----|-----------|
+| inside a cell | `padding` on the `<td>` | `margin` (unreliable on tables/containers) |
+| between text elements | `margin` on `<p>` / `<h1>`–`<h3>` / `<ul>` / `<li>` | `padding` on the `<ul>` for list indent — use `margin-left` on the `<li>` |
+| between tables or rows | a **sized spacer row** (below) | a bare `<td></td>`, a spacer GIF, or `margin` on a `<tr>` |
+| a visible rule | a **painted sized cell** | `<hr>`, or `border-top` as the mechanism |
+
+**The sized spacer row** — every part is load-bearing:
+
+```html
+<td aria-hidden="true" height="N"
+    style="height:Npx; font-size:0; line-height:0; mso-line-height-rule:exactly;">&nbsp;</td>
+```
+
+`height` attribute → the primitive Outlook honours · `&nbsp;` → stops clients collapsing the cell ·
+`font-size:0; line-height:0` → stop the `&nbsp;`'s own metrics inflating it · `mso-line-height-rule` →
+makes Outlook honour the zeroed line-height · `aria-hidden` → keeps it out of screen readers.
+Inside a coloured band, carry the section `bgcolor` on the spacer too, or Gmail mobile paints a white
+stripe across the gap.
+
+**This is not the empty `<td>` banned by CLAUDE.md §8.2** — that is a cell with no height, no content
+and no purpose. This one has all three.
+
+⚠️ **Never put `height` and `padding` on the same cell.** `<td height="36" style="height:36px;padding-top:14px">`
+is 50px in content-box engines and 36px in border-box engines. The region silently changes size per client
+and everything below it misaligns. Put the gap in its own spacer row. A fixed-height cell may still carry
+*horizontal* padding, or `padding:0`.
+
+### 6.2 Typography mechanism rules
+
+- **Never rely on CSS inheritance.** Restate `font-family`, `font-size`, `font-weight`, `line-height` and
+  `color` on **every text `<td>`** — some Outlook versions reset inherited font properties across nested
+  tables. Mandatory inside hybrid columns, whose parent cell is `font-size:0`.
+- **Put styles on the `<td>`**, not the `<table>` or `<tr>`.
+- **Six-digit hex only** — `#ffffff`, never `#fff` or `rgb()`. Three-digit hex fails in some clients and
+  in HTML attributes such as `bgcolor`.
+- Zero out client defaults inline: `<p style="margin:0;">`, `<h1 style="margin:0 0 10px 0;">`.
+- `&nbsp;` to prevent typographic widows in headlines.
+- Tokens still own every *value* — this section governs only how the value is attached to markup.
+
+### 6.3 Hybrid column maths (600px container)
+
+For multi-column rows built on the hybrid pattern (CLAUDE.md §6.20), with 10px parent-cell padding:
+
+| Columns | Inner width | `max-width` | `min-width` | Ghost table |
+|---------|-------------|-------------|-------------|-------------|
+| 2 | 580 | 290 | 175 | `width="580"`, two `<td width="290">` |
+| 3 | 580 | 193 | 140 | `width="580"`, three `<td width="193">` |
+| 2 (grid, 8px padding) | 584 | 292 | 175 | `width="584"`, two `<td width="292">` |
+
+Plus, always: `font-size:0` on the parent cell, `margin:0 -1px` on each column, `vertical-align:top`.
+
 _Brand-neutral engine contract. Brand `Design.md` overrides values; structure stays fixed._

@@ -6,7 +6,13 @@
 > etc.), which remain the **single source of truth**. Any change must be made in the modular
 > source and this file regenerated. Edits made here directly will be lost on the next compile.
 >
-> **Compiled:** 2026-07-14 · **Scope of this compile:** business strategy chapters (new) plus all previously drafted sections.
+> **Compiled:** 2026-08-04 · **Scope of this compile:** expands the two highest-priority business
+> frameworks from stubs to drafted sections — **Audience & Segmentation** and **Content Calendar & Cadence**
+> (Part I, framework-level; specific segment values, send days/times and lead times remain *To Be
+> Confirmed*). Same-day earlier compile added **Campaign Performance Review & Optimization**, **Feedback
+> Knowledge Base**, and **2.7 Assumptions and Constraints**. Prior compile (2026-07-16) added the
+> File-Driven System V2 chapters (Campaign Types, Product Launch Workflow, Holiday Workflow, File-Driven
+> Architecture, Execution Order, Campaign Playbooks) plus all previously drafted sections.
 
 ## About this document
 
@@ -38,8 +44,15 @@ to sections that are not yet drafted link out to their modular source file.
 | 00 | Campaign Strategy | ✅ Drafted |
 | 00 | Holiday Campaign Framework | ✅ Drafted |
 | 00 | Campaign Planning Framework | ✅ Drafted |
+| 00 | Campaign Types | ✅ Drafted |
+| 00 | Product Launch Workflow | ✅ Drafted |
+| 00 | File-Driven Architecture | ✅ Drafted |
+| 00 | Execution Order | ✅ Drafted |
+| 00 | Campaign Playbooks | ✅ Drafted |
 | 00 | Campaign Psychology | ✅ Drafted |
 | 00 | Human Workflow | ✅ Drafted |
+| 00 | Campaign Performance Review & Optimization | ✅ Drafted |
+| 00 | Feedback Knowledge Base | ✅ Drafted |
 | 00 | Executive Summary | ✅ Drafted |
 | 00 | Objectives & Goals | ✅ Drafted |
 | 00 | Scope | ✅ Drafted |
@@ -47,9 +60,9 @@ to sections that are not yet drafted link out to their modular source file.
 | 00 | Campaign Requirements | ✅ Drafted |
 | 00 | Campaign Standards | ✅ Drafted |
 | 00 | Success Metrics & Measurement | ✅ Drafted |
-| 00 | Assumptions & Constraints | ⬜ Not yet drafted — [source](00-Project%20Overview/assumptions-and-constraints.md) |
-| 00 | Audience & Segmentation | ⬜ Not yet drafted — [source](00-Project%20Overview/audience-segmentation.md) |
-| 00 | Content Calendar & Cadence | ⬜ Not yet drafted — [source](00-Project%20Overview/content-calendar.md) |
+| 00 | Assumptions & Constraints | ✅ Drafted |
+| 00 | Audience & Segmentation | ✅ Drafted (framework; specific segment values *To Be Confirmed*) |
+| 00 | Content Calendar & Cadence | ✅ Drafted (framework; send days/times & lead times *To Be Confirmed*) |
 | 01 | Weekly Campaign — Overview | ✅ Drafted |
 | 02 | Monthly Campaign — Overview | ✅ Drafted |
 | 03 | Brands — Shared Standards | ✅ Drafted |
@@ -75,9 +88,19 @@ to sections that are not yet drafted link out to their modular source file.
 - [Campaign Strategy](#campaign-strategy)
 - [Holiday Campaign Framework](#holiday-campaign-framework)
 - [Campaign Planning Framework](#campaign-planning-framework)
+- [Audience & Segmentation](#audience--segmentation)
+- [Content Calendar & Cadence](#content-calendar--cadence)
+- [Campaign Types](#campaign-types)
+- [Product Launch Workflow](#product-launch-workflow)
+- [Holiday Workflow](#holiday-workflow)
+- [File-Driven Architecture](#file-driven-architecture)
+- [Execution Order](#execution-order)
+- [Campaign Playbooks](#campaign-playbooks)
 - [Campaign Psychology](#campaign-psychology)
 - [Success Measurement & KPIs](#success-measurement--kpis)
 - [Human Workflow](#human-workflow)
+- [Campaign Performance Review & Optimization](#campaign-performance-review--optimization)
+- [Feedback Knowledge Base](#feedback-knowledge-base)
 - [Decision Log](#decision-log)
 - [Future Roadmap](#future-roadmap)
 
@@ -89,6 +112,7 @@ to sections that are not yet drafted link out to their modular source file.
   - [2.4 Stakeholders](#24-stakeholders)
   - [2.5 Campaign Requirements](#25-campaign-requirements)
   - [2.6 Campaign Standards](#26-campaign-standards)
+  - [2.7 Assumptions and Constraints](#27-assumptions-and-constraints)
 - [3. Weekly Campaign](#3-weekly-campaign)
 - [4. Monthly Campaign](#4-monthly-campaign)
 - [5. Brands](#5-brands)
@@ -323,6 +347,43 @@ A short, consistent brief prevents the two most expensive failure modes: buildin
 discovering a blocker (dead coupon, out-of-stock hero) only at QA. Confirm the risky items — is the
 coupon active? are products in stock? are the dates right? — *early*.
 
+## Audience & Segmentation
+
+_Source: [`00-Project Overview/audience-segmentation.md`](00-Project%20Overview/audience-segmentation.md)._
+
+Defines **who** each scheduled campaign is sent to, and the reasoning behind the choice — the single home
+for audience selection referenced by [CR-06](#25-campaign-requirements) (`WK-P2` / `MO-P2`). Philosophy:
+right person, right message, right moment; **every send targets a defined audience** (sending to "everyone"
+is a decision, not a default); start broad and refine with evidence; protect deliverability by not mailing
+the long-disengaged; and respect frequency across channels.
+
+It frames the standard segments — **active vs inactive**, Weekly, Monthly, Product Launch, Winback, VIP,
+New and Returning customers — plus **B2B vs B2C** considerations (SS is [Confirmed] B2B; SC leans
+consumer/older-audience; RDD and Stack *To Be Confirmed*), a **segment-selection decision tree**, and
+**flow-coordination** guidance. Because automated flows (welcome, abandoned cart, winback) are owned by the
+separate Klaviyo Flow project ([Scope](#23-scope)), this document gives **coordination only** where the two
+meet. It is a **framework**: real thresholds — the engagement window, VIP levels, new/returning definitions
+— are business decisions marked **To Be Confirmed (Business Decision Required)** and are never invented.
+
+## Content Calendar & Cadence
+
+_Source: [`00-Project Overview/content-calendar.md`](00-Project%20Overview/content-calendar.md)._
+
+The **single source of truth for scheduling** referenced by [CR-04](#25-campaign-requirements) (`WK-P1` /
+`MO-P1`): what sends, when, for which brand, and how far ahead it must be prepared. Cadence logic:
+anchor the year on fixed dated events (EOFY, BFCM, Christmas — see the
+[Holiday Campaign Framework](#holiday-campaign-framework)), then fill the gaps with the always-on cadence;
+plan ahead, not reactively; Australian-market first.
+
+Confirmed **frequencies**: one **Weekly per brand per week** and one **Monthly per brand per month**
+([CR-01](#25-campaign-requirements)); **Product Launch** is event-driven (readiness, not a slot, sets the
+date); Seasonal, Holiday and Promotional planning follow their frameworks. It also documents the
+**asset-preparation, review, approval and scheduling** timelines against the existing `WK-P#` / `MO-P#`
+steps, and the **post-campaign review** loop (see
+[Campaign Performance Review & Optimization](#campaign-performance-review--optimization)). Specific **send
+days, times and lead-time durations** are owned by the calendar and marked **To Be Confirmed**; current-year
+holiday/seasonal dates are confirmed per year.
+
 ## Campaign Psychology
 
 Good campaigns are built on an understanding of the customer, not just the product. Design every campaign
@@ -390,6 +451,48 @@ building**; **one quality gate, always**; **fix the system, not just the send**;
 charge** — a person reviews and approves every campaign before it goes out, with the reviewer/approver
 never being the author.
 
+## Campaign Performance Review & Optimization
+
+This chapter defines what happens **after a campaign is sent** — how we review its result and turn that
+read into a better next campaign. It closes the loop that [Human Workflow](#human-workflow) opens at its
+Reporting and Continuous-improvement stages, giving the programme a repeatable rhythm rather than an
+ad-hoc glance at the numbers. It does **not** redefine the metrics — those live once in
+[Success Measurement & KPIs](#success-measurement--kpis) and are referenced, not restated.
+
+**Why it matters.** The system already sets a quality bar *before* send (brief, standards, QA gate).
+Without an equal discipline *after* send, results are observed but rarely acted on, and the same missed
+opportunity repeats. A light, consistent review makes improvement compound — the direct expression of
+"improve the system, not just the send".
+
+**Two review rhythms.** Neither is heavy; both are recorded.
+
+| Rhythm | When | Question it answers | Owner |
+|--------|------|---------------------|-------|
+| **Per-campaign review** | Shortly after each send, once results settle | Did *this* send meet the goal set in its brief? | Campaign Manager |
+| **Programme review** | On a regular cadence across many sends | Is the *mix* working, and what should change in templates, standards, or the type mix? | Campaign Manager (Sponsor informed) |
+
+**Per-campaign review** captures a short read (a page, not a report) against the brief's own success
+criteria (see [Campaign Planning Framework](#campaign-planning-framework)) and the programme KPIs: result
+vs intent; the **primary metric for the type** named in its [playbook](#campaign-playbooks); the read
+across metrics *together* (never one number alone); and one thing to keep and one thing to change.
+
+**Programme review** steps back to the portfolio: are the right [campaign types](#campaign-strategy)
+running per brand in the right proportion; are there recurring QA/rework patterns to fix once at the
+standard or template; and which lessons should be promoted into a playbook, a standard, or the
+[Decision Log](#decision-log).
+
+**From finding to improvement.** An observation only has value once it changes something: state it as a
+small testable idea, change one thing at a time, observe against the same metric, and promote the winner
+to where it lasts (template, standard, playbook Lessons Learned, or Decision Log). A finding left only in
+a review note will be relearned.
+
+**Relationship to formal testing.** Structured A/B testing, attribution, and consolidated analytics are on
+the [Future Roadmap](#future-roadmap) (Horizon 3) and are not assumed here; until they land, this loop uses
+native platform reporting, reviewer judgement, and disciplined before/after comparison. When the A/B
+Testing Framework graduates, it sharpens the "observe against the same metric" step — it does not replace
+this rhythm. Roles follow the RACI in [Stakeholders](#24-stakeholders): the Campaign Manager owns both
+reviews and the decision to change; the Reviewer/QA supplies the quality signal; the Sponsor is informed.
+
 ## Decision Log
 
 A running record of significant business and design decisions — **what** was decided, **why**, and
@@ -425,6 +528,105 @@ Everything here is a **proposal**, not a commitment; items move into scope only 
 
 Items graduate from the roadmap only after a proposal is reviewed, approved, moved into scope, and
 recorded in the [Decision Log](#decision-log) — consistent with "plan before building".
+
+## Campaign Types
+
+_Source: [`00-Project Overview/campaign-types.md`](00-Project%20Overview/campaign-types.md)._
+
+Different customer moments need different emails, so the system recognises **ten campaign types**, each
+with its own psychology, hero, copy, CTA, product strategy and quality bar. The first planning decision
+for any send is *which type is this?* — everything downstream follows from that answer.
+
+| Type | The moment it serves | Primary success signal |
+|------|----------------------|------------------------|
+| **Weekly** | Recurring heartbeat send; broad product coverage | Click-through |
+| **Monthly** | Larger roundup / editorial narrative | Revenue per recipient |
+| **Product Launch** | New product/range as news; premium, not discount-led | New-product traffic + first sales |
+| **Holiday** | Dated calendar event (EOFY, BFCM, Christmas) | Revenue in the window |
+| **Seasonal** | Season-change range refresh; emotional, lifestyle-led | Range engagement |
+| **Category** | Deep dive into one range with buying guidance | In-range conversion |
+| **Clearance** | Genuine markdowns, honest finite-stock urgency | Sell-through / units |
+| **Brand Story** | Values, provenance, trust; low product density | Downstream engagement lift |
+| **Educational** | How-to, compliance, buying guides; low pressure | Assisted conversion |
+| **Automation** | Triggered/lifecycle content (flows live in the separate Klaviyo Flow project) | per flow |
+
+The tying rule: **never reuse the Weekly layout for another type.** Each type has a dedicated
+[playbook](#campaign-playbooks) and generate prompt.
+
+## Product Launch Workflow
+
+_Source: [`00-Project Overview/product-launch-workflow.md`](00-Project%20Overview/product-launch-workflow.md)._
+
+A launch introduces a new product/range **as news** — awareness, understanding and desire, then a click
+to a live product page. It is premium and benefit-led, not a discount push. The workflow: capture the
+brief with an **approved SKU list** → **verify every SKU via the BigCommerce API** (not storefront
+search, which hides unpublished items) confirming `visible=true`, in stock, non-zero price and a **live
+URL returning HTTP 200**, and present a **mapping table for approval before building** → apply the brand
+layer → build the launch-specific layout → QA across real clients → Output only when every grid product
+is live. A hidden product (`visible=false`) returns 404 and is a dead link; it may appear in a *draft*
+only, clearly marked "launching soon", and blocks Output until published and re-verified. This gate was
+learned on the RDD launch (2026-07), where 9 of 13 approved SKUs were newly-created and hidden.
+
+## Holiday Workflow
+
+_Source: [`00-Project Overview/holiday-campaign-framework.md`](00-Project%20Overview/holiday-campaign-framework.md)
+(see the Holiday Campaign Framework chapter above)._
+
+Holiday sends are built around a **real deadline** (EOFY, Black Friday/Cyber Monday, Christmas, sale
+windows). The offer and its expiry are explicit and verified active in the commerce platform before send,
+the promo title is freshly written for the event (never a recycled coupon heading), and shipping cut-off
+dates are surfaced. Success is measured on **total revenue in the window**, not a single-day open rate.
+
+## File-Driven Architecture
+
+_Source: [`00-Project Overview/file-driven-architecture.md`](00-Project%20Overview/file-driven-architecture.md)._
+
+Every campaign is produced by moving a send through fixed **stage folders** under
+`Brands/<Brand>/Campaigns/<Type>/`: `Brief/` → `References/` → `Assets/` → `Draft/` → `Review/` →
+`Output/`. **Every brand supports every campaign type** (the same ten type folders under each brand), and
+all brands share one framework (`Templates/`, `Components/`, `Shared/`) with only brand-dependent values
+differing at generation. The folder state *is* the workflow status, which makes every send repeatable,
+auditable and scalable.
+
+## Execution Order
+
+_Source: [`00-Project Overview/execution-order.md`](00-Project%20Overview/execution-order.md)._
+
+Every task follows one order, most-authoritative to most-specific: **1** read `CLAUDE.md` → **2** read
+the BRD → **3** read the brand's approved sources → **4** read the campaign-type playbook → **5** read the
+generate prompt + send brief → **6** generate → **7** QA → **8** update Review notes → **9** feed reusable
+lessons back into `CLAUDE.md`. Two permanent guardrails: **if information is missing, stop and ask**
+(never invent), and **choose the campaign type first**.
+
+## Campaign Playbooks
+
+_Source: [`00-Project Overview/campaign-playbooks.md`](00-Project%20Overview/campaign-playbooks.md);
+playbooks in [`Playbooks/`](Playbooks/)._
+
+A playbook is the **strategy brief for one campaign type**, with twelve fixed sections: Purpose, Business
+Goal, Customer Psychology, Copywriting Style, Design Direction, Hero Strategy, CTA Strategy, Product
+Strategy, KPIs, Bruce Feedback, Common Mistakes, Lessons Learned. There is one playbook per type (Weekly,
+Monthly, Product Launch, Holiday, Seasonal, Category, Clearance, Brand Story, Educational, Automation).
+Playbooks explain *why*; the matching generate prompts explain *how*. They are living documents — each
+completed campaign feeds a lesson back in.
+
+## Feedback Knowledge Base
+
+_Source: [`00-Project Overview/feedback-knowledge-base.md`](00-Project%20Overview/feedback-knowledge-base.md)._
+
+A **single index** to the standing feedback that governs how campaigns are produced — the directions that
+must be honoured on every relevant send — so recurring, cross-cutting feedback can be **seen in one place**
+rather than rediscovered send by send. It is an **index, not a second copy**: the authoritative wording of
+each item stays in its home (a [playbook](#campaign-playbooks)'s Bruce Feedback section, a
+[Campaign Standard](#26-campaign-standards), or a `CLAUDE.md` rule), and on any conflict the home wins.
+
+Type-specific feedback lives in that type's playbook; **cross-cutting** feedback is themed here with a link
+to its home — for example *value before the ask*, *fresh every send*, *prove it in the real client*,
+*preserve what works*, *premium editorial restraint*, *readability first*, and *real, live, verified
+links*. New standing feedback is recorded once in its home (playbook, standard/`CLAUDE.md`, or the
+[Decision Log](#decision-log)), then indexed here if it recurs across types — never pasted. Keeping one
+indexed view over many single homes preserves the single-source-of-truth rule while giving the team a fast
+way to see all standing feedback at once.
 
 ---
 
@@ -804,6 +1006,36 @@ Each standard has a stable identifier (`CS-##`) for reference from reviews and Q
 These standards define the qualitative bar; the quantitative targets that indicate whether the system
 is succeeding are defined in [Success Metrics](00-Project%20Overview/success-metrics.md). Where a
 standard cannot yet be met, it should be logged in [Future Enhancements](05-Future/roadmap.md).
+
+### 2.7 Assumptions and Constraints
+
+_Source: [`00-Project Overview/assumptions-and-constraints.md`](00-Project%20Overview/assumptions-and-constraints.md)._
+
+This section records the **assumptions** the plan depends on and the **constraints** it must work within.
+Naming them protects the project: an assumption that later proves false, or a constraint that is
+overlooked, is a common cause of rework and missed sends. Both are stated at the **business level only** —
+specific unconfirmed values (send days, segments, platform credentials, brand specifics) stay in their
+home documents marked *To be confirmed*, never assumed here.
+
+**Key assumptions.** A recurring, calendar-driven cadence planned from the
+[Content Calendar](00-Project%20Overview/content-calendar.md), not triggered journeys ([Scope](#23-scope));
+Australian-market first across all brands; a commerce platform as the source of product truth (verified,
+never invented); a sending platform that exists and is administered separately ([CR-14](#25-campaign-requirements));
+a human reviewing and approving every send ([CR-16](#25-campaign-requirements)); a thin brand layer over a
+shared framework; and documentation approved before build.
+
+**Key constraints.** Email-client rendering reality and responsive behaviour ([CS-08](#26-campaign-standards)–[CS-12](#26-campaign-standards));
+email-safe weight and deliverability ([CS-13](#26-campaign-standards), [CS-14](#26-campaign-standards)); the
+legal marketing-email floor ([CS-15](#26-campaign-standards)); the accessibility floor ([CS-11](#26-campaign-standards));
+the scope boundary with the separate Klaviyo Flow project ([Scope](#23-scope)); the firm "no invented
+values" limit (stop and confirm rather than guess); and non-negotiable separation of duties
+([CR-16](#25-campaign-requirements), [CS-17](#26-campaign-standards)).
+
+**Dependencies & management.** The system depends on confirmed brand facts per [Brand document](#5-brands),
+a maintained content calendar, and approved reusable libraries. Assumptions are reviewed when circumstances
+change; a failed assumption or a changed constraint is recorded as a decision in the
+[Decision Log](#decision-log) (or, for engineering standards, raised as an Architecture Decision) — never
+absorbed informally.
 
 ---
 

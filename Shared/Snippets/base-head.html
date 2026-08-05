@@ -8,6 +8,21 @@
   Optional inputs: [[DARK_BODY_BG]] (default #000000), [[DARK_TEXT_COLOR]] (default #ffffff)
   Fallback behavior: if dark tokens are absent, generation applies the documented defaults above
   Dependencies: none. Paired with a Template that opens <body> and assembles components.
+
+  CERBERUS MIGRATION — Phase 2, component 1 of 6 (2026-07-28).
+  Reference: Shared/Frameworks/Cerberus/Components/ResponsiveUtilities.html · CLAUDE.md §6.20.
+  Every pre-existing rule is preserved byte-for-byte. Additions are marked [+CERBERUS] and are
+  either (a) inert until a component opts in via a class, or (b) fixes for a named client bug
+  that has no effect in a correctly-rendering client. No brand value, size, colour, spacing or
+  layout rule was added, removed or altered.
+
+  DELIBERATELY NOT ADOPTED from Cerberus (see Cerberus-Best-Practices.md §5.7):
+    · table { table-layout: fixed !important; }  — disables intrinsic sizing; would break the
+      shrink-to-fit price badge (§6.17) and the centred odd last card (§6.9).
+    · html, body { height:100% !important; margin:0 auto !important; } — Cerberus warns it can
+      affect the reply-compose window; our existing body reset already works.
+    · .button-td/.button-a :hover transitions — these change interactive appearance, which is a
+      design change. Available on request.
 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
@@ -15,6 +30,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- [+CERBERUS] Stops iOS Mail auto-scaling the entire message. -->
+  <meta name="x-apple-disable-message-reformatting" />
+  <!-- [+CERBERUS] Stops iOS auto-linking phone numbers, addresses and dates as blue links.
+       Explicit <a href="tel:…"> / <a href="mailto:…"> links are unaffected and still work. -->
+  <meta name="format-detection" content="telephone=no,address=no,email=no,date=no,url=no" />
   <meta name="color-scheme" content="light dark" />
   <meta name="supported-color-schemes" content="light dark" />
   <title>[[SUBJECT_LINE]]</title>
@@ -28,23 +48,96 @@
   </noscript>
   <![endif]-->
   <style>
+    /* [+CERBERUS] CSS duplicate of the color-scheme meta — some clients read one, not the other. */
+    :root { color-scheme: light dark; supported-color-schemes: light dark; }
+
     /* --- client resets (structural, not brand) --- */
     body { margin:0; padding:0; width:100% !important; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; }
+    /* [+CERBERUS] text-size-adjust on * as well as body — it does not reliably inherit into
+       nested tables in every client. */
+    * { -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; }
     table { border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; }
     img { border:0; height:auto; line-height:100%; outline:none; text-decoration:none; -ms-interpolation-mode:bicubic; }
     a { text-decoration:none; }
+    /* [+CERBERUS] Outlook adds padding around anchors. Already inline in most built templates;
+       centralised here so every future build inherits it. */
+    #outlook a { padding:0; }
+    /* [+CERBERUS] Neutralise <th>'s default bold. Inert today (no component uses <th>); present so
+       the Cerberus <th> stacking-column pattern can be adopted without a second head change. */
+    th { font-weight:normal; }
+
+    /* --- [+CERBERUS] targeted client-bug fixes -------------------------------------------------
+       Each rule below fixes ONE named client defect. Every selector is either injected by the mail
+       client itself (.a6S, .im, .aBn, #MessageViewBody, a[x-apple-data-detectors]) or opt-in via a
+       class we add deliberately (.g-img, .unstyle-auto-detected-links). None of them can alter the
+       rendering of the current approved design. --------------------------------------------- */
+
+    /* Android 4.4 injects `margin: 16px 0` on a wrapper div. */
+    div[style*="margin: 16px 0"] { margin:0 !important; }
+
+    /* Samsung Mail otherwise renders the message narrower than the viewport. */
+    #MessageViewBody, #MessageWebViewDiv { width:100% !important; }
+
+    /* Gmail overlays a download button on large, unlinked images. */
+    .a6S { display:none !important; opacity:0.01 !important; }
+    /* Fallback for the above: tag the image class="g-img" and hide the injected sibling div. */
+    img.g-img + div { display:none !important; }
+
+    /* Gmail recolours text inside a conversation thread. */
+    .im { color:inherit !important; }
+
+    /* iOS and Gmail auto-detect dates, addresses and phone numbers and style them as blue links.
+       The link cannot be removed, but it can be made to look like the surrounding body text.
+       ⚠️ .unstyle-auto-detected-links must wrap ONLY an address/phone block — never a container
+       that also holds real styled links (e.g. Unsubscribe), or those lose their colour too. */
+    a[x-apple-data-detectors],
+    .unstyle-auto-detected-links a,
+    .aBn {
+      border-bottom:0 !important; cursor:default !important; color:inherit !important;
+      text-decoration:none !important; font-size:inherit !important; font-family:inherit !important;
+      font-weight:inherit !important; line-height:inherit !important;
+    }
+
+    /* Removes the right-hand gutter in the Gmail iOS app. `u ~ div` matches only there — Gmail iOS
+       injects a <u> element ahead of the message body; no other client does. One block per
+       viewport supported. */
+    @media only screen and (min-device-width:320px) and (max-device-width:374px) {
+      u ~ div .email-container { min-width:320px !important; }
+    }
+    @media only screen and (min-device-width:375px) and (max-device-width:413px) {
+      u ~ div .email-container { min-width:375px !important; }
+    }
+    @media only screen and (min-device-width:414px) {
+      u ~ div .email-container { min-width:414px !important; }
+    }
+    /* --- end [+CERBERUS] client-bug fixes ------------------------------------------------------ */
 
     /* --- shared layout baseline (not brand) --- */
     .email-container { width:600px; max-width:600px; margin:0 auto; }
-    /* Fixed name/description heights keep every product card equal height so prices align across a row */
+    /* [+CERBERUS — component 3 addendum] Defensive responsive backstop for the hero banner (§6.6).
+       Five approved outputs already rely on .hero-img but each redefined it inline because it was
+       missing here; centralising it removes that duplication. Identical to the shipping definition,
+       so no built email changes. Declared outside the media query so it also protects clients that
+       apply <head> CSS but not the @media block. */
+    .hero-img { width:100% !important; max-width:100% !important; height:auto !important; }
+    /* Equal-height product cards: the PRIMARY mechanism is fixed-height <td> cells (.pimg/.pnc/.pdc/.ppc)
+       on the card itself (Outlook-safe, CLAUDE §6.8). These min-heights are a progressive-enhancement
+       fallback only for clients that honour them; never the sole mechanism. */
     .prod-name { min-height:34px; }
     .prod-sub  { min-height:52px; }
 
     /* --- responsive (CS-09) --- */
     @media screen and (max-width:600px) {
       .email-container { width:100% !important; }
-      .stack-col, .pc { display:block !important; width:100% !important; max-width:100% !important; }
+      .stack-col, .pc { display:block !important; width:100% !important; max-width:100% !important; box-sizing:border-box !important; }
       .pc img { width:100% !important; height:auto !important; }
+      /* Never enlarge small brand marks / decorative icons with the mobile product-image rule (CLAUDE §6.17) */
+      .pc img.brandmark { width:15px !important; max-width:15px !important; height:auto !important; }
+      /* Fixed-height card regions reset to auto so stacked full-width cards size naturally (CLAUDE §6.8) */
+      .pimg, .pnc, .pdc { height:auto !important; }
+      /* Price badge stays a compact, content-width badge on mobile — NEVER stretches to card width
+         (CLAUDE §6.17). Width is content-driven by the shrink-to-fit table; this only tunes the tap size. */
+      .pricebtn { display:inline-block !important; width:auto !important; padding:12px 26px !important; }
       .center-sm { text-align:center !important; }
       .mp { padding-left:16px !important; padding-right:16px !important; }
       .hh { font-size:28px !important; }
@@ -59,6 +152,25 @@
       /* cards stack full-width: drop the equal-height locks and keep copy readable */
       .prod-name { min-height:0 !important; }
       .prod-sub  { min-height:0 !important; font-size:14px !important; line-height:1.5 !important; }
+
+      /* [+CERBERUS] Hybrid / stacking utilities. INERT TODAY — no current component carries these
+         classes, so they change nothing until product-grid.html (component 5) opts in.
+         `direction:ltr` is the mandatory reset half of the dir="rtl" column-order swap: without it,
+         a right-thumbnail row stacks text-above-image on mobile and the reading order breaks. */
+      .stack-column,
+      .stack-column-center {
+        display:block !important; width:100% !important;
+        max-width:100% !important; direction:ltr !important;
+      }
+      .stack-column-center { text-align:center !important; }
+      /* Generic mobile centring for images, buttons and nested tables. */
+      .center-on-narrow {
+        text-align:center !important; display:block !important;
+        margin-left:auto !important; margin-right:auto !important; float:none !important;
+      }
+      table.center-on-narrow { display:inline-block !important; }
+      /* Centred odd last card goes full width on mobile (CLAUDE §6.9). */
+      .center-half { width:100% !important; }
     }
 
     /* --- dark mode (CS-12); colours inject via tokens from Design.md --- */

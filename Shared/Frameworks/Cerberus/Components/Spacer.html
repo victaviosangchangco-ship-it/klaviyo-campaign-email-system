@@ -1,0 +1,87 @@
+<!--
+  Component: Spacer (Cerberus reference)
+  Purpose: Vertical space between tables and rows, where padding and margin do not work reliably.
+  Source: Cerberus "Clear Spacer" block + docs/content/components.md § Spacers.
+  Required inputs: height in px (inline, not a token — spacers are structural)
+  Optional inputs: [[SECTION_BG]] to keep the spacer inside a coloured band
+  Fallback behavior: n/a
+  Dependencies: none.
+
+  REFERENCE ONLY.
+
+  WHEN TO USE WHICH SPACING MECHANISM
+    padding on a <td>      → space INSIDE a cell. First choice.
+    margin on <p>/<h>/<li> → space between text elements. Well supported on typography only.
+    a spacer ROW           → space BETWEEN tables or rows, where neither of the above is reliable.
+
+  ═══════════════════════════════════════════════════════════════════════════════
+  ⚠️ THIS IS NOT THE "EMPTY <td>" OUR GHOST INSPECTION BANS
+
+  Campaign §8.2 and Flow §9.2 forbid <td></td> — a cell with no height, no content and no purpose.
+  Those collapse unpredictably in Gmail and Outlook and can trigger floating "…" artifacts.
+
+  A spacer cell is the opposite: an explicit height, real content, and aria-hidden so assistive
+  technology skips it. Flow §8.3 already draws this distinction in exactly these terms. Cerberus's
+  spec is the canonical version of it.
+  ═══════════════════════════════════════════════════════════════════════════════
+-->
+
+<!-- Spacer, 40px : BEGIN -->
+<tr>
+  <td aria-hidden="true" height="40"
+      style="height:40px; font-size:0; line-height:0; mso-line-height-rule:exactly;">&nbsp;</td>
+</tr>
+<!-- Spacer, 40px : END -->
+
+
+<!-- Spacer inside a coloured section — carry the background or a white gap appears -->
+<tr>
+  <td aria-hidden="true" height="24" bgcolor="[[SECTION_BG]]"
+      style="height:24px; background:[[SECTION_BG]]; font-size:0; line-height:0; mso-line-height-rule:exactly;">&nbsp;</td>
+</tr>
+
+
+<!-- Spacer inside a card, between two fixed-height regions.
+     This is the correct way to add a gap when the neighbouring cells carry a fixed height —
+     NEVER by adding padding to a height-bearing cell. -->
+<tr>
+  <td aria-hidden="true" height="10" bgcolor="[[CARD_BG]]"
+      style="height:10px; background:[[CARD_BG]]; font-size:0; line-height:0; mso-line-height-rule:exactly;">&nbsp;</td>
+</tr>
+
+<!--
+  EVERY PART IS LOad-BEARING
+
+    height="40" ATTRIBUTE       the sizing primitive Outlook's Word engine honours.
+                                CSS height alone is not enough there.
+    height:40px inline          for everyone else.
+    &nbsp;                      some clients collapse a cell with NO content to zero height,
+                                regardless of the declared height.
+    font-size:0; line-height:0  without these the &nbsp;'s own font metrics ADD to the 40px,
+                                so a "40px" spacer renders at ~60px.
+    mso-line-height-rule:exactly  makes Outlook honour the zeroed line-height.
+                                (Cerberus omits this; we add it.)
+    aria-hidden="true"          stops a screen reader announcing the non-breaking space.
+                                (New to us from Cerberus — our spacers currently omit it.)
+    bgcolor + background        when inside a coloured band, or Gmail mobile paints a white
+                                stripe across the gap (Campaign §6.16).
+
+  ⚠️ THE CONTENT-BOX / BORDER-BOX TRAP  (Flow §8.3)
+  NEVER put height and padding on the same cell:
+
+      <td height="36" style="height:36px; padding-top:14px;">      ← WRONG
+
+  That is 50px in content-box engines and 36px in border-box engines. The region silently changes
+  size per client and everything below it misaligns. Put the gap in its own spacer row — which is
+  exactly what this component is for.
+
+  A fixed-height cell may still carry HORIZONTAL padding, or padding:0.
+
+  ⚠️ NEVER PUT A SPACER IMMEDIATELY BEFORE OR AFTER THE HERO
+  Campaign §6.14 requires the hero to sit flush. A spacer there reintroduces the gutter the
+  edge-to-edge rule exists to eliminate.
+
+  ⚠️ NEVER USE A SPACER GIF
+  A 1×1 transparent GIF stretched to size is a legacy technique. It is an extra HTTP request, it
+  fails when images are blocked, and Gmail may overlay a download icon on it. Use a sized cell.
+-->

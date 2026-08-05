@@ -1,0 +1,74 @@
+<!--
+  Component: Hero (Cerberus reference)
+  Purpose: Full-bleed, edge-to-edge hero banner image wrapped in one clickable anchor.
+  Source: Cerberus "Hero Image, Flush"; hardened to Campaign §6.14/§6.15 and Flow §8.5.
+  Required inputs: [[HERO_IMG_URL]], [[HERO_ALT]], [[HERO_URL]], [[HERO_W]], [[HERO_H]]
+  Optional inputs: [[HERO_BG]] (default #ffffff)
+  Fallback behavior: if [[HERO_URL]] is unknown, render the <img> WITHOUT an anchor —
+                     never an href="#" or a placeholder URL (Campaign §6.7).
+  Dependencies: ResponsiveUtilities.html (.hero-img, .darkmode-bg, .g-img)
+
+  REFERENCE ONLY — production heroes are Components/hero-image.html.
+
+  THREE GAPS IN CERBERUS'S VERSION, CLOSED HERE
+  1. Cerberus ships height="" (empty). Apple Mail iOS has no box to reserve and DROPS the image.
+     → real pixel width AND height attributes (Campaign §6.6).
+  2. Cerberus has no font-size:0 / line-height:0 on the hero <td>. That leaves a thin white strip
+     under the image from the inline baseline. → zeroed, plus mso-line-height-rule:exactly
+     (Campaign §6.14).
+  3. Cerberus's hero is not clickable. Ours is: exactly ONE inline anchor around the <img>
+     (Campaign §6.15).
+
+  WHITESPACE IS SIGNIFICANT
+  The <td>, <a> and <img> are on ONE line with zero whitespace between them. A stray text node at a
+  container boundary is a ghost element that can trigger Gmail rendering artifacts (Campaign §8.2).
+
+  CAMPAIGN vs FLOW — the heroes differ deliberately
+  · Campaign (§6.15): eyebrow, headline, intro and CTA are baked INTO the artwork. Do not re-add
+    them as HTML overlay text.
+  · Flow (§8.5): the OPPOSITE. Personalised, dynamic and offer copy stays in HTML so the hero can
+    carry {{ first_name }} and a changeable offer, and stays readable with images blocked. For a
+    flow hero with text over artwork, use VML.html (background image + VML), not this component.
+-->
+
+<!-- Hero banner : BEGIN -->
+<tr>
+  <td align="center" bgcolor="[[HERO_BG]]" style="background:[[HERO_BG]]; padding:0; margin:0; font-size:0; line-height:0; mso-line-height-rule:exactly;" class="darkmode-bg"><a href="[[HERO_URL]]" target="_blank" style="text-decoration:none;"><img src="[[HERO_IMG_URL]]" width="[[HERO_W]]" height="[[HERO_H]]" alt="[[HERO_ALT]]" border="0" class="hero-img g-img" style="display:block; width:100%; max-width:600px; height:auto; border:0; outline:none; text-decoration:none; margin:0; background:#dddddd; font-family:Arial,Helvetica,sans-serif; font-size:15px; line-height:20px; color:#555555;"></a></td>
+</tr>
+<!-- Hero banner : END -->
+
+<!--
+  ATTRIBUTE-BY-ATTRIBUTE
+
+  <td>
+    padding:0; margin:0        no gutters — the hero spans the full container (Campaign §6.14)
+    font-size:0; line-height:0 removes the image baseline gap (the thin white strip)
+    mso-line-height-rule       makes Outlook honour the zeroed line-height
+    bgcolor + background       both set — Gmail mobile drops CSS background (Campaign §6.16)
+
+  <a>
+    inline (no display:block)  Apple Mail iOS zero-height collapse (Campaign §6.6)
+    exactly one anchor         Campaign §6.15
+    real destination           never "#", never a placeholder (Campaign §6.7)
+
+  <img>
+    width / height attrs       reserve the aspect box before decode (Apple Mail iOS)
+    display:block              removes the inline baseline gap
+    width:100%                 fluid inside the container
+    max-width:600px            never a fixed ceiling BELOW the container width (Campaign §6.6)
+    height:auto                preserves aspect ratio
+    border:0                   no blue outline on the linked image
+    class="hero-img"           defensive responsive backstop
+    class="g-img"              suppresses Gmail's download-button overlay on large images
+    background + font props    styles the alt-text box when images are blocked
+
+  ARTWORK EXPORT
+  Full-bleed rectangular, no white borders, no rounded-corner artifacts, no embedded canvas
+  margins. Those are export defects — request a corrected asset rather than masking them with CSS
+  (Campaign §6.15, Flow §8.5).
+
+  NEVER
+  · A GIF in the hero by default. A GIF is a promotional content element, never the hero mechanism
+    (Campaign §6.19). Animated heroes are an explicit opt-in exception only.
+  · A spacer row immediately before or after the hero (Campaign §6.14, §8.2).
+-->

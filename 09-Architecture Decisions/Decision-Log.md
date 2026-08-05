@@ -33,3 +33,18 @@ Each decision records: **Decision · Reason · Expected outcome · Date · Owner
 
 New decisions are appended with the next D-## number. Related operating rules are enforced in
 `CLAUDE.md`; this log records the business rationale behind them.
+
+## Engineering decisions live elsewhere — and this log is not superseded
+
+**This log records *business and operating* decisions.** *Engineering* decisions — architecture, rendering
+mechanism, client behaviour, standard selection — are recorded as **Architecture Decision Records** in
+`Shared/Engineering/Architecture-Decision-Records.md` (`ADR-###`), shared with the Klaviyo Flow project.
+
+| | Records | Examples |
+|---|---|---|
+| **This log (`D-##`)** | Business, policy, ownership, commercial and workflow decisions | D-04 reviewer ≠ author · D-07 SC coupons are fixed-dollar · D-08 a fresh angle every week |
+| **ADR index (`ADR-###`)** | Engineering decisions | Cerberus as the vendored rendering authority · why Hero geometry failed · HTML owns the text · Hero components are locked |
+
+**Neither restates the other.** Where a business decision has an engineering consequence, the two
+cross-reference. Do not merge them, and do not move entries between them — the numbering series are
+independent and neither is ever renumbered. Boundary definition: `Shared/Engineering/README.md` §8.
