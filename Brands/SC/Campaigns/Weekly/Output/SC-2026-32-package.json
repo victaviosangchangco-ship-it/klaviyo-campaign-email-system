@@ -1,0 +1,31 @@
+{
+  "campaignId": "SC-2026-32",
+  "brand": "SC",
+  "type": "weekly",
+  "generatedAt": "2026-08-10T01:57:06.279Z",
+  "runId": "SC-weekly-20260810-015706",
+  "subject": "Safer, Easier Bathing at Home",
+  "previewText": "Bath Aids. Explore 16 Bath Aids picks, in stock now and ready to ship Australia-wide.",
+  "productCount": 16,
+  "render": {
+    "productsRendered": 16,
+    "rows": 8,
+    "groups": 1,
+    "trimmedFrom": 16
+  },
+  "qa": {
+    "pass": 12,
+    "blocker": 0,
+    "warn": 0
+  },
+  "writeMode": "pipeline",
+  "sendStatus": "NOT_APPROVED_TO_SEND",
+  "_note": "Presence in Output/ is preview only. Approval-to-send is tracked in Brief/ + Review/ and gated by CLAUDE.md §8.1. Klaviyo/send are out of MVP scope.",
+  "files": {
+    "html": "Brands\\SC\\Campaigns\\Weekly\\Output\\SC-2026-32.html",
+    "draft": "Brands\\SC\\Campaigns\\Weekly\\Draft\\SC-2026-32-draft-v3.html",
+    "products_json": "Brands\\SC\\Campaigns\\Weekly\\Output\\SC-2026-32-products.json",
+    "products_csv": "Brands\\SC\\Campaigns\\Weekly\\Output\\SC-2026-32-products.csv",
+    "qa_report": "Brands\\SC\\Campaigns\\Weekly\\Output\\SC-2026-32-qa-report.md"
+  }
+}

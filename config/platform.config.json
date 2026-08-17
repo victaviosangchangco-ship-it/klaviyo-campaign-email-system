@@ -1,0 +1,32 @@
+{
+  "_doc": "Runtime settings for the Automation Platform (non-secret). Secrets live in per-brand .env files (git-ignored). See LIVE_SYSTEM_ARCHITECTURE_V2.md and platform/README.md.",
+  "version": "0.1.0-mvp",
+  "paths": {
+    "components": "Components",
+    "templates": "Templates",
+    "shared": "Shared",
+    "brands": "Brands",
+    "brandDocs": "03-Brands MD Files",
+    "config": "config",
+    "calendar": "config/campaign-calendar.generated.json",
+    "runtime": "runtime",
+    "logs": "runtime/logs",
+    "cache": "runtime/cache",
+    "exports": "runtime/exports"
+  },
+  "product": {
+    "defaultCount": 16,
+    "minCount": 4,
+    "gridColumns": 2
+  },
+  "qa": {
+    "gmailClipKb": 102,
+    "verifyLinksDefault": false,
+    "linkCheckTimeoutMs": 8000,
+    "linkCheckConcurrency": 6
+  },
+  "logging": {
+    "level": "info",
+    "writeRunLog": true
+  }
+}

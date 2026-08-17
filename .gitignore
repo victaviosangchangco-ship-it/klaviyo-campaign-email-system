@@ -26,6 +26,9 @@ out/
 *.log
 logs/
 
+# Automation Platform operational output (run logs, product snapshots, sandbox exports)
+runtime/
+
 # OS files
 .DS_Store
 .DS_Store?

@@ -1,0 +1,126 @@
+{
+  "_doc": "SectorCare (SC) brand configuration for the Automation Platform — the SINGLE, non-secret source of SC brand facts + design tokens. Mirrors config/brands/RDD.config.json (RDD is the reference implementation). Credentials are NEVER stored here — the SC Klaviyo key loads at runtime from Brands/SC/.env (git-ignored) under env var SC_KLAVIYO_API_KEY. Brand-prefixed env var name gives strict cross-brand isolation.",
+  "_sources": "Grounded in APPROVED, in-repo references (CLAUDE.md §5 — never invented). 03-Brands MD Files/SC.md is an empty stub, so the SC design system is [Inferred] from the latest approved sends Brands/SC/Campaigns/Weekly/Output/SC-2026-W29.html + SC-2026-W30.html (the visual source of truth until an official SC brand source exists) and the project memory sc-brand-facts. Values are confidence-tagged; [Inferred]/To-be-confirmed items must be confirmed before an SC send.",
+  "_status": "PARTIAL — sufficient for Klaviyo credential resolution + isolation + live read-only validation (this integration pass). Product source (BigCommerce s-498h0egvgn) is NOT yet wired for SC (no Brands/SC/integration/ folder, no BigCommerce creds in Brands/SC/.env). Full end-to-end SC drafts additionally require: SC calendar rows + an SC product source. See LIVE_SYSTEM_AUDIT / KLAVIYO_INTEGRATION_PLAN.",
+
+  "code": "SC",
+  "type": "brand-config",
+
+  "identity": {
+    "companyName": { "value": "SectorCare", "confidence": "Confirmed", "source": "SC-2026-W30.html footer / title" },
+    "displayName": { "value": "SectorCare", "confidence": "Confirmed", "source": "SC-2026-W30.html" },
+    "website": { "value": "https://sectorcare.com.au/", "confidence": "Confirmed", "source": "SC-2026-W30.html header/CTA (HTTP 200)" },
+    "address": { "value": null, "confidence": "To be confirmed", "source": "SC footer address not captured in approved source" },
+    "phone": { "value": "02 9172 5607", "confidence": "Inferred", "source": "project memory sc-brand-facts (approved W29 send)" },
+    "privacyUrl": { "value": "https://sectorcare.com.au/privacy-policy/", "confidence": "Confirmed", "source": "SC-2026-W30.html footer (HTTP 200; the old /privacy path 404s — do not reuse)" },
+    "allProductsUrl": { "value": "https://sectorcare.com.au/", "confidence": "Inferred", "source": "SC-2026-W30.html Shop All pill" }
+  },
+
+  "logo": {
+    "url": { "value": "https://d3k81ch9hvuctc.cloudfront.net/company/XAUdQX/images/f7015926-fe41-4710-8b2f-d8ec95626866.png", "confidence": "Confirmed", "source": "SC-2026-W30.html header (image CDN; note: hosted under the previously-connected account, still resolves — re-host under the SC account when convenient)" },
+    "darkUrl": { "value": "https://d3k81ch9hvuctc.cloudfront.net/company/XAUdQX/images/f7015926-fe41-4710-8b2f-d8ec95626866.png", "confidence": "Inferred", "source": "same asset in both modes" },
+    "alt": "SectorCare",
+    "width": 200,
+    "height": 32,
+    "align": "left",
+    "_sizingNote": "CLAUDE.md §6.1 — SC logo LEFT-aligned. Height 32px per approved SC-2026-W30.html header."
+  },
+
+  "designTokens": {
+    "_note": "[Inferred] from approved SC-2026-W29/W30 outputs (SC.md is an empty stub). Six-digit hex only. SC house style: warm/soft, teal accent, beige support panels, serif headlines — an older/accessibility-minded audience (CLAUDE.md §6.4 readability-first).",
+    "FONT_STACK": "'Helvetica Neue',Helvetica,Arial,sans-serif",
+    "HEADING_FONT_STACK": "Georgia,'Times New Roman',serif",
+    "HEADING_WEIGHT": "700",
+    "EYEBROW_SIZE": "11px",
+    "H1_SIZE": "30px",
+    "H2_SIZE": "22px",
+    "BODY_SIZE": "16px",
+    "META_SIZE": "14px",
+    "SMALL_SIZE": "12px",
+
+    "BODY_BG": "#f2f2f0",
+    "TEXT_COLOR": "#1a1a1a",
+    "MUTED_TEXT_COLOR": "#666666",
+    "ACCENT_COLOR": "#3d7a94",
+    "LINK_COLOR": "#3d7a94",
+
+    "SECTION_BG": "#f5f1ea",
+    "CARD_BG": "#ffffff",
+    "CARD_BORDER_COLOR": "#e6e0d6",
+    "BADGE_BG": "#3d7a94",
+    "BADGE_TEXT_COLOR": "#ffffff",
+
+    "BUTTON_BG": "#3d7a94",
+    "BUTTON_TEXT_COLOR": "#ffffff",
+    "BUTTON_RADIUS": "4px",
+    "CTA_BUTTON_RADIUS": "4px",
+    "BUTTON_ARCSIZE": "8%",
+
+    "CARD_RADIUS": "8px",
+    "IMAGE_RADIUS": "8px",
+    "PILL_RADIUS": "24px",
+
+    "TRUST_ICON_BG": "#f5f1ea",
+
+    "FOOTER_BG": "#f0ebe4",
+    "FOOTER_TEXT_COLOR": "#555555",
+    "FOOTER_LINK_COLOR": "#f7941d",
+
+    "DARK_BODY_BG": "#111111",
+    "DARK_TEXT_COLOR": "#ffffff",
+    "_confidence": "All [Inferred] from approved SC outputs — pending an official SC brand source (SC.md is a stub)."
+  },
+
+  "trust": {
+    "_note": "Monochrome text-presentation glyphs only (CLAUDE.md §6.21). Grounded in the approved SC send trust claims (sc-brand-facts memory).",
+    "title": "Why SectorCare",
+    "items": [
+      { "glyph": "&#9993;&#xFE0E;", "label": "Fast Australia-Wide Shipping", "sub": "Dispatched nationwide" },
+      { "glyph": "&#10003;", "label": "Registered NDIS Provider", "sub": "Trusted mobility & care" },
+      { "glyph": "&#9733;&#xFE0E;", "label": "Australian Owned", "sub": "Local support" },
+      { "glyph": "&#9742;&#xFE0E;", "label": "Trusted Customer Support", "sub": "02 9172 5607" }
+    ]
+  },
+
+  "promo": {
+    "_note": "CLAUDE.md §6.4 — SC standard is a fixed-dollar discount, NEVER a percentage (unless an approved special arrangement). Code MOVE20 is PROPOSED and must be created + confirmed ACTIVE in SC BigCommerce before any send (CLAUDE.md §6.3). Promo TITLE/copy must still be written fresh per campaign (§6.5).",
+    "standardOffer": "Save $20 on orders over $200",
+    "couponCode": { "value": "MOVE20", "confidence": "PROPOSED", "note": "must be created + ACTIVE in BigCommerce before send" }
+  },
+
+  "bigcommerce": {
+    "_note": "SHARED BigCommerce store with SS (VERIFIED from project files: SC and SS product images all resolve to store 498h0egvgn — the SAME store — served through two storefronts: sectorcare.com.au for SC, safetysector.com.au for SS). Credentials are NOT duplicated per brand: SC and SS both read the SAME git-ignored shared file (envPath below). Brand separation on the shared catalog is by brand-specific category ids (featuredCategoryIds / calendar topic_category) plus THIS brand's storeDomain for product URLs — NEVER the generic store-wide candidate/recent pool, which would mix SS and SC products. Klaviyo stays fully isolated per brand (see the klaviyo block). Product retrieval is blocked until the shared store's read-only token is added to the shared file, and until SC's category ids are identified from the live catalog.",
+    "envPath": "Brands/_shared/.env",
+    "storeDomain": "https://sectorcare.com.au",
+    "storeHashHint": "498h0egvgn",
+    "channelId": 1786273,
+    "categoryTreeId": 2,
+    "requireExplicitScoping": true,
+    "imageCdnHost": "https://cdn11.bigcommerce.com/s-498h0egvgn/",
+    "featuredCategoryIds": [139, 140, 141, 145, 172, 174, 175, 188, 189, 190, 191, 192, 194],
+    "_categoryNote": "VERIFIED live read-only 2026-08-09: SC = channel 1786273 / category tree 2 ('SectorCare'). These tree-2 top-level categories returned live products (wheelchairs, scooters, rollators, bath/toilet/transfer/shower/bed aids). Products resolve to sectorcare.com.au. Note: the catalog also has duplicate SC category names in other trees (e.g. 'Mobility Aids' 174 tree-2 vs 195 tree-1 all-SC); prefer brand-specific category names in the calendar to avoid cross-tree name collisions.",
+    "saleCategoryId": null,
+    "heroProductId": null,
+    "_status": "shared-store VALIDATED (live read-only); channel 1786273 / tree 2; SC category ids set"
+  },
+
+  "klaviyo": {
+    "_note": "Non-secret Klaviyo settings for the SC DRAFT MVP. The SC Klaviyo private key is NEVER stored here — it loads at runtime from Brands/SC/.env (git-ignored) under SC_KLAVIYO_API_KEY. Brand-prefixed env var name enforces isolation from RDD (KLAVIYO_API_KEY) and SS (SS_KLAVIYO_API_KEY). The platform creates DRAFTS ONLY (safety.js no-send guard). Fields tagged 'To be confirmed' are external prerequisites that block SC campaign creation until supplied.",
+    "apiKeyEnvVar": "SC_KLAVIYO_API_KEY",
+    "envPath": "Brands/SC/.env",
+    "apiBaseUrl": "https://a.klaviyo.com/api",
+    "revision": "2024-10-15",
+    "requiredScopes": ["Campaigns:Full", "Templates:Full", "Lists:Read", "Accounts:Read"],
+    "account": { "idHint": "W2Ua5v", "confidence": "Confirmed", "source": "live read-only GET /accounts returned account id W2Ua5v — 'Sector Care' (the approved SC logo was hosted under the previously-connected account XAUdQX, so that hash is NOT SC's)" },
+    "sender": {
+      "fromEmail": { "value": null, "confidence": "To be confirmed", "note": "Must be a verified sending domain/from-address in the SC Klaviyo account; blocks campaign creation if absent. sales@sectorcare.com.au is the SC contact inbox — confirm it is a verified Klaviyo sender before use." },
+      "fromLabel": { "value": "SectorCare", "confidence": "Inferred" },
+      "replyToEmail": { "value": null, "confidence": "To be confirmed" }
+    },
+    "audience": {
+      "type": "list",
+      "name": { "value": null, "confidence": "To be confirmed", "note": "A dedicated DEMO/test list in the SC account; resolved to an id at draft time." },
+      "id": { "value": null, "confidence": "To be confirmed" }
+    }
+  }
+}

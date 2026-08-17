@@ -1,0 +1,78 @@
+{
+  "_doc": "Machine-readable content calendar — the engine resolves an intent like 'this week' to a concrete slot. This is the machine form of 00-Project Overview/content-calendar.md (which stays the human narrative). Send day/time and lead times are still To Be Confirmed there; the MVP uses ISO week only. In the MVP, if no slot matches, the engine synthesizes a default Weekly slot for the current ISO week (it does NOT invent product/theme data — those still come from the live catalog).",
+  "version": "0.1.0-mvp",
+  "defaults": {
+    "RDD": { "weekly": { "type": "weekly", "themeStrategy": "featured-and-recent" } },
+    "SS": { "weekly": { "type": "weekly", "themeStrategy": "featured-and-recent" } },
+    "SC": { "weekly": { "type": "weekly", "themeStrategy": "featured-and-recent" } }
+  },
+  "slots": [
+    {
+      "brand": "RDD",
+      "type": "weekly",
+      "isoWeek": null,
+      "theme": null,
+      "objective": "Recurring product-led Weekly send: surface the current, in-stock featured range and drive traffic to live product pages.",
+      "note": "isoWeek:null = template slot applied to whichever week the run targets. Theme is derived from the live catalog at generation time (never invented)."
+    }
+  ],
+  "_campaigns_note": "SAMPLE planning rows for the Content Calendar Service (read-only). These are calendar PLANNING intent, not verified sends — product data still comes from the live catalog at generation time (CLAUDE.md §5). Additive: the existing `slots`/`defaults` above are untouched and still drive calendar/adapter.js. In production these rows come from a provider (JSON now; Lark Base / CSV later).",
+  "campaigns": [
+    {
+      "campaign_id": "RDD-2026-W33",
+      "brand": "RDD",
+      "campaign_type": "weekly",
+      "campaign_name": "Workspace & Signage Weekly",
+      "topic_category": "Workspace",
+      "subject_line": "This week at Retail Display Direct: Workspace essentials",
+      "preview_text": "In-stock desks, chairs and signage, ready to ship Australia-wide.",
+      "send_date": "2026-08-13",
+      "send_time": "10:00",
+      "promotion": null,
+      "segment": null,
+      "list": "Email List"
+    },
+    {
+      "campaign_id": "RDD-2026-W34",
+      "brand": "RDD",
+      "campaign_type": "weekly",
+      "campaign_name": "Acrylic Displays Weekly",
+      "topic_category": "Acrylic Displays",
+      "subject_line": "Fresh acrylic display picks for your space",
+      "preview_text": "Sign holders, brochure holders and more, in stock now.",
+      "send_date": "2026-08-20",
+      "send_time": "10:00",
+      "promotion": null,
+      "segment": null,
+      "list": "Email List"
+    },
+    {
+      "campaign_id": "RDD-2026-W35",
+      "brand": "RDD",
+      "campaign_type": "weekly",
+      "campaign_name": "Snap Frames Weekly",
+      "topic_category": "Snap Frames",
+      "subject_line": "Snap frames, sized for every wall",
+      "preview_text": "A1 to A4 snap frames, in stock and ready to ship.",
+      "send_date": "2026-08-27",
+      "send_time": "10:00",
+      "promotion": null,
+      "segment": null,
+      "list": "Email List"
+    },
+    {
+      "campaign_id": "SS-2026-W33",
+      "brand": "SS",
+      "campaign_type": "weekly",
+      "campaign_name": "Safety Sector Weekly",
+      "topic_category": "Site Safety",
+      "subject_line": "This week in site safety",
+      "preview_text": "Compliance-ready safety gear, in stock now.",
+      "send_date": "2026-08-13",
+      "send_time": "11:00",
+      "promotion": null,
+      "segment": null,
+      "list": "Safety Sector Customer List"
+    }
+  ]
+}

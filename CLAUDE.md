@@ -369,6 +369,18 @@ Permanent rules for **Product Launch** sends (full strategy: `Playbooks/Launch-P
   introduces the whole range, so a single-product destination misrepresents it. Only link the hero/CTA to
   a specific product when the user or approved `Brief/` explicitly requests it.
 
+- **Multi-brand SKU ownership verification (launches spanning brands — established SS-2026-LAUNCH).** When a
+  launch SKU list is supplied **without an explicit brand mapping**, verify **each** SKU (Catalog API, exact
+  sku, products **and** variants) against **every** candidate brand's store (RDD `ugqmr0qfvf`; SS/SC shared
+  `498h0egvgn` — §12), and **determine ownership from the returned data, never from the SKU prefix/naming.**
+  Present the RDD/SS(/SC) mapping table **before** building. Then: a SKU in **exactly one** store → that
+  brand; in **more than one** store → **STOP and ask** which brand (do not silently pick); in **none** →
+  **STOP and report** (a close match may be a typo — surface it, never substitute without confirmation);
+  a title carrying a **different brand's name** (e.g. "SectorCare …" on an SS send) → use a brand-neutral
+  **display name** and **flag the source title for renaming** (§5.4 above), and flag any **URL slug** that
+  still carries the other brand (the live URL is not altered — that would breach §6.7). The confirmed source
+  **store** governs the product data/URLs/images for the build.
+
 ## 6. HTML Generation Standards
 
 The authoritative standards are `CS-08`–`CS-15` in the BRD — follow them; do not restate them here.
@@ -1461,6 +1473,134 @@ a **real Klaviyo test import** (not localhost/desktop — the tags do not expand
 - ✓ footer links (**Unsubscribe · Privacy Policy · Manage Preferences**) render as clean text, are
   clickable, and the layout is unchanged.
 
+### 6.24 Preview Text is mandatory and auto-generated (all brands — permanent, every campaign)
+
+**Every generated Weekly Campaign must have a non-empty, campaign-specific Preview Text. Calendar
+`preview_text` is optional. If absent, the AI/content generation layer must generate an accurate,
+compelling preview text from the campaign context. Preview Text must be passed through the pipeline and
+into the Klaviyo campaign draft. Never leave Preview Text blank simply because the calendar did not provide
+one.** Established RDD-2026-35, where the calendar had no `preview_text` and the Klaviyo draft shipped with
+an empty preheader. Applies to every brand and every campaign type.
+
+**Source priority (the rule):**
+1. **Calendar `preview_text` → use it verbatim** when present and non-empty (never altered, never invented).
+2. **Missing / null / empty → generate automatically** from the *same verified content package* used to
+   build the HTML — subject-aware (it **complements** the subject, never repeats it), type-aware, concise
+   (preheader-length), and **accurate**: only real `key_topic`, `promotion`, theme/category, and product
+   count. **Never** fabricate discounts, urgency, or product benefits.
+
+**Type-aware generation (what the fallback emphasises):** product-insight / educational → curiosity about
+what the reader learns; promotional / clearance / EOFY / gift → the **actual** offer/value *when a real
+promotion exists*; weekly product-led → the actual theme/category and range. No em-dash interruptions (§6.2).
+
+**Where it lives (reuse, do not fork):** generation is `platform/ai/copy.js` `generatePreviewText()`, used
+by `buildCalendarPackage` for `pkg.preheader`; the calendar's planning extras (`key_topic`, …) must survive
+normalization (`calendar-service.js`) so generation can use them; the live orchestrator sets the Klaviyo
+draft's `preview_text` to the calendar value if valid, else the generated `pkg.preheader`, **before** the
+draft is created — and STOPS rather than draft an empty preheader.
+
+**QA gate before Output / draft (record in `Review/`):** ✓ the generated package has a non-empty
+`previewText` · ✓ it is campaign-specific (not equal to the subject line) · ✓ it reaches the Klaviyo draft
+message `content.preview_text` (verify in the draft readback) · ✓ a campaign whose calendar row *does*
+supply `preview_text` still uses that value unchanged.
+
+### 6.25 Weekly introduction copy must be short and scannable (all brands — permanent)
+
+Established RDD-2026-35. The introduction beneath the hero must be **immediately scannable** — a reader
+grasps it in a few seconds.
+
+- **Length:** ideally **one short paragraph, or at most two very short sentences.** Never a multi-paragraph
+  block. Longer narrative belongs in a dedicated content section, never the intro (this reinforces the
+  intro component's own "three paragraphs max, never pad" note and §5.1.3 editorial restraint).
+- **Merge, don't fragment.** Combine related introduction copy into **one** concise block; never split one
+  introduction across multiple stacked paragraphs/tables that repeat the same idea. It should read as a
+  single editorial introduction placed naturally before the product grid. Applies to **every** final
+  campaign output (SS, RDD, SC, all types). Established RDD-2026-35 (two near-duplicate intro paragraphs
+  merged into one).
+- **Lead with the customer benefit**, aligned to the campaign theme. Mention the audience (kids, students,
+  families, home office) only where it genuinely helps.
+- **Do not repeat the hero heading or the hero lead line** (§5.2 non-repetition) — the intro adds the
+  *why/benefit*, it does not restate what the hero already said.
+- **Avoid generic filler** openers such as "Explore…", "The right chair and desk…", and repeated
+  near-identical sentences. Every sentence must earn its place.
+- **NO DASH** (§6.2): no em/en dashes or dash-style separators in the copy (a hyphen inside an official
+  product name is the only exception). Write clean sentences rather than dash interruptions.
+- **Build note:** a single-paragraph intro renders one `<p>` — the extra intro paragraph slot is pruned so
+  no empty `<p>` ghost remains (§8.2). Keep the tone premium, practical and brand-appropriate.
+
+### 6.26 Footer design philosophy — minimalist, professional, compact (all brands — permanent default)
+
+Established SS-2026-W32 / RDD-2026-35. The **default** footer across **RDD, Safety Sector (SS) and
+SectorCare (SC)** is **minimalist, clean, professional, compact, and never cartoonish.** This governs the
+footer's *look/feel*; the footer's build mechanics — mobile-safe table+cell `bgcolor` (§6.16) and merge-tag
+validity (§6.23) — still apply and are not restated here.
+
+- **Do NOT** build cartoon-like, oversized, heavily decorative, or unnecessarily complex footers.
+- Keep it compact: a short contact/help line, the subscription links (**Unsubscribe · Privacy Policy ·
+  Manage Preferences**, §6.23 URL-form tags), the company/address line, and an optional copyright line.
+- **Consistency within a brand:** a brand's campaigns share **one** footer design. When updating a campaign,
+  standardize its footer to that brand's latest approved footer (e.g. RDD → `RDD-2026-W32-draft-v7`; SS →
+  the approved `SS-2026-W29`/`W32` treatment) rather than inventing a new one.
+- Change this philosophy only when Management explicitly requests a different footer, or a specific campaign
+  genuinely requires different treatment.
+- **Approved per-brand footer/contact implementation (permanent; established SS-2026-LAUNCH).** Each brand
+  has an **approved footer + contact block** — reuse it; do **not** invent an alternate structure when one
+  exists. For **SS**, the approved contact block is *"Got a question? We're here to help."* with the approved
+  SS phone (`02 9790 2182`, `tel:+61297902182`) and email (`sales@safetysector.com.au`) — reproduced from the
+  approved SS Weekly/Product-Launch templates; **preserve the contact details exactly, never invent/modify
+  them.** Order at the end of the email: **contact/help block → legal links (Unsubscribe · Manage Preferences
+  · Privacy Policy, §6.23 URL-form tags) → business name + address.** The footer/contact section must sit
+  **inside** the email container and be visually connected to the campaign (accent colours may follow the
+  campaign palette so it does not read as a detached template).
+
+### 6.27 Trust-card alignment — reuse the product-grid container (all brands — permanent; established SS-2026-LAUNCH v4)
+
+A trust-card strip (e.g. "We've got you covered") must align to the **same content boundaries as the product
+grid** — it never gets its own arbitrary width or ad-hoc margins/offsets. This extends §6.8/§6.9 (equal cards,
+balanced grid) and §6.20 (hybrid stacking) to the trust strip; do not restate those, apply them.
+
+- **Reuse the product grid's outer container** — the same row padding (the grid's `padding:… 16px …` inset),
+  so the **first card's left edge and last card's right edge line up with the product cards** (e.g. 22px ↔
+  578px in a 600px container: 16px row inset + 6px card side-padding).
+- **Equal widths + consistent gaps, guaranteed by structure, not by content.** Preferred mechanism — **the
+  same primitive as the product grid**: a plain `<table width="100%">` with **`table-layout:fixed`** and N
+  equal `<td width="(100/N)%">` cells (e.g. 4 × 25%), each with the grid's `padding:0 6px` side gutters. Fixed
+  layout forces exactly-equal columns regardless of differing title lengths (a plain **auto**-layout table is
+  the bug — it distributes columns by content and breaks alignment), and cells in one `<tr>` are
+  **auto equal-height** (give the inner card `height:100%`). First/last card edges then match the product
+  cards (e.g. 22px ↔ 578px). The §6.20 hybrid `display:inline-block` + MSO-ghost pattern is an acceptable
+  alternative only when 2×2 mobile wrapping is specifically required.
+- **Mobile:** stack with the **same responsive pattern as the product grid** — `display:block; width:100%`
+  on the cells (1-col) — so there is **no horizontal overflow** and no card extends past the container. Never
+  leave a plain multi-`<td>` row at `width:50%` (table cells do not wrap → squish/overflow).
+- **Do not use random margins or pixel offsets** to force alignment; the container + fixed columns carry it.
+
+### 6.28 Product-brand routing — sending brand ≠ product brand (all brands — permanent; established SS-2026-LAUNCH)
+
+**The campaign's sending brand and a featured product's actual brand are independent.** A campaign sent under
+one brand may feature another brand's products (e.g. an **SS** send featuring **SectorCare (SC)** products).
+When that happens, every **customer-facing product/promotional link resolves to the PRODUCT's own brand
+website**, decided from the product's actual **Brand Name / approved BrandConfig data (§12)** — never assumed
+from the sending brand. This extends §6.7 (every link live + verified HTTP 200) and §5.4 (never show another
+brand's name); apply all three.
+
+- **Route to the product's brand site:** an SC-branded product → its canonical **SectorCare** product page
+  (`sectorcare.com.au/<slug>/`); an SC collection/hero/banner → the SectorCare collection
+  (`sectorcare.com.au/…`). **Never** route an SC product or SC-specific promotional asset to Safety Sector or
+  RDD just because the campaign is sent under SS. (Verified SS-2026-LAUNCH: the SectorCare products' cards all
+  resolve to `sectorcare.com.au`, and the SC hero/CTA to `sectorcare.com.au/`, while SS remains the sender.)
+- **Applies to every clickable, brand-specific asset:** product **cards, images, names, price/CTA anchors**,
+  **hero image + hero CTA**, **collection/promotional banners**, and any other SC-specific clickable element.
+- **Sender-brand assets stay on the sending brand.** The **header logo**, **contact block**, footer **legal
+  links** (Privacy Policy) and Klaviyo **subscription tags** (`{% unsubscribe_link %}` /
+  `{% manage_preferences_link %}`) belong to the **sender** (SS) and resolve to the sender's site/account —
+  they are not product/promotional links and are never re-routed.
+- **Never invent a URL**; use only the canonical, **verified HTTP 200** brand URL (re-verify on every
+  revision, §6.7/§8). **Never** `localhost`, `127.0.0.1`, or a local filesystem path in production HTML (§8).
+- **Klaviyo account/sender isolation is unaffected** (§12/§13): where a product *links* has no bearing on
+  which account *sends* — an SS campaign still sends from the SS Klaviyo account regardless of SC product
+  destinations.
+
 ## 7. Asset & Reference Workflow
 
 - **Evergreen brand assets** (logos, icons, brand-level references) → `Brands/<CODE>/Assets/`. Reused
@@ -1476,6 +1616,38 @@ a **real Klaviyo test import** (not localhost/desktop — the tags do not expand
   in the hero** unless a user or approved `Brief/` explicitly requests it (prices belong in the grid, §5.1).
   AI output is **never auto-approved**: a human reviews it for product accuracy and brand fit
   (`CR-16`/`CR-17`), and only the approved visual enters the Assets workflow.
+
+### 7.1 Vercel image hosting — shared, all brands (permanent; established SS-2026-LAUNCH)
+
+Campaign images (Hero Banners and any other campaign image) are served publicly over HTTPS from the
+**single, shared** per-brand Vercel static-asset hosting tree at `hosting/{ss,sc,rdd}/` — **one shared
+mechanism for all three brands, never three parallel systems** (`hosting/README.md`; publish tool
+`Scripts/publish-assets.js`; each brand is its own Vercel project with Root Directory `hosting/<brand>` and
+"include files outside Root Directory" OFF, so only that brand's approved images are servable).
+
+**Workflow (reuse, do not reinvent):**
+1. **Place / publish** the image into the brand's host via the existing allow-list tool:
+   `node Scripts/publish-assets.js publish --brand <SS|SC|RDD> --src <path> --name <versioned-name>.jpg`
+   (image-only; blocks cross-brand sources, path traversal, secrets; validate with
+   `node Scripts/publish-assets.js validate <BRAND>`). Filenames are **versioned + immutable** (never
+   overwrite a name with different content — the cache is `immutable`).
+2. **Deploy** through the existing Vercel git integration (commit the file under `hosting/<brand>/` and push
+   the connected branch → Vercel redeploys that brand's project). This is the same pattern that published
+   `assets-ss-wheat.vercel.app/ss-2026-w32-hero-banner.jpg`.
+3. **Obtain the public HTTPS URL** `https://<brand-vercel-domain>/<name>` and **confirm HTTP 200** before use
+   (SS host live domain: `assets-ss-wheat.vercel.app`). Record any newly-created brand domain here.
+4. The **campaign HTML references the Vercel HTTPS URL** — never a local path.
+
+**Hard rule (QA-enforced):** final campaign HTML must **never** contain `localhost`, `127.0.0.1`, a local
+filesystem path, a VS Code Live Server URL (`:5500`), or any temporary/dev image URL. **QA fails** on any of
+these (this is already covered by the §8 image-URL gate and §8.1 — every `<img src>` must be a public
+absolute HTTPS URL returning HTTP 200; do not weaken it). The Hero Banner's Vercel URL must be **verified
+HTTP 200 after deploy** before the campaign is marked send-ready.
+
+**Cross-brand creative note:** an image sourced for one brand's *creative* but sent from another brand's
+account is hosted on the **sending brand's** host (e.g. an SS send hosts its hero on the SS project), and
+never carries another brand's filename prefix (the validator blocks `SC-`/`RDD-`-prefixed names in the SS
+host). Klaviyo account/sender isolation (§12, §13) is unaffected by where an image is hosted.
 
 ## 8. QA Workflow
 
@@ -1699,4 +1871,131 @@ Forward hooks — **do not implement until explicitly approved:**
 
 Roadmap rationale lives in `05-Future/`.
 
+## 12. Multi-Brand Klaviyo Credentials (RDD reference; SS/SC extension — permanent)
+
+**RDD is the reference implementation. SS and SC reuse the identical, already brand-parameterized
+architecture — never a parallel system.** Every layer resolves off `brand.code`
+(`loadBrandConfig` → `loadKlaviyoConfig` → `KlaviyoClient` → orchestrator). Adding a brand is
+**config + a git-ignored `.env`**, not new code. Full status: `MULTI_BRAND_KLAVIYO_STATUS.md`.
+
+- **One brand = one Klaviyo account = one key, in one git-ignored `.env`.** Keys live ONLY in
+  `Brands/<CODE>/.env` (covered by `.gitignore` `Brands/**/.env`); never in source, config JSON, tests,
+  logs, docs, or a git diff. The config loader returns a `hasApiKey` presence flag only — it never
+  returns the key value (`platform/integrations/klaviyo/config.js`).
+- **Brand-prefixed key env var names enforce isolation.** RDD = `KLAVIYO_API_KEY` (unchanged); SS =
+  `SS_KLAVIYO_API_KEY`; SC = `SC_KLAVIYO_API_KEY`. Distinct names mean a single stray global var can
+  never satisfy more than one brand. The `apiKeyEnvVar` field in each `config/brands/<CODE>.config.json`
+  klaviyo block selects it. **Never copy a brand's key into another brand's `.env` or config.**
+- **Brand facts are grounded, never invented (§5).** `config/brands/SS.config.json` and `SC.config.json`
+  are grounded in each brand's approved in-repo outputs + brand doc, confidence-tagged. `[Inferred]` /
+  `To be confirmed` values (senders, audiences, privacy URL, exact tokens) block a real send until
+  confirmed — they do not block credential resolution or read-only validation.
+- **Draft-only safety is unchanged and brand-independent** (`safety.js` no-send guard; every result
+  `NOT_APPROVED_TO_SEND`). Preview Text auto-generation (§6.24) is already brand-agnostic.
+- **Product source: RDD has its own store; SS + SC SHARE one store — Klaviyo stays isolated.** RDD uses
+  its own BigCommerce store (`ugqmr0qfvf`, `Brands/RDD/integration/`). **SS and SC are two storefronts on a
+  single shared store (`498h0egvgn`)** — verified from approved-send product image URLs — so they reference
+  the SAME git-ignored shared credential file (`Brands/_shared/.env`, `bigcommerce.envPath` in both configs);
+  the token is NOT duplicated. A shared product source does **not** share Klaviyo: SS→SS Klaviyo, SC→SC
+  Klaviyo, always (per-brand key files + brand-prefixed vars). On the shared catalog, separate SS from SC by
+  **category scoping** (each brand's `featuredCategoryIds` / the calendar `topic_category`) + the brand's own
+  `storeDomain` for URLs — never the generic store-wide candidate pool (it mixes brands). Product retrieval
+  is blocked until the shared read-only token + each brand's category ids are supplied; until then the
+  pipeline STOPS with an `IntegrationError` rather than fabricating products (§5.1). Do not fake SS/SC
+  products, URLs, images, or audiences to force a run. Full status: `MULTI_BRAND_KLAVIYO_STATUS.md`.
+- **CLI is already multi-brand:** `node platform/engine/cli.js create --brand SS|SC|RDD [--klaviyo]`.
+
+## 13. Klaviyo Draft Automation — audience confirmation & approved creatives (all brands — permanent)
+
+The system is **Klaviyo-connected and file-driven.** Campaign generation runs through the **single shared
+orchestrator** (`platform/workflow/live-orchestrator.js`) for **every** brand — RDD is the reference
+implementation; SS and SC reuse it. **Never build a parallel or brand-specific Klaviyo creation path**
+(§12). The orchestrator already owns audience resolution, deduplication (create-or-reuse, no duplicates),
+HTML attachment, subject/preview assignment, the QA gate, and draft-only safety (`NOT_APPROVED_TO_SEND`,
+`safety.js`). **Reuse those mechanisms; do not reimplement them.** Draft creation is the **maximum**
+automation allowed — never schedule, never send (§8.1 send gate, §9).
+
+### 13.1 Audience confirmation gate — ASK before every draft
+
+Before creating **or updating** a Klaviyo draft, the Segment/List MUST be **explicitly confirmed by the
+user** for that campaign — it is never assumed.
+
+- **A previous campaign's audience is NOT a permanent default.** `60D Active Customers`,
+  `SC - All Subscribers`, or any prior selection must not be auto-reused as if permanent. (An audience set as
+  the *current* requirement in an approved `Brief/` or config is a valid confirmed source; a prior send's
+  choice is not.)
+- **Resolve and SHOW the available Segment/List options** for that brand's Klaviyo account (read-only), then
+  ask *"Which Segment/List should I use for this campaign?"* (for multiple brands, ask per brand, e.g.
+  *"…for SS and …for RDD?"*). **WAIT for confirmation before touching Klaviyo.**
+- After confirmation: create or **reuse** the draft (dedup), attach the exact final HTML, set Subject +
+  Preview Text (§6.24) + the confirmed audience, keep it **Draft**. Verify no duplicate was created.
+- If the audience cannot be resolved, **STOP and report** — never guess, never invent, never use another
+  brand's audience (§12 isolation).
+
+### 13.2 Approved-creative attachment — `config/approved-html.json`
+
+When a campaign has an entry in **`config/approved-html.json`** (campaign_id → `{ html, subject,
+preview_text }`), the orchestrator attaches that **approved Output HTML verbatim** instead of regenerating a
+creative:
+
+- Use the registered HTML **verbatim**; run the same QA validators; **retain the registered Subject +
+  Preview Text**; use the shared audience/draft/dedup pipeline.
+- **STOP if the file is missing; STOP if QA fails; never silently fall back to regeneration.**
+- A campaign with **no** entry uses the normal generation pipeline (unchanged). RDD and any unlisted
+  campaign are unaffected. `pipeline.js` is not modified by this feature.
+- **Coupons/offers in an approved creative** still follow §6.3/§6.5: never invent a code; a real code must be
+  created + confirmed **active** in BigCommerce before send; if no authoritative source exists, **STOP and
+  ask** (established SS-2026-W32: `FIXIT15` was user-selected and is flagged pending BigCommerce activation).
+
+### 13.3 Design references vs. content
+
+When updating an existing campaign, **inspect the referenced prior campaign files** and reuse their proven
+design/layout patterns, but **separate design/layout reference from campaign content/product data** — never
+blindly copy another send's products or copy. This is the `INSPIRATION` fidelity mode (STD-CREATIVE §4.0 /
+§5.1.1). Verify all product data and links independently (§5.1, §6.7).
+
+### 13.4 Publish-sync — draft dedup, brand sender/reply-to, tracking (all brands — permanent)
+
+Permanent rules for pushing a campaign's HTML/content to Klaviyo. All are implemented in the shared
+`draft-campaign-service.js` + `live-orchestrator.js` and are brand-parameterized off `brand.code` — never
+hard-code a brand in the engine (reuse `config/brands/<CODE>.config.json`, §12). Draft creation remains the
+**maximum** automation (§8.1/§9/§13): never schedule, send, or delete.
+
+- **Draft Sync Rule (idempotent, no duplicates).** A push is `LOCAL HTML → find existing Draft → update it →
+  preserve its identity`. Resolve the existing Draft **deterministically by campaign_id**, not by name guessing:
+  `findDraftForCampaign(campaign_id)` matches the id as a **whole boundary-delimited token** in the draft name
+  (so `RDD-2026-3` never matches `RDD-2026-37`, and both the canonical `"<id>: <subject>"` and any legacy
+  `"DEMO — <id> — …"` name still match). If a Draft exists → **update** it (subject, preview §6.24, HTML/template,
+  sender, tracking) and keep the same campaign id; if none exists → **create** one. Running the same push N times
+  updates the **same** Draft N times — never a duplicate. On the rare multi-match it reuses the most recent and
+  warns (still no duplicate). Works for RDD, SS, and every future brand on the shared architecture.
+- **Brand Sender Rule.** The `from_email` is the **brand sender from config**, never the account default when a
+  brand sender is configured. Configured today: **RDD → `sales@retaildisplaydirect.com.au`**, **SS →
+  `sales@safetysector.com.au`** (both the same verified sending domain as the account default). `resolveSender`
+  reads `klaviyo.sender.fromEmail`/`fromLabel`/`replyToEmail` from the brand config first, and only falls back to
+  the account default sender (read-only `GET /accounts`) when config is absent — never an invented address.
+- **Reply-To Rule.** `reply_to_email` = the **same brand sender** (equivalent to the UI's "Use as reply-to"
+  enabled), unless a future approved brand config explicitly sets a different `klaviyo.sender.replyToEmail`.
+  Applied on **both** create and update (a re-push corrects a draft first created under the account-default
+  sender). **Verify from the actual Klaviyo message content after the write — never assume the UI checkbox.**
+- **Tracking Rule — VERIFIED writable via the API (do not document otherwise).** "Include tracking parameters"
+  (UTM) is set on every campaign via `tracking_options` on the campaign attributes: `add_tracking_params: true`
+  (writable on **create** and on **PATCH**; confirmed live against API revision `2024-10-15` — the re-fetched
+  campaign returns `tracking_options: { add_tracking_params:true, custom_tracking_params:[], is_tracking_clicks:true,
+  is_tracking_opens:true }`, and an empty `custom_tracking_params` list defers to the **company UTM defaults**). No
+  one-time manual account setting is required for the always-on behaviour, though company-level UTM defaults still
+  govern the actual parameter values. This capability was **verified against the current Klaviyo docs and the live
+  API response**, not assumed.
+- **Verify-after-write (all of the above).** After create/update, **re-fetch** the campaign + message and confirm
+  the resulting `from_email`, `reply_to_email`, `tracking_options`, HTML attach, `status:Draft`, and that the id is
+  unchanged with no duplicate — a 2xx is never trusted on its own (mirrors §6/§8.1).
+
 _Created: 2026-07-10 · Approved structure; operational guide._
+_Updated: 2026-08-09 · §12 multi-brand Klaviyo credential isolation (SS/SC extension)._
+_Updated: 2026-08-10 · §6.25 merge-intro clause; §6.26 footer philosophy; §13 Klaviyo draft automation (audience-confirmation gate + approved-creative attachment). Merged, not duplicated._
+_Updated: 2026-08-10 · §5.4 multi-brand SKU-ownership verification clause (verify each SKU across every candidate store; stop on in-both / in-none / cross-brand). Additive; no duplication._
+_Updated: 2026-08-10 · §7.1 shared Vercel image-hosting workflow (place → publish tool → deploy → verify HTTPS 200; no localhost/local paths; one shared mechanism for SS/SC/RDD). Additive; QA rule reuses §8/§8.1._
+_Updated: 2026-08-10 · §6.27 trust-card alignment (reuse the product-grid container/boundaries; hybrid fixed columns for equal widths; 2×2 mobile, no overflow). Additive; extends §6.8/§6.9/§6.20._
+_Updated: 2026-08-10 · §6.27 refined to prefer the product-grid primitive (plain width:100% table + table-layout:fixed = equal columns + auto equal-height; 1-col mobile stack). §6.26 gains the approved per-brand footer/contact rule (SS "Got a question?" block + exact contact details + footer order). Refined, not duplicated._
+_Updated: 2026-08-10 · §6.28 product-brand routing (sending brand ≠ product brand; SC products/hero/collection → sectorcare.com.au even on an SS send; sender assets stay SS; never invent/localhost). Additive; extends §6.7/§5.4/§12._
+_Updated: 2026-08-17 · §13.4 publish-sync (idempotent draft dedup by boundary-matched campaign_id; brand sender RDD/SS = sales@…; reply_to = brand sender; tracking_options.add_tracking_params VERIFIED API-writable on create+PATCH rev 2024-10-15; verify-after-write). Additive; extends §13/§9._

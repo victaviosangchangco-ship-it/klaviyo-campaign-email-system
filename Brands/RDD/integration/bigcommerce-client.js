@@ -242,6 +242,31 @@ function createBcClient(config = {}) {
     return items.map(shapeProduct);
   }
 
+  // Read-only: all categories belonging to ONE category tree (multi-storefront
+  // stores assign each channel/storefront its own tree). Used for tree-SCOPED
+  // category-name resolution so a shared-store brand only ever resolves categories
+  // from its own storefront. Paginated. Objects carry `category_id` (not `id`).
+  async function getTreeCategories(treeId, limit = 250) {
+    const all = [];
+    let page = 1;
+    for (;;) {
+      const data = await bcGet(`/catalog/trees/categories?tree_id:in=${treeId}&limit=${limit}&page=${page}`);
+      const batch = Array.isArray(data.data) ? data.data : [];
+      all.push(...batch);
+      const pagination = data.meta?.pagination;
+      if (!pagination || page >= pagination.total_pages) break;
+      page += 1;
+    }
+    return all;
+  }
+
+  // Read-only: a single category by id (for its custom_url slug when building a
+  // category URL after tree-scoped resolution). Returns the raw category or null.
+  async function getCategoryById(categoryId) {
+    const data = await bcGet(`/catalog/categories/${categoryId}`);
+    return data && data.data ? data.data : null;
+  }
+
   // The one shape a campaign renders: fixed hero, featured categories, live sale.
   async function fetchEdmContent({ saleLimit = 12 } = {}) {
     assertCredentials();
@@ -292,6 +317,8 @@ function createBcClient(config = {}) {
     getProductsByCategoryId,
     getProductById,
     getRecentlyUpdatedProducts,
+    getTreeCategories,
+    getCategoryById,
     fetchEdmContent,
   };
 }

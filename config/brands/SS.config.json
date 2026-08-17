@@ -1,0 +1,117 @@
+{
+  "_doc": "Safety Sector (SS) brand configuration for the Automation Platform — the SINGLE, non-secret source of SS brand facts + design tokens. Mirrors config/brands/RDD.config.json (RDD is the reference implementation). Credentials are NEVER stored here — the SS Klaviyo key loads at runtime from Brands/SS/.env (git-ignored) under env var SS_KLAVIYO_API_KEY. Brand-prefixed env var name gives strict cross-brand isolation (a stray global KLAVIYO_API_KEY cannot resolve for SS).",
+  "_sources": "Grounded in APPROVED, in-repo references (CLAUDE.md §5 — never invented): (a) 03-Brands MD Files/SS.md (approved SS brand doc, confidence-tagged); (b) approved outputs Brands/SS/Campaigns/Weekly/Output/SS-2026-W29.html + SS-2026-W30.html + the Product Launch final; (c) CLAUDE.md §6.1 (SS LEFT-aligned logo, ~120-130px sizing) and §6.12 (SS exclusions). Every value carries a confidence tag from SS.md; [Inferred]/To-be-confirmed values must be sign-off-confirmed before an SS send.",
+  "_status": "PARTIAL — sufficient for Klaviyo credential resolution + isolation + live read-only validation (this integration pass). Product source (BigCommerce) is NOT yet configured for SS (no Brands/SS/.env BigCommerce creds, no integration folder); the render-quality token set is grounded-but-provisional. Full end-to-end SS drafts additionally require: SS calendar rows + an SS product source. See LIVE_SYSTEM_AUDIT / KLAVIYO_INTEGRATION_PLAN.",
+
+  "code": "SS",
+  "type": "brand-config",
+
+  "identity": {
+    "companyName": { "value": "Safety Sector Pty Ltd", "confidence": "Confirmed", "source": "SS.md — brand identity" },
+    "displayName": { "value": "Safety Sector", "confidence": "Confirmed", "source": "SS.md" },
+    "website": { "value": "https://www.safetysector.com.au/", "confidence": "Confirmed", "source": "SS.md" },
+    "address": { "value": "3 Wordie Place, Padstow, NSW 2211, Australia", "confidence": "Confirmed", "source": "SS.md footer" },
+    "phone": { "value": null, "confidence": "To be confirmed", "source": "SS.md — phone not captured in approved source" },
+    "privacyUrl": { "value": "https://www.safetysector.com.au/privacy-policy/", "confidence": "Inferred", "source": "Verified live HTTP 200 on 2026-08-10 (safetysector.com.au/privacy-policy/). Populated to unblock DRAFT footer rendering; confirm with SS before a real send (CLAUDE.md §6.23)." },
+    "allProductsUrl": { "value": "https://www.safetysector.com.au/products/", "confidence": "Inferred", "source": "SS.md — live collection page; confirm intended All-Products destination" }
+  },
+
+  "logo": {
+    "url": { "value": "https://d3k81ch9hvuctc.cloudfront.net/company/T7SuPP/images/f4045d61-0ee2-41a3-8fbf-6281da7b3891.gif", "confidence": "Confirmed", "source": "SS.md — primary wordmark (Klaviyo-hosted, SS account T7SuPP)" },
+    "darkUrl": { "value": "https://d3k81ch9hvuctc.cloudfront.net/company/T7SuPP/images/f649010e-1543-4913-83fe-9c37cbcef1c3.png", "confidence": "Confirmed", "source": "SS.md — standalone red mark for dark backgrounds" },
+    "alt": "Safety Sector",
+    "width": 128,
+    "align": "left",
+    "_sizingNote": "CLAUDE.md §6.1 — SS logo LEFT-aligned, ~120-130px wide, generous whitespace (never oversized). Exact height To-be-confirmed (wordmark GIF); the renderer is not exercised for SS in this pass."
+  },
+
+  "designTokens": {
+    "_note": "Grounded in SS.md palette/type + approved SS outputs. [Inferred] hex values are sampled and pending sign-off (SS.md Outstanding items). Six-digit hex only. SS house style: high-contrast black/white, single red accent, SHARP corners (0 radius) per SS.md button standard.",
+    "FONT_STACK": "Arial,Helvetica,sans-serif",
+    "HEADING_FONT_STACK": "Arial,Helvetica,sans-serif",
+    "HEADING_WEIGHT": "800",
+    "EYEBROW_SIZE": "11px",
+    "H1_SIZE": "30px",
+    "H2_SIZE": "22px",
+    "BODY_SIZE": "16px",
+    "META_SIZE": "13px",
+    "SMALL_SIZE": "12px",
+
+    "BODY_BG": "#ffffff",
+    "TEXT_COLOR": "#000000",
+    "MUTED_TEXT_COLOR": "#555555",
+    "ACCENT_COLOR": "#e11b22",
+    "LINK_COLOR": "#000000",
+
+    "SECTION_BG": "#fbeaea",
+    "CARD_BG": "#ffffff",
+    "CARD_BORDER_COLOR": "#e5e5e5",
+    "BADGE_BG": "#000000",
+    "BADGE_TEXT_COLOR": "#ffffff",
+
+    "BUTTON_BG": "#000000",
+    "BUTTON_TEXT_COLOR": "#ffffff",
+    "BUTTON_RADIUS": "0px",
+    "CTA_BUTTON_RADIUS": "0px",
+    "BUTTON_ARCSIZE": "0%",
+
+    "CARD_RADIUS": "0px",
+    "IMAGE_RADIUS": "0px",
+    "PILL_RADIUS": "0px",
+
+    "TRUST_ICON_BG": "#fbeaea",
+
+    "FOOTER_BG": "#000000",
+    "FOOTER_TEXT_COLOR": "#ffffff",
+
+    "DARK_BODY_BG": "#111111",
+    "DARK_TEXT_COLOR": "#ffffff",
+    "_confidence": { "ACCENT_COLOR": "Inferred", "SECTION_BG": "Inferred", "FOOTER_BG": "Confirmed", "TEXT_COLOR": "Confirmed", "BUTTON_BG": "Confirmed" }
+  },
+
+  "trust": {
+    "_note": "Monochrome text-presentation glyphs only (CLAUDE.md §6.21). Grounded in SS.md in-market trust claims. Hosted mono-PNG icon set To-be-confirmed (SS.md Outstanding items).",
+    "title": "Why Safety Sector",
+    "items": [
+      { "glyph": "&#9993;&#xFE0E;", "label": "Australia-Wide Delivery", "sub": "Fast dispatch nationwide" },
+      { "glyph": "&#10003;", "label": "Up to 10-Year Warranty", "sub": "Built to Australian standards" },
+      { "glyph": "&#8635;", "label": "30-Day Returns", "sub": "Hassle-free process" },
+      { "glyph": "&#9742;&#xFE0E;", "label": "Trusted by 100,000+", "sub": "15+ years in market" }
+    ]
+  },
+
+  "bigcommerce": {
+    "_note": "SHARED BigCommerce store with SC (VERIFIED from project files: SS product images across the approved W29/W30 sends all resolve to store 498h0egvgn — the SAME store SC uses — served through two storefronts: safetysector.com.au for SS, sectorcare.com.au for SC). Credentials are NOT duplicated per brand: SS and SC both read the SAME git-ignored shared file (envPath below). Brand separation on the shared catalog is by brand-specific category ids (featuredCategoryIds / calendar topic_category) plus THIS brand's storeDomain for product URLs — NEVER the generic store-wide candidate/recent pool, which would mix SS and SC products. Klaviyo stays fully isolated per brand (see the klaviyo block — a shared product source does NOT mean a shared Klaviyo account). Product retrieval is blocked until the shared store's read-only token is added to the shared file, and until SS's category ids are identified from the live catalog.",
+    "envPath": "Brands/_shared/.env",
+    "storeDomain": "https://www.safetysector.com.au",
+    "storeHashHint": "498h0egvgn",
+    "channelId": 1,
+    "categoryTreeId": 1,
+    "requireExplicitScoping": true,
+    "featuredCategoryIds": [18, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 112, 113, 114, 116, 117, 119, 127, 130, 131, 133, 134, 136, 202],
+    "_categoryNote": "VERIFIED live read-only 2026-08-09: SS = channel 1 / category tree 1 ('Default catalog tree'). These tree-1 top-level categories each returned 0 SectorCare-tagged products (SS-clean). EXCLUDED because they hold cross-listed SC products: 120 'Access Ramp' (MIXED 34/52), 137 'Healthcare' (all-SC), 195 'Mobility Aids' (all-SC). Products resolve to safetysector.com.au.",
+    "saleCategoryId": null,
+    "heroProductId": null,
+    "_status": "shared-store VALIDATED (live read-only); channel 1 / tree 1; SS-clean category ids set"
+  },
+
+  "klaviyo": {
+    "_note": "Non-secret Klaviyo settings for the SS DRAFT MVP. The SS Klaviyo private key is NEVER stored here — it loads at runtime from Brands/SS/.env (git-ignored) under SS_KLAVIYO_API_KEY. Brand-prefixed env var name enforces isolation from RDD (KLAVIYO_API_KEY) and SC (SC_KLAVIYO_API_KEY). The platform creates DRAFTS ONLY (safety.js no-send guard). Fields tagged 'To be confirmed' are external prerequisites that block SS campaign creation until supplied (a verified sending domain + a dedicated test list).",
+    "apiKeyEnvVar": "SS_KLAVIYO_API_KEY",
+    "envPath": "Brands/SS/.env",
+    "apiBaseUrl": "https://a.klaviyo.com/api",
+    "revision": "2024-10-15",
+    "requiredScopes": ["Campaigns:Full", "Templates:Full", "Lists:Read", "Accounts:Read"],
+    "account": { "idHint": "T7SuPP", "confidence": "Confirmed", "source": "live read-only GET /accounts returned account id T7SuPP — 'Safety Sector' (matches SS.md logo cloudfront path company/T7SuPP/...)" },
+    "sender": {
+      "fromEmail": { "value": "sales@safetysector.com.au", "confidence": "Confirmed", "source": "user-directed brand sender; same verified sending domain as the account default hello@safetysector.com.au (§13.4)" },
+      "fromLabel": { "value": "Safety Sector", "confidence": "Inferred" },
+      "replyToEmail": { "value": "sales@safetysector.com.au", "confidence": "Confirmed", "source": "reply_to = brand sender (equivalent to 'Use as reply-to' enabled) (§13.4)" }
+    },
+    "audience": {
+      "type": "list",
+      "name": { "value": null, "confidence": "To be confirmed", "note": "A dedicated DEMO/test list in the SS account; resolved to an id at draft time. SS-specific segments are To-be-confirmed (SS.md)." },
+      "id": { "value": null, "confidence": "To be confirmed" }
+    }
+  }
+}

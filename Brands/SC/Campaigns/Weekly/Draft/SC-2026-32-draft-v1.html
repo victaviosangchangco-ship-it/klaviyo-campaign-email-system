@@ -1,0 +1,569 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  <meta name="x-apple-disable-message-reformatting" />
+  
+  <meta name="format-detection" content="telephone=no,address=no,email=no,date=no,url=no" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="supported-color-schemes" content="light dark" />
+  <title>Safer, Easier Bathing at Home</title>
+  <!--[if mso]>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <![endif]-->
+  <style>
+    /* [+CERBERUS] CSS duplicate of the color-scheme meta — some clients read one, not the other. */
+    :root { color-scheme: light dark; supported-color-schemes: light dark; }
+
+    /* --- client resets (structural, not brand) --- */
+    body { margin:0; padding:0; width:100% !important; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; }
+    /* [+CERBERUS] text-size-adjust on * as well as body — it does not reliably inherit into
+       nested tables in every client. */
+    * { -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; }
+    table { border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; }
+    img { border:0; height:auto; line-height:100%; outline:none; text-decoration:none; -ms-interpolation-mode:bicubic; }
+    a { text-decoration:none; }
+    /* [+CERBERUS] Outlook adds padding around anchors. Already inline in most built templates;
+       centralised here so every future build inherits it. */
+    #outlook a { padding:0; }
+    /* [+CERBERUS] Neutralise <th>'s default bold. Inert today (no component uses <th>); present so
+       the Cerberus <th> stacking-column pattern can be adopted without a second head change. */
+    th { font-weight:normal; }
+
+    /* --- [+CERBERUS] targeted client-bug fixes -------------------------------------------------
+       Each rule below fixes ONE named client defect. Every selector is either injected by the mail
+       client itself (.a6S, .im, .aBn, #MessageViewBody, a[x-apple-data-detectors]) or opt-in via a
+       class we add deliberately (.g-img, .unstyle-auto-detected-links). None of them can alter the
+       rendering of the current approved design. --------------------------------------------- */
+
+    /* Android 4.4 injects `margin: 16px 0` on a wrapper div. */
+    div[style*="margin: 16px 0"] { margin:0 !important; }
+
+    /* Samsung Mail otherwise renders the message narrower than the viewport. */
+    #MessageViewBody, #MessageWebViewDiv { width:100% !important; }
+
+    /* Gmail overlays a download button on large, unlinked images. */
+    .a6S { display:none !important; opacity:0.01 !important; }
+    /* Fallback for the above: tag the image class="g-img" and hide the injected sibling div. */
+    img.g-img + div { display:none !important; }
+
+    /* Gmail recolours text inside a conversation thread. */
+    .im { color:inherit !important; }
+
+    /* iOS and Gmail auto-detect dates, addresses and phone numbers and style them as blue links.
+       The link cannot be removed, but it can be made to look like the surrounding body text.
+       ⚠️ .unstyle-auto-detected-links must wrap ONLY an address/phone block — never a container
+       that also holds real styled links (e.g. Unsubscribe), or those lose their colour too. */
+    a[x-apple-data-detectors],
+    .unstyle-auto-detected-links a,
+    .aBn {
+      border-bottom:0 !important; cursor:default !important; color:inherit !important;
+      text-decoration:none !important; font-size:inherit !important; font-family:inherit !important;
+      font-weight:inherit !important; line-height:inherit !important;
+    }
+
+    /* Removes the right-hand gutter in the Gmail iOS app. `u ~ div` matches only there — Gmail iOS
+       injects a <u> element ahead of the message body; no other client does. One block per
+       viewport supported. */
+    @media only screen and (min-device-width:320px) and (max-device-width:374px) {
+      u ~ div .email-container { min-width:320px !important; }
+    }
+    @media only screen and (min-device-width:375px) and (max-device-width:413px) {
+      u ~ div .email-container { min-width:375px !important; }
+    }
+    @media only screen and (min-device-width:414px) {
+      u ~ div .email-container { min-width:414px !important; }
+    }
+    /* --- end [+CERBERUS] client-bug fixes ------------------------------------------------------ */
+
+    /* --- shared layout baseline (not brand) --- */
+    .email-container { width:600px; max-width:600px; margin:0 auto; }
+    /* [+CERBERUS — component 3 addendum] Defensive responsive backstop for the hero banner (§6.6).
+       Five approved outputs already rely on .hero-img but each redefined it inline because it was
+       missing here; centralising it removes that duplication. Identical to the shipping definition,
+       so no built email changes. Declared outside the media query so it also protects clients that
+       apply <head> CSS but not the @media block. */
+    .hero-img { width:100% !important; max-width:100% !important; height:auto !important; }
+    /* Equal-height product cards: the PRIMARY mechanism is fixed-height <td> cells (.pimg/.pnc/.pdc/.ppc)
+       on the card itself (Outlook-safe, CLAUDE §6.8). These min-heights are a progressive-enhancement
+       fallback only for clients that honour them; never the sole mechanism. */
+    .prod-name { min-height:34px; }
+    .prod-sub  { min-height:52px; }
+
+    /* --- responsive (CS-09) --- */
+    @media screen and (max-width:600px) {
+      .email-container { width:100% !important; }
+      .stack-col, .pc { display:block !important; width:100% !important; max-width:100% !important; box-sizing:border-box !important; }
+      .pc img { width:100% !important; height:auto !important; }
+      /* Never enlarge small brand marks / decorative icons with the mobile product-image rule (CLAUDE §6.17) */
+      .pc img.brandmark { width:15px !important; max-width:15px !important; height:auto !important; }
+      /* Fixed-height card regions reset to auto so stacked full-width cards size naturally (CLAUDE §6.8) */
+      .pimg, .pnc, .pdc { height:auto !important; }
+      /* Price badge stays a compact, content-width badge on mobile — NEVER stretches to card width
+         (CLAUDE §6.17). Width is content-driven by the shrink-to-fit table; this only tunes the tap size. */
+      .pricebtn { display:inline-block !important; width:auto !important; padding:12px 26px !important; }
+      .center-sm { text-align:center !important; }
+      .mp { padding-left:16px !important; padding-right:16px !important; }
+      .hh { font-size:28px !important; }
+      .tap { min-height:44px !important; line-height:44px !important; }
+      /* category pills: 3-across → 2-across, full-width tappable chips */
+      .cat-td { display:inline-block !important; width:50% !important; box-sizing:border-box !important; padding:4px !important; text-align:center !important; vertical-align:top !important; }
+      .pill { display:block !important; padding:14px 8px !important; }
+      /* trust badges: 4-across → 2x2 */
+      .trust-card { width:50% !important; padding:6px !important; }
+      /* coupon code never overflows a narrow screen */
+      .coupon-code { font-size:24px !important; letter-spacing:2px !important; word-break:break-all !important; }
+      /* cards stack full-width: drop the equal-height locks and keep copy readable */
+      .prod-name { min-height:0 !important; }
+      .prod-sub  { min-height:0 !important; font-size:14px !important; line-height:1.5 !important; }
+
+      /* [+CERBERUS] Hybrid / stacking utilities. INERT TODAY — no current component carries these
+         classes, so they change nothing until product-grid.html (component 5) opts in.
+         `direction:ltr` is the mandatory reset half of the dir="rtl" column-order swap: without it,
+         a right-thumbnail row stacks text-above-image on mobile and the reading order breaks. */
+      .stack-column,
+      .stack-column-center {
+        display:block !important; width:100% !important;
+        max-width:100% !important; direction:ltr !important;
+      }
+      .stack-column-center { text-align:center !important; }
+      /* Generic mobile centring for images, buttons and nested tables. */
+      .center-on-narrow {
+        text-align:center !important; display:block !important;
+        margin-left:auto !important; margin-right:auto !important; float:none !important;
+      }
+      table.center-on-narrow { display:inline-block !important; }
+      /* Centred odd last card goes full width on mobile (CLAUDE §6.9). */
+      .center-half { width:100% !important; }
+    }
+
+    /* --- dark mode (CS-12); colours inject via tokens from Design.md --- */
+    @media (prefers-color-scheme: dark) {
+      .dm-bg   { background:#111111 !important; }
+      .dm-text { color:#ffffff !important; }
+      .dm-logo-light { display:none !important; }
+      .dm-logo-dark  { display:block !important; }
+    }
+    [data-ogsc] .dm-bg   { background:#111111 !important; }
+    [data-ogsc] .dm-text { color:#ffffff !important; }
+    [data-ogsc] .dm-logo-light { display:none !important; }
+    [data-ogsc] .dm-logo-dark  { display:block !important; }
+  </style>
+</head>
+
+<body class="dm-bg" style="margin:0; padding:0; background:#f2f2f0;">
+
+<div style="display:none; max-height:0; overflow:hidden; mso-hide:all; font-size:1px; line-height:1px; opacity:0;">
+  Bath Aids. Explore 16 Bath Aids picks, in stock now and ready to ship Australia-wide.
+  &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+</div>
+
+  <center style="width:100%; background:#f2f2f0;">
+    <table role="presentation" class="email-container" width="600" cellpadding="0" cellspacing="0" border="0" align="center" style="width:600px; max-width:600px; margin:0 auto;">
+      <tr>
+        <td>
+
+          
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#3d7a94" style="width:100%; background:#3d7a94;">
+  <tr>
+    <td align="left" bgcolor="#3d7a94" style="padding:24px 40px; background:#3d7a94; text-align:left;"><a href="https://sectorcare.com.au/" target="_blank" style="text-decoration:none;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/XAUdQX/images/f7015926-fe41-4710-8b2f-d8ec95626866.png" alt="SectorCare" width="200" height="32" border="0" class="dm-logo-light" style="display:block; width:200px; max-width:100%; height:auto; border:0; outline:none; text-decoration:none; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:18px; color:#1a1a1a;" /></a><!--[if !mso]><!--><a href="https://sectorcare.com.au/" target="_blank" style="text-decoration:none;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/XAUdQX/images/f7015926-fe41-4710-8b2f-d8ec95626866.png" alt="SectorCare" width="200" height="32" border="0" class="dm-logo-dark" style="display:none; width:200px; max-width:100%; height:auto; border:0; outline:none; text-decoration:none;" /></a><!--<![endif]--></td>
+  </tr>
+</table>
+
+
+
+          
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#f2f2f0" style="width:100%; background:#f2f2f0;">
+  
+  <tr>
+    <td class="mp" align="left" bgcolor="#f2f2f0" style="padding:30px 28px 8px 28px; background:#f2f2f0; text-align:left;">
+      <p style="margin:0 0 12px 0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; line-height:1.2; color:#3d7a94;">WEEKLY</p>
+      <h1 class="hh dm-text" style="margin:0; font-family:Georgia,'Times New Roman',serif; font-size:30px; font-weight:700; line-height:1.15; letter-spacing:-0.3px; color:#1a1a1a;">SectorCare Weekly — Bath Aids</h1>
+    </td>
+  </tr>
+  
+  <tr>
+    <td class="mp" align="left" bgcolor="#f2f2f0" style="padding:12px 28px 24px 28px; background:#f2f2f0; text-align:left;">
+      <p class="dm-text" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:16px; line-height:1.6; color:#1a1a1a;">Bath Aids</p>
+    </td>
+  </tr>
+</table>
+
+
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" style="background:#f2f2f0;">
+  <tr>
+    <td class="mp" align="left" style="padding:14px 28px 24px 28px;">
+      <p class="dm-text" style="margin:0 0 14px 0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:16px; line-height:1.7; color:#1a1a1a;">Browse the Bath Aids range below. Every product is in stock and ready to ship across Australia.</p>
+      <p class="dm-text" style="margin:0 0 14px 0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:16px; line-height:1.7; color:#1a1a1a;">Each item links straight to its live product page.</p>
+
+    </td>
+  </tr>
+</table>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" style="background:#f2f2f0;">
+  <tr>
+    <td align="center" style="padding:8px 28px 32px 28px;">
+      <!--[if mso]>
+      <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="https://sectorcare.com.au/bath-aids/" style="height:48px;v-text-anchor:middle;width:225px;" arcsize="8%" fillcolor="#3d7a94" strokecolor="#3d7a94">
+        <w:anchorlock/>
+        <center style="color:#ffffff;font-family:sans-serif;font-size:16px;font-weight:bold;">Explore the Range</center>
+      </v:roundrect>
+      <![endif]-->
+      <!--[if !mso]><!-- -->
+      <a href="https://sectorcare.com.au/bath-aids/" class="tap" style="background:#3d7a94; border-radius:4px; color:#ffffff; display:inline-block; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:16px; font-weight:bold; line-height:48px; text-align:center; text-decoration:none; padding:0 32px; letter-spacing:0.6px;">Explore the Range</a>
+      <!--<![endif]-->
+    </td>
+  </tr>
+</table>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" style="background:#f2f2f0;">
+  <tr>
+    <td class="mp" style="padding:34px 28px 14px 28px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:separate;">
+        <tr>
+          <td style="background:#f5f1ea; border-radius:10px; padding:16px 18px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td valign="middle" style="padding-right:10px;">
+                  <h2 style="margin:0; font-family:Georgia,'Times New Roman',serif; font-size:22px; font-weight:700; line-height:1.2; color:#1a1a1a;">Bath Aids</h2>
+                  <p style="margin:5px 0 0 0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:12px; line-height:1.4; color:#666666;">16 products, in stock now</p>
+                </td>
+                <td valign="middle" align="right" style="white-space:nowrap;">
+                  <span style="display:inline-block; background:#3d7a94; color:#ffffff; border-radius:20px; padding:6px 13px; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase;">In Stock</span>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+          
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-panel" bgcolor="#f5f1ea" style="width:100%; background:#f5f1ea;">
+  <tr><td style="padding:14px 18px 6px 18px;" bgcolor="#f5f1ea">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f5f1ea"><tr>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#f5f1ea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e6e0d6; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/XAUdQX/images/f7015926-fe41-4710-8b2f-d8ec95626866.png" width="15" height="15" alt="SectorCare" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://sectorcare.com.au/sectorcare-3-in-1-folding-shower-chair-commode-and-walker-blue/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/872/images/4334/1_-_2026-06-10T123845.348__61301.1782187996.386.513.jpg?c=2" alt="SectorCare 3-in-1 Folding Shower Chair, Commode and Walker – Blue" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:8px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://sectorcare.com.au/sectorcare-3-in-1-folding-shower-chair-commode-and-walker-blue/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:700; line-height:1.3; color:#1a1a1a; text-align:center;">SectorCare 3-in-1 Folding Shower Chair, Commode and Walker – Blue</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://sectorcare.com.au/sectorcare-3-in-1-folding-shower-chair-commode-and-walker-blue/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:12px; line-height:1.45; color:#666666; text-align:center;">Bath Aids</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#3d7a94" style="background:#3d7a94; border-radius:4px;"><a href="https://sectorcare.com.au/sectorcare-3-in-1-folding-shower-chair-commode-and-walker-blue/" target="_blank" class="pricebtn" style="display:inline-block; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $81.00</a></td></tr></table></td></tr>
+        </table>
+      </td>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#f5f1ea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e6e0d6; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/XAUdQX/images/f7015926-fe41-4710-8b2f-d8ec95626866.png" width="15" height="15" alt="SectorCare" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://sectorcare.com.au/sectorcare-3-in-1-folding-shower-chair-commode-and-walker-white/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/873/images/4324/1_-_2026-06-10T102216.272__52005.1782188318.386.513.jpg?c=2" alt="SectorCare 3-in-1 Folding Shower Chair, Commode and Walker – White" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:8px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://sectorcare.com.au/sectorcare-3-in-1-folding-shower-chair-commode-and-walker-white/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:700; line-height:1.3; color:#1a1a1a; text-align:center;">SectorCare 3-in-1 Folding Shower Chair, Commode and Walker – White</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://sectorcare.com.au/sectorcare-3-in-1-folding-shower-chair-commode-and-walker-white/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:12px; line-height:1.45; color:#666666; text-align:center;">Bath Aids</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#3d7a94" style="background:#3d7a94; border-radius:4px;"><a href="https://sectorcare.com.au/sectorcare-3-in-1-folding-shower-chair-commode-and-walker-white/" target="_blank" class="pricebtn" style="display:inline-block; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $84.60</a></td></tr></table></td></tr>
+        </table>
+      </td>
+    </tr></table>
+  </td></tr>
+</table>
+
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-panel" bgcolor="#f5f1ea" style="width:100%; background:#f5f1ea;">
+  <tr><td style="padding:14px 18px 6px 18px;" bgcolor="#f5f1ea">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f5f1ea"><tr>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#f5f1ea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e6e0d6; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/XAUdQX/images/f7015926-fe41-4710-8b2f-d8ec95626866.png" width="15" height="15" alt="SectorCare" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://sectorcare.com.au/sectorcare-lightweight-aluminium-commode-chair-with-removable-armrests/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/876/images/4294/1_-_2026-06-09T111229.718__55696.1782189817.386.513.jpg?c=2" alt="SectorCare Lightweight Aluminium Commode Chair with Removable Armrests" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:8px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://sectorcare.com.au/sectorcare-lightweight-aluminium-commode-chair-with-removable-armrests/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:700; line-height:1.3; color:#1a1a1a; text-align:center;">SectorCare Lightweight Aluminium Commode Chair with Removable Armrests</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://sectorcare.com.au/sectorcare-lightweight-aluminium-commode-chair-with-removable-armrests/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:12px; line-height:1.45; color:#666666; text-align:center;">Bath Aids</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#3d7a94" style="background:#3d7a94; border-radius:4px;"><a href="https://sectorcare.com.au/sectorcare-lightweight-aluminium-commode-chair-with-removable-armrests/" target="_blank" class="pricebtn" style="display:inline-block; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $81.00</a></td></tr></table></td></tr>
+        </table>
+      </td>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#f5f1ea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e6e0d6; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/XAUdQX/images/f7015926-fe41-4710-8b2f-d8ec95626866.png" width="15" height="15" alt="SectorCare" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://sectorcare.com.au/sectorcare-height-adjustable-commode-chair/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/877/images/4284/1_-_2026-06-09T092642.964__36249.1782189889.386.513.jpg?c=2" alt="SectorCare Height Adjustable Commode Chair" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:8px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://sectorcare.com.au/sectorcare-height-adjustable-commode-chair/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:700; line-height:1.3; color:#1a1a1a; text-align:center;">SectorCare Height Adjustable Commode Chair</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://sectorcare.com.au/sectorcare-height-adjustable-commode-chair/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:12px; line-height:1.45; color:#666666; text-align:center;">Bath Aids</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#3d7a94" style="background:#3d7a94; border-radius:4px;"><a href="https://sectorcare.com.au/sectorcare-height-adjustable-commode-chair/" target="_blank" class="pricebtn" style="display:inline-block; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $116.10</a></td></tr></table></td></tr>
+        </table>
+      </td>
+    </tr></table>
+  </td></tr>
+</table>
+
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-panel" bgcolor="#f5f1ea" style="width:100%; background:#f5f1ea;">
+  <tr><td style="padding:14px 18px 6px 18px;" bgcolor="#f5f1ea">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f5f1ea"><tr>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#f5f1ea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e6e0d6; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/XAUdQX/images/f7015926-fe41-4710-8b2f-d8ec95626866.png" width="15" height="15" alt="SectorCare" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://sectorcare.com.au/sectorcare-360-swivel-transfer-shower-chair-with-armrests/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/878/images/4274/1_-_2026-06-09T085905.175__32774.1782190000.386.513.jpg?c=2" alt="SectorCare 360° Swivel Transfer Shower Chair with Armrests" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:8px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://sectorcare.com.au/sectorcare-360-swivel-transfer-shower-chair-with-armrests/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:700; line-height:1.3; color:#1a1a1a; text-align:center;">SectorCare 360° Swivel Transfer Shower Chair with Armrests</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://sectorcare.com.au/sectorcare-360-swivel-transfer-shower-chair-with-armrests/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:12px; line-height:1.45; color:#666666; text-align:center;">Bath Aids</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#3d7a94" style="background:#3d7a94; border-radius:4px;"><a href="https://sectorcare.com.au/sectorcare-360-swivel-transfer-shower-chair-with-armrests/" target="_blank" class="pricebtn" style="display:inline-block; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $162.00</a></td></tr></table></td></tr>
+        </table>
+      </td>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#f5f1ea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e6e0d6; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/XAUdQX/images/f7015926-fe41-4710-8b2f-d8ec95626866.png" width="15" height="15" alt="SectorCare" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://sectorcare.com.au/sectorcare-u-shaped-shower-chair-with-backrest/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/879/images/4264/1_-_2026-06-09T084436.477__62874.1782190070.386.513.jpg?c=2" alt="SectorCare U-Shaped Shower Chair with Backrest" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:8px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://sectorcare.com.au/sectorcare-u-shaped-shower-chair-with-backrest/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:700; line-height:1.3; color:#1a1a1a; text-align:center;">SectorCare U-Shaped Shower Chair with Backrest</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://sectorcare.com.au/sectorcare-u-shaped-shower-chair-with-backrest/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:12px; line-height:1.45; color:#666666; text-align:center;">Bath Aids</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#3d7a94" style="background:#3d7a94; border-radius:4px;"><a href="https://sectorcare.com.au/sectorcare-u-shaped-shower-chair-with-backrest/" target="_blank" class="pricebtn" style="display:inline-block; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $52.20</a></td></tr></table></td></tr>
+        </table>
+      </td>
+    </tr></table>
+  </td></tr>
+</table>
+
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-panel" bgcolor="#f5f1ea" style="width:100%; background:#f5f1ea;">
+  <tr><td style="padding:14px 18px 6px 18px;" bgcolor="#f5f1ea">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f5f1ea"><tr>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#f5f1ea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e6e0d6; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/XAUdQX/images/f7015926-fe41-4710-8b2f-d8ec95626866.png" width="15" height="15" alt="SectorCare" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://sectorcare.com.au/sectorcare-wall-mounted-folding-shower-seat/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/880/images/4254/1_-_2026-06-08T161326.518__66400.1782190846.386.513.jpg?c=2" alt="SectorCare Wall Mounted Folding Shower Seat" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:8px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://sectorcare.com.au/sectorcare-wall-mounted-folding-shower-seat/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:700; line-height:1.3; color:#1a1a1a; text-align:center;">SectorCare Wall Mounted Folding Shower Seat</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://sectorcare.com.au/sectorcare-wall-mounted-folding-shower-seat/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:12px; line-height:1.45; color:#666666; text-align:center;">Bath Aids</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#3d7a94" style="background:#3d7a94; border-radius:4px;"><a href="https://sectorcare.com.au/sectorcare-wall-mounted-folding-shower-seat/" target="_blank" class="pricebtn" style="display:inline-block; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $54.00</a></td></tr></table></td></tr>
+        </table>
+      </td>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#f5f1ea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e6e0d6; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/XAUdQX/images/f7015926-fe41-4710-8b2f-d8ec95626866.png" width="15" height="15" alt="SectorCare" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://sectorcare.com.au/sectorcare-height-adjustable-aluminium-shower-stool/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/881/images/4244/1_-_2026-06-08T151610.319__88023.1782190749.386.513.jpg?c=2" alt="SectorCare Height Adjustable Aluminium Shower Stool" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:8px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://sectorcare.com.au/sectorcare-height-adjustable-aluminium-shower-stool/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:700; line-height:1.3; color:#1a1a1a; text-align:center;">SectorCare Height Adjustable Aluminium Shower Stool</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://sectorcare.com.au/sectorcare-height-adjustable-aluminium-shower-stool/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:12px; line-height:1.45; color:#666666; text-align:center;">Bath Aids</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#3d7a94" style="background:#3d7a94; border-radius:4px;"><a href="https://sectorcare.com.au/sectorcare-height-adjustable-aluminium-shower-stool/" target="_blank" class="pricebtn" style="display:inline-block; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $35.10</a></td></tr></table></td></tr>
+        </table>
+      </td>
+    </tr></table>
+  </td></tr>
+</table>
+
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-panel" bgcolor="#f5f1ea" style="width:100%; background:#f5f1ea;">
+  <tr><td style="padding:14px 18px 6px 18px;" bgcolor="#f5f1ea">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f5f1ea"><tr>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#f5f1ea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e6e0d6; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/XAUdQX/images/f7015926-fe41-4710-8b2f-d8ec95626866.png" width="15" height="15" alt="SectorCare" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://sectorcare.com.au/sectorcare-u-shaped-shower-seat/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/930/images/4869/1__68547.1784100994.386.513.jpg?c=2" alt="SectorCare U-Shaped Shower Seat" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:8px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://sectorcare.com.au/sectorcare-u-shaped-shower-seat/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:700; line-height:1.3; color:#1a1a1a; text-align:center;">SectorCare U-Shaped Shower Seat</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://sectorcare.com.au/sectorcare-u-shaped-shower-seat/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:12px; line-height:1.45; color:#666666; text-align:center;">Bath Aids</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#3d7a94" style="background:#3d7a94; border-radius:4px;"><a href="https://sectorcare.com.au/sectorcare-u-shaped-shower-seat/" target="_blank" class="pricebtn" style="display:inline-block; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $42.30</a></td></tr></table></td></tr>
+        </table>
+      </td>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#f5f1ea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e6e0d6; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/XAUdQX/images/f7015926-fe41-4710-8b2f-d8ec95626866.png" width="15" height="15" alt="SectorCare" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://sectorcare.com.au/sectorcare-transfer-bath-bench-with-backrest/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/931/images/4876/2__74067.1784101536.386.513.jpg?c=2" alt="SectorCare Transfer Bath Bench with Backrest" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:8px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://sectorcare.com.au/sectorcare-transfer-bath-bench-with-backrest/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:700; line-height:1.3; color:#1a1a1a; text-align:center;">SectorCare Transfer Bath Bench with Backrest</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://sectorcare.com.au/sectorcare-transfer-bath-bench-with-backrest/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:12px; line-height:1.45; color:#666666; text-align:center;">Bath Aids</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#3d7a94" style="background:#3d7a94; border-radius:4px;"><a href="https://sectorcare.com.au/sectorcare-transfer-bath-bench-with-backrest/" target="_blank" class="pricebtn" style="display:inline-block; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $90.00</a></td></tr></table></td></tr>
+        </table>
+      </td>
+    </tr></table>
+  </td></tr>
+</table>
+
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-panel" bgcolor="#f5f1ea" style="width:100%; background:#f5f1ea;">
+  <tr><td style="padding:14px 18px 6px 18px;" bgcolor="#f5f1ea">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f5f1ea"><tr>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#f5f1ea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e6e0d6; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/XAUdQX/images/f7015926-fe41-4710-8b2f-d8ec95626866.png" width="15" height="15" alt="SectorCare" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://sectorcare.com.au/sectorcare-heavy-duty-transfer-bath-bench-with-backrest/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/932/images/4889/1__03757.1784102073.386.513.jpg?c=2" alt="SectorCare Heavy Duty Transfer Bath Bench with Backrest" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:8px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://sectorcare.com.au/sectorcare-heavy-duty-transfer-bath-bench-with-backrest/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:700; line-height:1.3; color:#1a1a1a; text-align:center;">SectorCare Heavy Duty Transfer Bath Bench with Backrest</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://sectorcare.com.au/sectorcare-heavy-duty-transfer-bath-bench-with-backrest/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:12px; line-height:1.45; color:#666666; text-align:center;">Bath Aids</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#3d7a94" style="background:#3d7a94; border-radius:4px;"><a href="https://sectorcare.com.au/sectorcare-heavy-duty-transfer-bath-bench-with-backrest/" target="_blank" class="pricebtn" style="display:inline-block; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $125.10</a></td></tr></table></td></tr>
+        </table>
+      </td>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#f5f1ea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e6e0d6; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/XAUdQX/images/f7015926-fe41-4710-8b2f-d8ec95626866.png" width="15" height="15" alt="SectorCare" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://sectorcare.com.au/sectorcare-foldable-shower-chair-with-backrest-and-handles/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/933/images/4897/1__34662.1784102556.386.513.jpg?c=2" alt="SectorCare Foldable Shower Chair with Backrest and Handles" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:8px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://sectorcare.com.au/sectorcare-foldable-shower-chair-with-backrest-and-handles/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:700; line-height:1.3; color:#1a1a1a; text-align:center;">SectorCare Foldable Shower Chair with Backrest and Handles</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://sectorcare.com.au/sectorcare-foldable-shower-chair-with-backrest-and-handles/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:12px; line-height:1.45; color:#666666; text-align:center;">Bath Aids</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#3d7a94" style="background:#3d7a94; border-radius:4px;"><a href="https://sectorcare.com.au/sectorcare-foldable-shower-chair-with-backrest-and-handles/" target="_blank" class="pricebtn" style="display:inline-block; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $104.00</a></td></tr></table></td></tr>
+        </table>
+      </td>
+    </tr></table>
+  </td></tr>
+</table>
+
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-panel" bgcolor="#f5f1ea" style="width:100%; background:#f5f1ea;">
+  <tr><td style="padding:14px 18px 6px 18px;" bgcolor="#f5f1ea">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f5f1ea"><tr>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#f5f1ea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e6e0d6; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/XAUdQX/images/f7015926-fe41-4710-8b2f-d8ec95626866.png" width="15" height="15" alt="SectorCare" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://sectorcare.com.au/sectorcare-360-swivel-shower-chair-with-backrest-and-handles/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/934/images/4911/1__64156.1785141593.386.513.jpg?c=2" alt="SectorCare 360° Swivel Shower Chair with Backrest and Handles" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:8px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://sectorcare.com.au/sectorcare-360-swivel-shower-chair-with-backrest-and-handles/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:700; line-height:1.3; color:#1a1a1a; text-align:center;">SectorCare 360° Swivel Shower Chair with Backrest and Handles</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://sectorcare.com.au/sectorcare-360-swivel-shower-chair-with-backrest-and-handles/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:12px; line-height:1.45; color:#666666; text-align:center;">Bath Aids</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#3d7a94" style="background:#3d7a94; border-radius:4px;"><a href="https://sectorcare.com.au/sectorcare-360-swivel-shower-chair-with-backrest-and-handles/" target="_blank" class="pricebtn" style="display:inline-block; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $123.30</a></td></tr></table></td></tr>
+        </table>
+      </td>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#f5f1ea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e6e0d6; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/XAUdQX/images/f7015926-fe41-4710-8b2f-d8ec95626866.png" width="15" height="15" alt="SectorCare" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://sectorcare.com.au/sectorcare-360-swivel-bath-seat-with-backrest/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/935/images/4919/2__19882.1784103468.386.513.jpg?c=2" alt="SectorCare 360° Swivel Bath Seat with Backrest" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:8px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://sectorcare.com.au/sectorcare-360-swivel-bath-seat-with-backrest/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:700; line-height:1.3; color:#1a1a1a; text-align:center;">SectorCare 360° Swivel Bath Seat with Backrest</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://sectorcare.com.au/sectorcare-360-swivel-bath-seat-with-backrest/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:12px; line-height:1.45; color:#666666; text-align:center;">Bath Aids</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#3d7a94" style="background:#3d7a94; border-radius:4px;"><a href="https://sectorcare.com.au/sectorcare-360-swivel-bath-seat-with-backrest/" target="_blank" class="pricebtn" style="display:inline-block; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $142.20</a></td></tr></table></td></tr>
+        </table>
+      </td>
+    </tr></table>
+  </td></tr>
+</table>
+
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-panel" bgcolor="#f5f1ea" style="width:100%; background:#f5f1ea;">
+  <tr><td style="padding:14px 18px 6px 18px;" bgcolor="#f5f1ea">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f5f1ea"><tr>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#f5f1ea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e6e0d6; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/XAUdQX/images/f7015926-fe41-4710-8b2f-d8ec95626866.png" width="15" height="15" alt="SectorCare" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://sectorcare.com.au/sectorcare-adjustable-bath-board-with-dual-support-rails/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/936/images/4928/3__82857.1785221224.386.513.jpg?c=2" alt="SectorCare Adjustable Bath Board with Dual Support Rails" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:8px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://sectorcare.com.au/sectorcare-adjustable-bath-board-with-dual-support-rails/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:700; line-height:1.3; color:#1a1a1a; text-align:center;">SectorCare Adjustable Bath Board with Dual Support Rails</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://sectorcare.com.au/sectorcare-adjustable-bath-board-with-dual-support-rails/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:12px; line-height:1.45; color:#666666; text-align:center;">Bath Aids</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#3d7a94" style="background:#3d7a94; border-radius:4px;"><a href="https://sectorcare.com.au/sectorcare-adjustable-bath-board-with-dual-support-rails/" target="_blank" class="pricebtn" style="display:inline-block; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $34.20</a></td></tr></table></td></tr>
+        </table>
+      </td>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#f5f1ea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e6e0d6; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/XAUdQX/images/f7015926-fe41-4710-8b2f-d8ec95626866.png" width="15" height="15" alt="SectorCare" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://sectorcare.com.au/sectorcare-adjustable-bath-board-with-soft-grip-handle/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/937/images/4939/1__07581.1784130814.386.513.jpg?c=2" alt="SectorCare Adjustable Bath Board with Soft Grip Handle" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:8px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://sectorcare.com.au/sectorcare-adjustable-bath-board-with-soft-grip-handle/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:700; line-height:1.3; color:#1a1a1a; text-align:center;">SectorCare Adjustable Bath Board with Soft Grip Handle</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://sectorcare.com.au/sectorcare-adjustable-bath-board-with-soft-grip-handle/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:12px; line-height:1.45; color:#666666; text-align:center;">Bath Aids</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#3d7a94" style="background:#3d7a94; border-radius:4px;"><a href="https://sectorcare.com.au/sectorcare-adjustable-bath-board-with-soft-grip-handle/" target="_blank" class="pricebtn" style="display:inline-block; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $41.40</a></td></tr></table></td></tr>
+        </table>
+      </td>
+    </tr></table>
+  </td></tr>
+</table>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" style="background:#f2f2f0;">
+  <tr>
+    <td style="padding:28px 20px 8px 20px;">
+      <p style="margin:0; font-family:Georgia,'Times New Roman',serif; font-size:22px; font-weight:700; color:#1a1a1a; text-align:center;">Why SectorCare</p>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding:12px 12px 28px 12px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="trust-card" width="25%" align="center" valign="top" style="padding:4px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e6e0d6; border-radius:10px; width:100%;">
+              <tr>
+                <td style="padding:18px 6px 14px 6px; text-align:center;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto 8px auto;">
+                    <tr><td align="center" style="width:36px; height:36px; background:#f5f1ea; border-radius:50%; font-size:16px; line-height:36px; color:#3d7a94;">&#9993;&#xFE0E;</td></tr>
+                  </table>
+                  <p style="margin:0 0 2px 0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:12px; font-weight:700; line-height:1.35; color:#1a1a1a;">Fast Australia-Wide Shipping</p>
+                  <p style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:9px; color:#666666;">Dispatched nationwide</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td class="trust-card" width="25%" align="center" valign="top" style="padding:4px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e6e0d6; border-radius:10px; width:100%;">
+              <tr>
+                <td style="padding:18px 6px 14px 6px; text-align:center;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto 8px auto;">
+                    <tr><td align="center" style="width:36px; height:36px; background:#f5f1ea; border-radius:50%; font-size:16px; line-height:36px; color:#3d7a94;">&#10003;</td></tr>
+                  </table>
+                  <p style="margin:0 0 2px 0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:12px; font-weight:700; line-height:1.35; color:#1a1a1a;">Registered NDIS Provider</p>
+                  <p style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:9px; color:#666666;">Trusted mobility & care</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td class="trust-card" width="25%" align="center" valign="top" style="padding:4px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e6e0d6; border-radius:10px; width:100%;">
+              <tr>
+                <td style="padding:18px 6px 14px 6px; text-align:center;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto 8px auto;">
+                    <tr><td align="center" style="width:36px; height:36px; background:#f5f1ea; border-radius:50%; font-size:16px; line-height:36px; color:#3d7a94;">&#9733;&#xFE0E;</td></tr>
+                  </table>
+                  <p style="margin:0 0 2px 0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:12px; font-weight:700; line-height:1.35; color:#1a1a1a;">Australian Owned</p>
+                  <p style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:9px; color:#666666;">Local support</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td class="trust-card" width="25%" align="center" valign="top" style="padding:4px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e6e0d6; border-radius:10px; width:100%;">
+              <tr>
+                <td style="padding:18px 6px 14px 6px; text-align:center;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto 8px auto;">
+                    <tr><td align="center" style="width:36px; height:36px; background:#f5f1ea; border-radius:50%; font-size:16px; line-height:36px; color:#3d7a94;">&#9742;&#xFE0E;</td></tr>
+                  </table>
+                  <p style="margin:0 0 2px 0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:12px; font-weight:700; line-height:1.35; color:#1a1a1a;">Trusted Customer Support</p>
+                  <p style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:9px; color:#666666;">02 9172 5607</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f0ebe4;">
+  <tr>
+    <td align="center" style="padding:32px 40px;">
+
+      <p style="margin:0 0 8px 0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:12px; line-height:1.5; color:#555555;">
+        <a href="{% unsubscribe_link %}" style="color:#3d7a94; text-decoration:underline;">Unsubscribe</a>
+        &nbsp;|&nbsp;
+        <a href="https://sectorcare.com.au/privacy-policy/" style="color:#3d7a94; text-decoration:underline;">Privacy Policy</a>
+      </p>
+      <p style="margin:0; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:12px; line-height:1.5; color:#555555;">
+        SectorCare<br />
+      </p>
+    </td>
+  </tr>
+</table>
+
+        </td>
+      </tr>
+    </table>
+  </center>
+
+</body>
+</html>

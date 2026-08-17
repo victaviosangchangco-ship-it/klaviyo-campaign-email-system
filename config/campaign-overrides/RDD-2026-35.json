@@ -1,0 +1,49 @@
+{
+  "_doc": "APPROVED CONTENT OVERRIDE for RDD-2026-35 (an approved change of content direction). The Campaign Calendar (XLSX + generated JSON) remains the planning source and is untouched; this file supplies the hero image, grouped product selection (by verified BigCommerce id) and authored copy the calendar cannot express. Product data is still fetched live and verified at generation time (never fabricated). Copy follows CLAUDE.md: NO DASH (§6.2), non-empty preview (§6.24), no invented claims/discounts.",
+  "campaign_id": "RDD-2026-35",
+  "brand": "RDD",
+  "subject": "Set Up a Healthier Study Space for the Whole Family",
+  "preview_text": "From kids ergonomic chairs to sit stand desks and study accessories, find a comfortable setup that supports better posture and focus.",
+  "eyebrow": "ERGONOMIC STUDY & WORKSPACE",
+  "hero_heading": "A Healthier Way to Sit, Study and Work",
+  "hero_body": "Comfortable ergonomic seating and height adjustable desks for kids, students and the home office.",
+  "intro_paras": [
+    "Set up a workspace that stays comfortable through long study and work sessions, with ergonomic support that helps focus come easier."
+  ],
+  "hero_image": {
+    "url": "https://d3k81ch9hvuctc.cloudfront.net/company/XAUdQX/images/3441a090-b1db-4320-bae8-8fd0b1a6db66.jpeg",
+    "alt": "Ergonomic children study chair from Retail Display Direct",
+    "height": 335,
+    "link": "https://www.retaildisplaydirect.com.au/ergonomic-children-desk-chair/"
+  },
+  "cta_primary": { "label": "Shop Kids Ergonomic", "url": "https://www.retaildisplaydirect.com.au/ergonomic-children-desk-chair/" },
+  "cta_closing": { "label": "Explore the Full Range", "url": "https://www.retaildisplaydirect.com.au/products/" },
+  "groups": [
+    { "title": "Kids and Student Seating", "subtitle": "Ergonomic chairs sized for children", "badge": "In Stock", "product_ids": [1501, 1502] },
+    { "title": "Ergonomic Seating", "subtitle": "Supportive chairs for every desk", "badge": "In Stock", "product_ids": [1379, 1380, 1381, 1354, 1353, 1375] },
+    { "title": "Sit Stand and Study Desks", "subtitle": "Height adjustable desks for focused work", "badge": "In Stock", "product_ids": [1384, 1248, 1246, 1228, 1240, 1503] },
+    { "title": "Study Accessories", "subtitle": "Finishing touches for a tidy, comfortable desk", "badge": "In Stock", "product_ids": [1524, 1397, 1396, 1399, 1325, 1400] }
+  ],
+  "descriptions": {
+    "1501": "Kids ergonomic study chair in blue",
+    "1502": "Kids ergonomic study chair in pink",
+    "1379": "Ergonomic mesh office chair",
+    "1380": "Ergonomic mesh computer chair",
+    "1381": "High back designer mesh chair",
+    "1354": "High back full mesh chair in grey",
+    "1353": "High back full mesh chair in black",
+    "1375": "Executive high back mesh chair",
+    "1384": "L shaped study desk 1600mm",
+    "1248": "Height adjustable sit stand desk 1400mm",
+    "1246": "Height adjustable sit stand desk 1600mm",
+    "1228": "Sit stand desk in white 1400mm",
+    "1240": "Electric sit stand desk 1600mm",
+    "1503": "Bamboo top sit stand desk 1400mm",
+    "1524": "Kids study LED desk lamp",
+    "1397": "Under desk adjustable footrest",
+    "1396": "Desktop pegboard organiser",
+    "1399": "Desktop whiteboard",
+    "1325": "Sit stand floor mat",
+    "1400": "Desktop storage organiser"
+  }
+}

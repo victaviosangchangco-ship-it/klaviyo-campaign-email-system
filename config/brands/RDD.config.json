@@ -1,0 +1,112 @@
+{
+  "_doc": "RDD brand configuration for the Automation Platform — the SINGLE, non-secret source of brand facts + design tokens the Rendering Engine injects into Components/. This resolves the audit's Design.md/BrandConfig.md contradiction: CLAUDE.md §2 says those Flow-project files must NOT exist here, so the Campaign platform reads brand config from THIS file instead. Credentials are NEVER stored here — they load at runtime from Brands/RDD/.env (git-ignored).",
+  "_sources": "Values are grounded in APPROVED, in-repo references, not invented (CLAUDE.md §5): (a) approved output Brands/RDD/Campaigns/Weekly/Output/RDD-2026-W31.html — the in-repo reference of record (CLAUDE.md §6.23); (b) CLAUDE.md §6.10/§6.13 (RDD brand orange, approved grid/footer); (c) Brands/RDD/integration/rdd.config.js (BigCommerce mapping); (d) Shared/design-tokens.md (structural scale). Each field carries a confidence tag per 03-Brands MD Files/RDD.md.",
+
+  "code": "RDD",
+  "type": "brand-config",
+
+  "identity": {
+    "companyName": { "value": "Retail Display Direct Pty Ltd", "confidence": "Confirmed", "source": "RDD-2026-W31.html footer" },
+    "displayName": { "value": "Retail Display Direct", "confidence": "Confirmed", "source": "RDD-2026-W31.html" },
+    "website": { "value": "https://www.retaildisplaydirect.com.au/", "confidence": "Confirmed", "source": "03-Brands MD Files/RDD.md" },
+    "address": { "value": "3 Wordie Place, Padstow, NSW 2211, Australia", "confidence": "Confirmed", "source": "RDD-2026-W31.html footer" },
+    "phone": { "value": "(02) 9708 5288", "confidence": "Confirmed", "source": "RDD-2026-W31.html footer" },
+    "privacyUrl": { "value": "https://www.retaildisplaydirect.com.au/privacy-policy/", "confidence": "Confirmed", "source": "RDD-2026-W31.html footer" },
+    "allProductsUrl": { "value": "https://www.retaildisplaydirect.com.au/products/", "confidence": "Confirmed", "source": "CLAUDE.md §6.7" }
+  },
+
+  "logo": {
+    "url": { "value": "https://d3k81ch9hvuctc.cloudfront.net/company/XAUdQX/images/19434473-b495-4540-8a3c-ffe9c37a879f.png", "confidence": "Confirmed", "source": "RDD-2026-W31.html header (Klaviyo-hosted)" },
+    "darkUrl": { "value": "https://d3k81ch9hvuctc.cloudfront.net/company/XAUdQX/images/19434473-b495-4540-8a3c-ffe9c37a879f.png", "confidence": "Inferred", "source": "same asset in both modes (header.html fallback)" },
+    "alt": "Retail Display Direct",
+    "width": 132,
+    "height": 33,
+    "align": "center"
+  },
+
+  "designTokens": {
+    "_note": "Approved RDD palette from RDD-2026-W31.html + CLAUDE.md §6.10/§6.13. Type scale/radii from Shared/design-tokens.md. Six-digit hex only (design-tokens §6.2).",
+    "FONT_STACK": "Arial,Helvetica,sans-serif",
+    "HEADING_FONT_STACK": "Arial,Helvetica,sans-serif",
+    "HEADING_WEIGHT": "700",
+    "EYEBROW_SIZE": "11px",
+    "H1_SIZE": "32px",
+    "H2_SIZE": "22px",
+    "BODY_SIZE": "15px",
+    "META_SIZE": "13px",
+    "SMALL_SIZE": "12px",
+
+    "BODY_BG": "#ffffff",
+    "TEXT_COLOR": "#2a2e34",
+    "MUTED_TEXT_COLOR": "#6f6f6f",
+    "ACCENT_COLOR": "#f47c20",
+    "LINK_COLOR": "#777777",
+
+    "SECTION_BG": "#f2f1ee",
+    "CARD_BG": "#ffffff",
+    "CARD_BORDER_COLOR": "#e9e7e2",
+    "BADGE_BG": "#f47c20",
+    "BADGE_TEXT_COLOR": "#ffffff",
+
+    "BUTTON_BG": "#f47c20",
+    "BUTTON_TEXT_COLOR": "#ffffff",
+    "BUTTON_RADIUS": "4px",
+    "CTA_BUTTON_RADIUS": "28px",
+    "BUTTON_ARCSIZE": "50%",
+
+    "CARD_RADIUS": "6px",
+    "IMAGE_RADIUS": "8px",
+    "PILL_RADIUS": "24px",
+
+    "TRUST_ICON_BG": "#f4efe9",
+
+    "FOOTER_BG": "#f2f1ee",
+    "FOOTER_TEXT_COLOR": "#555555",
+
+    "DARK_BODY_BG": "#111111",
+    "DARK_TEXT_COLOR": "#ffffff"
+  },
+
+  "trust": {
+    "_note": "Monochrome text-presentation glyphs only (CLAUDE.md §6.21) — never colour emoji. Reused from approved W29-W31 trust strip.",
+    "title": "Why Retail Display Direct",
+    "items": [
+      { "glyph": "&#9993;&#xFE0E;", "label": "Australia-Wide Shipping", "sub": "Fast dispatch nationwide" },
+      { "glyph": "&#10003;", "label": "Quality Displays", "sub": "Built to last" },
+      { "glyph": "&#8635;", "label": "Easy Returns", "sub": "Hassle-free process" },
+      { "glyph": "&#9742;&#xFE0E;", "label": "Expert Support", "sub": "(02) 9708 5288" }
+    ]
+  },
+
+  "bigcommerce": {
+    "_note": "Non-secret store-structural mapping. Mirrors Brands/RDD/integration/rdd.config.js. Credentials load from Brands/RDD/.env at runtime. Read-only (GET) only.",
+    "envPath": "Brands/RDD/.env",
+    "storeDomain": "https://www.retaildisplaydirect.com.au",
+    "storeHashHint": "ugqmr0qfvf",
+    "featuredCategoryIds": [460, 505, 560, 541, 554, 558],
+    "saleCategoryId": 579,
+    "heroProductId": 1379,
+    "imageCdnHost": "https://cdn11.bigcommerce.com/s-ugqmr0qfvf/"
+  },
+
+  "klaviyo": {
+    "_note": "Non-secret Klaviyo settings for the Draft MVP. Credentials are NEVER stored here — KLAVIYO_API_KEY loads at runtime from `envPath` (git-ignored). NO Klaviyo API calls occur until T4+; this block is inert infrastructure config for T1-T3. Fields tagged 'To be confirmed' are external prerequisites (a verified sending domain + a dedicated test list) per KLAVIYO_MVP_IMPLEMENTATION_PLAN.md §8.",
+    "apiKeyEnvVar": "KLAVIYO_API_KEY",
+    "envPath": "Brands/RDD/.env",
+    "apiBaseUrl": "https://a.klaviyo.com/api",
+    "revision": "2024-10-15",
+    "_revisionNote": "Pin the current STABLE Klaviyo API revision. CONFIRM against Klaviyo's API changelog before the first API call (T4). Inert until then — no request is made this sprint.",
+    "requiredScopes": ["Campaigns:Full", "Templates:Full", "Lists:Read", "Accounts:Read"],
+    "account": { "idHint": "XAUdQX", "confidence": "Inferred", "source": "logo cloudfront path (company/XAUdQX/...) + memory" },
+    "sender": {
+      "fromEmail": { "value": "sales@retaildisplaydirect.com.au", "confidence": "Confirmed", "source": "user-directed brand sender; same verified sending domain as the account default hello@retaildisplaydirect.com.au (§13.4)" },
+      "fromLabel": { "value": "Retail Display Direct", "confidence": "Inferred" },
+      "replyToEmail": { "value": "sales@retaildisplaydirect.com.au", "confidence": "Confirmed", "source": "reply_to = brand sender (equivalent to 'Use as reply-to' enabled) (§13.4)" }
+    },
+    "audience": {
+      "type": "list",
+      "name": { "value": null, "confidence": "To be confirmed", "note": "A dedicated DEMO/test list; resolved to an id at T5/T6." },
+      "id": { "value": null, "confidence": "To be confirmed" }
+    }
+  }
+}

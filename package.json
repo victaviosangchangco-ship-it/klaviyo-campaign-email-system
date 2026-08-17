@@ -1,0 +1,25 @@
+{
+  "name": "klaviyo-campaign-automation-platform",
+  "version": "0.1.0-mvp",
+  "private": true,
+  "description": "AI-Powered File-Driven Email Automation Platform (MVP). Automation Engine that executes the file-driven Weekly campaign workflow: read context -> retrieve products -> render HTML -> QA -> export a campaign package. Klaviyo/send are intentionally out of MVP scope.",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18"
+  },
+  "bin": {
+    "campaign": "platform/engine/cli.js"
+  },
+  "scripts": {
+    "campaign": "node platform/engine/cli.js",
+    "create:rdd": "node platform/engine/cli.js create --brand RDD --type weekly",
+    "calendar:import": "node platform/integrations/calendar/import/import-xlsx.js",
+    "calendar:update": "node platform/engine/calendar-cli.js update",
+    "test": "node --test \"platform/tests/**/*.test.js\""
+  },
+  "devDependencies": {
+    "xlsx": "^0.18.5"
+  },
+  "author": "Fast Retail Group",
+  "license": "UNLICENSED"
+}

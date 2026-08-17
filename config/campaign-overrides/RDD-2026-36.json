@@ -1,0 +1,62 @@
+{
+  "_doc": "APPROVED CONTENT OVERRIDE for RDD-2026-36. The LIVE Lark Campaign Calendar remains the planning source and is untouched (read-only). This file expresses what the calendar's single `product_categories` field cannot: the calendar specifies TWO categories (\"Sit Stand Desks, Ergonomic Chairs\"), so the grouped product selection is given here by verified BigCommerce product id. Product data is still fetched live and verified at generation time (never fabricated). Subject and promotion are taken verbatim from the Lark record. Copy follows CLAUDE.md: NO DASH (§6.2/§6.25), non-empty preview (§6.24), no invented claims, no invented expiry date.",
+
+  "campaign_id": "RDD-2026-36",
+  "brand": "RDD",
+
+  "_source": {
+    "calendar": "Lark Base (live API), RDD Campaign Calendar, record RDD-2026-36",
+    "subject_from_calendar": true,
+    "promotion_from_calendar": { "code": "DADDEALS15", "text": "15% off sit stand desks & chairs" },
+    "categories_from_calendar": "Sit Stand Desks, Ergonomic Chairs",
+    "bigcommerce_categories": { "541": "Sit Stand Desk", "560": "Ergonomic Office Chair" },
+    "tone_from_calendar": "warm, celebratory, gifting",
+    "no_expiry_date": "The Lark record carries NO offer expiry date. Per the Holiday Playbook a deadline must never be invented or softened, so no end date is stated anywhere in the copy. Confirm and add a real expiry before send."
+  },
+
+  "subject": "Give Dad the Gift of Workplace Comfort",
+  "preview_text": "Save 15% on ergonomic chairs and sit stand desks with code DADDEALS15.",
+
+  "eyebrow": "FATHER'S DAY GIFT EDIT",
+  "hero_heading": "Comfort He Will Feel Every Day",
+  "hero_body": "Ergonomic chairs and sit stand desks built for long working days.",
+
+  "intro_paras": [
+    "This Father's Day, give something he will actually use. Save 15% on ergonomic chairs and sit stand desks with code DADDEALS15 at checkout."
+  ],
+
+  "_hero_image_note": "Deliberately omitted. Brands/RDD/Assets/ holds no approved Father's Day hero artwork, and CLAUDE.md §7 requires human approval before an AI-generated hero enters the assets workflow. Components/hero-image.html states the artwork's REAL exported pixel height must never be guessed and that the banner scales rather than crops, so a 1280x1280 product photo cannot be repurposed as a 600px banner. The component supports a text-led hero; approved band artwork is a pre-send item (§6.13-H).",
+
+  "cta_primary": { "label": "Shop Ergonomic Chairs", "url": "https://www.retaildisplaydirect.com.au/ergonomic-office-chair/" },
+  "cta_closing": { "label": "Explore the Full Range", "url": "https://www.retaildisplaydirect.com.au/products/" },
+
+  "groups": [
+    {
+      "title": "Ergonomic Chairs",
+      "subtitle": "Support that lasts the whole working day",
+      "badge": "In Stock",
+      "product_ids": [1383, 1354, 1376, 1350, 1389, 1352]
+    },
+    {
+      "title": "Sit Stand Desks",
+      "subtitle": "Move more without leaving the desk",
+      "badge": "In Stock",
+      "product_ids": [1248, 1228, 1246, 1240, 1244, 1503]
+    }
+  ],
+
+  "descriptions": {
+    "1383": "High back full mesh fabric chair in grey",
+    "1354": "High back full mesh chair in grey",
+    "1376": "Executive high back full mesh chair",
+    "1350": "ERGOUP 07-35 ergonomic chair in black",
+    "1389": "ERGOUP 07-35 Black Series ergonomic chair",
+    "1352": "ERGOUP GTC-DV-10E ergonomic chair",
+    "1248": "Height adjustable desk in black, 1400mm",
+    "1228": "Sit stand desk in white, 1400mm",
+    "1246": "Height adjustable office desk in black, 1600mm",
+    "1240": "Electric sit stand desk in black, 1600mm",
+    "1244": "Electric standing desk in black, 1800mm",
+    "1503": "Bamboo top sit stand desk, 1400mm"
+  }
+}

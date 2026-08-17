@@ -1,0 +1,569 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  <meta name="x-apple-disable-message-reformatting" />
+  
+  <meta name="format-detection" content="telephone=no,address=no,email=no,date=no,url=no" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="supported-color-schemes" content="light dark" />
+  <title>Protect Your Site: Shop Safety Bollards</title>
+  <!--[if mso]>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <![endif]-->
+  <style>
+    /* [+CERBERUS] CSS duplicate of the color-scheme meta — some clients read one, not the other. */
+    :root { color-scheme: light dark; supported-color-schemes: light dark; }
+
+    /* --- client resets (structural, not brand) --- */
+    body { margin:0; padding:0; width:100% !important; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; }
+    /* [+CERBERUS] text-size-adjust on * as well as body — it does not reliably inherit into
+       nested tables in every client. */
+    * { -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; }
+    table { border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; }
+    img { border:0; height:auto; line-height:100%; outline:none; text-decoration:none; -ms-interpolation-mode:bicubic; }
+    a { text-decoration:none; }
+    /* [+CERBERUS] Outlook adds padding around anchors. Already inline in most built templates;
+       centralised here so every future build inherits it. */
+    #outlook a { padding:0; }
+    /* [+CERBERUS] Neutralise <th>'s default bold. Inert today (no component uses <th>); present so
+       the Cerberus <th> stacking-column pattern can be adopted without a second head change. */
+    th { font-weight:normal; }
+
+    /* --- [+CERBERUS] targeted client-bug fixes -------------------------------------------------
+       Each rule below fixes ONE named client defect. Every selector is either injected by the mail
+       client itself (.a6S, .im, .aBn, #MessageViewBody, a[x-apple-data-detectors]) or opt-in via a
+       class we add deliberately (.g-img, .unstyle-auto-detected-links). None of them can alter the
+       rendering of the current approved design. --------------------------------------------- */
+
+    /* Android 4.4 injects `margin: 16px 0` on a wrapper div. */
+    div[style*="margin: 16px 0"] { margin:0 !important; }
+
+    /* Samsung Mail otherwise renders the message narrower than the viewport. */
+    #MessageViewBody, #MessageWebViewDiv { width:100% !important; }
+
+    /* Gmail overlays a download button on large, unlinked images. */
+    .a6S { display:none !important; opacity:0.01 !important; }
+    /* Fallback for the above: tag the image class="g-img" and hide the injected sibling div. */
+    img.g-img + div { display:none !important; }
+
+    /* Gmail recolours text inside a conversation thread. */
+    .im { color:inherit !important; }
+
+    /* iOS and Gmail auto-detect dates, addresses and phone numbers and style them as blue links.
+       The link cannot be removed, but it can be made to look like the surrounding body text.
+       ⚠️ .unstyle-auto-detected-links must wrap ONLY an address/phone block — never a container
+       that also holds real styled links (e.g. Unsubscribe), or those lose their colour too. */
+    a[x-apple-data-detectors],
+    .unstyle-auto-detected-links a,
+    .aBn {
+      border-bottom:0 !important; cursor:default !important; color:inherit !important;
+      text-decoration:none !important; font-size:inherit !important; font-family:inherit !important;
+      font-weight:inherit !important; line-height:inherit !important;
+    }
+
+    /* Removes the right-hand gutter in the Gmail iOS app. `u ~ div` matches only there — Gmail iOS
+       injects a <u> element ahead of the message body; no other client does. One block per
+       viewport supported. */
+    @media only screen and (min-device-width:320px) and (max-device-width:374px) {
+      u ~ div .email-container { min-width:320px !important; }
+    }
+    @media only screen and (min-device-width:375px) and (max-device-width:413px) {
+      u ~ div .email-container { min-width:375px !important; }
+    }
+    @media only screen and (min-device-width:414px) {
+      u ~ div .email-container { min-width:414px !important; }
+    }
+    /* --- end [+CERBERUS] client-bug fixes ------------------------------------------------------ */
+
+    /* --- shared layout baseline (not brand) --- */
+    .email-container { width:600px; max-width:600px; margin:0 auto; }
+    /* [+CERBERUS — component 3 addendum] Defensive responsive backstop for the hero banner (§6.6).
+       Five approved outputs already rely on .hero-img but each redefined it inline because it was
+       missing here; centralising it removes that duplication. Identical to the shipping definition,
+       so no built email changes. Declared outside the media query so it also protects clients that
+       apply <head> CSS but not the @media block. */
+    .hero-img { width:100% !important; max-width:100% !important; height:auto !important; }
+    /* Equal-height product cards: the PRIMARY mechanism is fixed-height <td> cells (.pimg/.pnc/.pdc/.ppc)
+       on the card itself (Outlook-safe, CLAUDE §6.8). These min-heights are a progressive-enhancement
+       fallback only for clients that honour them; never the sole mechanism. */
+    .prod-name { min-height:34px; }
+    .prod-sub  { min-height:52px; }
+
+    /* --- responsive (CS-09) --- */
+    @media screen and (max-width:600px) {
+      .email-container { width:100% !important; }
+      .stack-col, .pc { display:block !important; width:100% !important; max-width:100% !important; box-sizing:border-box !important; }
+      .pc img { width:100% !important; height:auto !important; }
+      /* Never enlarge small brand marks / decorative icons with the mobile product-image rule (CLAUDE §6.17) */
+      .pc img.brandmark { width:15px !important; max-width:15px !important; height:auto !important; }
+      /* Fixed-height card regions reset to auto so stacked full-width cards size naturally (CLAUDE §6.8) */
+      .pimg, .pnc, .pdc { height:auto !important; }
+      /* Price badge stays a compact, content-width badge on mobile — NEVER stretches to card width
+         (CLAUDE §6.17). Width is content-driven by the shrink-to-fit table; this only tunes the tap size. */
+      .pricebtn { display:inline-block !important; width:auto !important; padding:12px 26px !important; }
+      .center-sm { text-align:center !important; }
+      .mp { padding-left:16px !important; padding-right:16px !important; }
+      .hh { font-size:28px !important; }
+      .tap { min-height:44px !important; line-height:44px !important; }
+      /* category pills: 3-across → 2-across, full-width tappable chips */
+      .cat-td { display:inline-block !important; width:50% !important; box-sizing:border-box !important; padding:4px !important; text-align:center !important; vertical-align:top !important; }
+      .pill { display:block !important; padding:14px 8px !important; }
+      /* trust badges: 4-across → 2x2 */
+      .trust-card { width:50% !important; padding:6px !important; }
+      /* coupon code never overflows a narrow screen */
+      .coupon-code { font-size:24px !important; letter-spacing:2px !important; word-break:break-all !important; }
+      /* cards stack full-width: drop the equal-height locks and keep copy readable */
+      .prod-name { min-height:0 !important; }
+      .prod-sub  { min-height:0 !important; font-size:14px !important; line-height:1.5 !important; }
+
+      /* [+CERBERUS] Hybrid / stacking utilities. INERT TODAY — no current component carries these
+         classes, so they change nothing until product-grid.html (component 5) opts in.
+         `direction:ltr` is the mandatory reset half of the dir="rtl" column-order swap: without it,
+         a right-thumbnail row stacks text-above-image on mobile and the reading order breaks. */
+      .stack-column,
+      .stack-column-center {
+        display:block !important; width:100% !important;
+        max-width:100% !important; direction:ltr !important;
+      }
+      .stack-column-center { text-align:center !important; }
+      /* Generic mobile centring for images, buttons and nested tables. */
+      .center-on-narrow {
+        text-align:center !important; display:block !important;
+        margin-left:auto !important; margin-right:auto !important; float:none !important;
+      }
+      table.center-on-narrow { display:inline-block !important; }
+      /* Centred odd last card goes full width on mobile (CLAUDE §6.9). */
+      .center-half { width:100% !important; }
+    }
+
+    /* --- dark mode (CS-12); colours inject via tokens from Design.md --- */
+    @media (prefers-color-scheme: dark) {
+      .dm-bg   { background:#111111 !important; }
+      .dm-text { color:#ffffff !important; }
+      .dm-logo-light { display:none !important; }
+      .dm-logo-dark  { display:block !important; }
+    }
+    [data-ogsc] .dm-bg   { background:#111111 !important; }
+    [data-ogsc] .dm-text { color:#ffffff !important; }
+    [data-ogsc] .dm-logo-light { display:none !important; }
+    [data-ogsc] .dm-logo-dark  { display:block !important; }
+  </style>
+</head>
+
+<body class="dm-bg" style="margin:0; padding:0; background:#ffffff;">
+
+<div style="display:none; max-height:0; overflow:hidden; mso-hide:all; font-size:1px; line-height:1px; opacity:0;">
+  Safety Bollards. Explore 16 Safety Bollards picks, in stock now and ready to ship Australia-wide.
+  &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+</div>
+
+  <center style="width:100%; background:#ffffff;">
+    <table role="presentation" class="email-container" width="600" cellpadding="0" cellspacing="0" border="0" align="center" style="width:600px; max-width:600px; margin:0 auto;">
+      <tr>
+        <td>
+
+          
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#e11b22" style="width:100%; background:#e11b22;">
+  <tr>
+    <td align="left" bgcolor="#e11b22" style="padding:24px 40px; background:#e11b22; text-align:left;"><a href="https://www.safetysector.com.au/" target="_blank" style="text-decoration:none;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/T7SuPP/images/f4045d61-0ee2-41a3-8fbf-6281da7b3891.gif" alt="Safety Sector" width="128" height="" border="0" class="dm-logo-light" style="display:block; width:128px; max-width:100%; height:auto; border:0; outline:none; text-decoration:none; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:18px; color:#000000;" /></a><!--[if !mso]><!--><a href="https://www.safetysector.com.au/" target="_blank" style="text-decoration:none;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/T7SuPP/images/f649010e-1543-4913-83fe-9c37cbcef1c3.png" alt="Safety Sector" width="128" height="" border="0" class="dm-logo-dark" style="display:none; width:128px; max-width:100%; height:auto; border:0; outline:none; text-decoration:none;" /></a><!--<![endif]--></td>
+  </tr>
+</table>
+
+
+
+          
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="width:100%; background:#ffffff;">
+  
+  <tr>
+    <td class="mp" align="left" bgcolor="#ffffff" style="padding:30px 28px 8px 28px; background:#ffffff; text-align:left;">
+      <p style="margin:0 0 12px 0; font-family:Arial,Helvetica,sans-serif; font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; line-height:1.2; color:#e11b22;">WEEKLY</p>
+      <h1 class="hh dm-text" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:30px; font-weight:800; line-height:1.15; letter-spacing:-0.3px; color:#000000;">Safety Sector Weekly — Safety Bollards</h1>
+    </td>
+  </tr>
+  
+  <tr>
+    <td class="mp" align="left" bgcolor="#ffffff" style="padding:12px 28px 24px 28px; background:#ffffff; text-align:left;">
+      <p class="dm-text" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:16px; line-height:1.6; color:#000000;">Safety Bollards</p>
+    </td>
+  </tr>
+</table>
+
+
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" style="background:#ffffff;">
+  <tr>
+    <td class="mp" align="left" style="padding:14px 28px 24px 28px;">
+      <p class="dm-text" style="margin:0 0 14px 0; font-family:Arial,Helvetica,sans-serif; font-size:16px; line-height:1.7; color:#000000;">Browse the Safety Bollards range below. Every product is in stock and ready to ship across Australia.</p>
+      <p class="dm-text" style="margin:0 0 14px 0; font-family:Arial,Helvetica,sans-serif; font-size:16px; line-height:1.7; color:#000000;">Each item links straight to its live product page.</p>
+
+    </td>
+  </tr>
+</table>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" style="background:#ffffff;">
+  <tr>
+    <td align="center" style="padding:8px 28px 32px 28px;">
+      <!--[if mso]>
+      <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="https://www.safetysector.com.au/safety-bollard/" style="height:48px;v-text-anchor:middle;width:225px;" arcsize="0%" fillcolor="#000000" strokecolor="#000000">
+        <w:anchorlock/>
+        <center style="color:#ffffff;font-family:sans-serif;font-size:16px;font-weight:bold;">Explore the Range</center>
+      </v:roundrect>
+      <![endif]-->
+      <!--[if !mso]><!-- -->
+      <a href="https://www.safetysector.com.au/safety-bollard/" class="tap" style="background:#000000; border-radius:0px; color:#ffffff; display:inline-block; font-family:Arial,Helvetica,sans-serif; font-size:16px; font-weight:bold; line-height:48px; text-align:center; text-decoration:none; padding:0 32px; letter-spacing:0.6px;">Explore the Range</a>
+      <!--<![endif]-->
+    </td>
+  </tr>
+</table>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" style="background:#ffffff;">
+  <tr>
+    <td class="mp" style="padding:34px 28px 14px 28px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:separate;">
+        <tr>
+          <td style="background:#fbeaea; border-radius:10px; padding:16px 18px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td valign="middle" style="padding-right:10px;">
+                  <h2 style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:22px; font-weight:800; line-height:1.2; color:#000000;">Safety Bollards</h2>
+                  <p style="margin:5px 0 0 0; font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:1.4; color:#555555;">16 products, in stock now</p>
+                </td>
+                <td valign="middle" align="right" style="white-space:nowrap;">
+                  <span style="display:inline-block; background:#000000; color:#ffffff; border-radius:20px; padding:6px 13px; font-family:Arial,Helvetica,sans-serif; font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase;">In Stock</span>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+          
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-panel" bgcolor="#fbeaea" style="width:100%; background:#fbeaea;">
+  <tr><td style="padding:14px 18px 6px 18px;" bgcolor="#fbeaea">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#fbeaea"><tr>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#fbeaea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e5e5e5; border-radius:0px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/T7SuPP/images/f4045d61-0ee2-41a3-8fbf-6281da7b3891.gif" width="15" height="15" alt="Safety Sector" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://www.safetysector.com.au/surface-mounted-safety-bollard-900mm/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/112/images/779/BSMYEL90__61007.1542078490.386.513.jpg?c=2" alt="Surface Mounted Safety Bollard 900mm" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:0px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://www.safetysector.com.au/surface-mounted-safety-bollard-900mm/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:700; line-height:1.3; color:#000000; text-align:center;">Surface Mounted Safety Bollard 900mm</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://www.safetysector.com.au/surface-mounted-safety-bollard-900mm/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:1.45; color:#555555; text-align:center;">Safety Bollards</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#000000" style="background:#000000; border-radius:0px;"><a href="https://www.safetysector.com.au/surface-mounted-safety-bollard-900mm/" target="_blank" class="pricebtn" style="display:inline-block; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $61.20</a></td></tr></table></td></tr>
+        </table>
+      </td>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#fbeaea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e5e5e5; border-radius:0px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/T7SuPP/images/f4045d61-0ee2-41a3-8fbf-6281da7b3891.gif" width="15" height="15" alt="Safety Sector" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://www.safetysector.com.au/Parking-bollard-for-sale-Sydney/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/113/images/781/BSMYEL140__15199.1542078497.386.513.jpg?c=2" alt="Surface Mounted Parking Bollard 140mm x 1200mm" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:0px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://www.safetysector.com.au/Parking-bollard-for-sale-Sydney/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:700; line-height:1.3; color:#000000; text-align:center;">Surface Mounted Parking Bollard 140mm x 1200mm</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://www.safetysector.com.au/Parking-bollard-for-sale-Sydney/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:1.45; color:#555555; text-align:center;">Safety Bollards</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#000000" style="background:#000000; border-radius:0px;"><a href="https://www.safetysector.com.au/Parking-bollard-for-sale-Sydney/" target="_blank" class="pricebtn" style="display:inline-block; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $173.25</a></td></tr></table></td></tr>
+        </table>
+      </td>
+    </tr></table>
+  </td></tr>
+</table>
+
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-panel" bgcolor="#fbeaea" style="width:100%; background:#fbeaea;">
+  <tr><td style="padding:14px 18px 6px 18px;" bgcolor="#fbeaea">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#fbeaea"><tr>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#fbeaea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e5e5e5; border-radius:0px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/T7SuPP/images/f4045d61-0ee2-41a3-8fbf-6281da7b3891.gif" width="15" height="15" alt="Safety Sector" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://www.safetysector.com.au/inground-safety-bollard-900mm/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/114/images/783/BFGYEL90_A__79673.1542078671.386.513.jpg?c=2" alt="Inground Safety Bollard 900mm" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:0px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://www.safetysector.com.au/inground-safety-bollard-900mm/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:700; line-height:1.3; color:#000000; text-align:center;">Inground Safety Bollard 900mm</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://www.safetysector.com.au/inground-safety-bollard-900mm/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:1.45; color:#555555; text-align:center;">Safety Bollards</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#000000" style="background:#000000; border-radius:0px;"><a href="https://www.safetysector.com.au/inground-safety-bollard-900mm/" target="_blank" class="pricebtn" style="display:inline-block; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $93.50</a></td></tr></table></td></tr>
+        </table>
+      </td>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#fbeaea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e5e5e5; border-radius:0px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/T7SuPP/images/f4045d61-0ee2-41a3-8fbf-6281da7b3891.gif" width="15" height="15" alt="Safety Sector" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://www.safetysector.com.au/inground-security-bollard-1400mm/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/115/images/786/BFGYEL140__22577.1741843403.386.513.jpg?c=2" alt="Inground Parking Bollard 1200mm" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:0px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://www.safetysector.com.au/inground-security-bollard-1400mm/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:700; line-height:1.3; color:#000000; text-align:center;">Inground Parking Bollard 1200mm</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://www.safetysector.com.au/inground-security-bollard-1400mm/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:1.45; color:#555555; text-align:center;">Safety Bollards</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#000000" style="background:#000000; border-radius:0px;"><a href="https://www.safetysector.com.au/inground-security-bollard-1400mm/" target="_blank" class="pricebtn" style="display:inline-block; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $187.00</a></td></tr></table></td></tr>
+        </table>
+      </td>
+    </tr></table>
+  </td></tr>
+</table>
+
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-panel" bgcolor="#fbeaea" style="width:100%; background:#fbeaea;">
+  <tr><td style="padding:14px 18px 6px 18px;" bgcolor="#fbeaea">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#fbeaea"><tr>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#fbeaea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e5e5e5; border-radius:0px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/T7SuPP/images/f4045d61-0ee2-41a3-8fbf-6281da7b3891.gif" width="15" height="15" alt="Safety Sector" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://www.safetysector.com.au/removable-safety-bollard-1000mm/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/116/images/789/BRSMYEL90__88020.1544173639.386.513.jpg?c=2" alt="Removable Safety Bollard 1000mm" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:0px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://www.safetysector.com.au/removable-safety-bollard-1000mm/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:700; line-height:1.3; color:#000000; text-align:center;">Removable Safety Bollard 1000mm</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://www.safetysector.com.au/removable-safety-bollard-1000mm/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:1.45; color:#555555; text-align:center;">Safety Bollards</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#000000" style="background:#000000; border-radius:0px;"><a href="https://www.safetysector.com.au/removable-safety-bollard-1000mm/" target="_blank" class="pricebtn" style="display:inline-block; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $155.00</a></td></tr></table></td></tr>
+        </table>
+      </td>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#fbeaea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e5e5e5; border-radius:0px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/T7SuPP/images/f4045d61-0ee2-41a3-8fbf-6281da7b3891.gif" width="15" height="15" alt="Safety Sector" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://www.safetysector.com.au/removable-security-bollard-Sydney/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/117/images/792/BRC__44204.1741843403.386.513.jpg?c=2" alt="Removable Security Bollard 950mm" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:0px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://www.safetysector.com.au/removable-security-bollard-Sydney/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:700; line-height:1.3; color:#000000; text-align:center;">Removable Security Bollard 950mm</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://www.safetysector.com.au/removable-security-bollard-Sydney/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:1.45; color:#555555; text-align:center;">Safety Bollards</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#000000" style="background:#000000; border-radius:0px;"><a href="https://www.safetysector.com.au/removable-security-bollard-Sydney/" target="_blank" class="pricebtn" style="display:inline-block; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $110.50</a></td></tr></table></td></tr>
+        </table>
+      </td>
+    </tr></table>
+  </td></tr>
+</table>
+
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-panel" bgcolor="#fbeaea" style="width:100%; background:#fbeaea;">
+  <tr><td style="padding:14px 18px 6px 18px;" bgcolor="#fbeaea">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#fbeaea"><tr>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#fbeaea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e5e5e5; border-radius:0px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/T7SuPP/images/f4045d61-0ee2-41a3-8fbf-6281da7b3891.gif" width="15" height="15" alt="Safety Sector" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://www.safetysector.com.au/stainless-steel-removable-security-bollard-900mm/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/118/images/796/BRCSS1__52124.1542079557.386.513.jpg?c=2" alt="Stainless Steel Removable Security Bollard 900mm" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:0px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://www.safetysector.com.au/stainless-steel-removable-security-bollard-900mm/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:700; line-height:1.3; color:#000000; text-align:center;">Stainless Steel Removable Security Bollard 900mm</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://www.safetysector.com.au/stainless-steel-removable-security-bollard-900mm/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:1.45; color:#555555; text-align:center;">Safety Bollards</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#000000" style="background:#000000; border-radius:0px;"><a href="https://www.safetysector.com.au/stainless-steel-removable-security-bollard-900mm/" target="_blank" class="pricebtn" style="display:inline-block; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $346.50</a></td></tr></table></td></tr>
+        </table>
+      </td>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#fbeaea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e5e5e5; border-radius:0px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/T7SuPP/images/f4045d61-0ee2-41a3-8fbf-6281da7b3891.gif" width="15" height="15" alt="Safety Sector" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://www.safetysector.com.au/stainless-steel-safety-bollards/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/119/images/799/BSMSS90__44988.1542079600.386.513.jpg?c=2" alt="Stainless Steel Safety Bollard 900mm" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:0px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://www.safetysector.com.au/stainless-steel-safety-bollards/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:700; line-height:1.3; color:#000000; text-align:center;">Stainless Steel Safety Bollard 900mm</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://www.safetysector.com.au/stainless-steel-safety-bollards/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:1.45; color:#555555; text-align:center;">Safety Bollards</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#000000" style="background:#000000; border-radius:0px;"><a href="https://www.safetysector.com.au/stainless-steel-safety-bollards/" target="_blank" class="pricebtn" style="display:inline-block; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $280.35</a></td></tr></table></td></tr>
+        </table>
+      </td>
+    </tr></table>
+  </td></tr>
+</table>
+
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-panel" bgcolor="#fbeaea" style="width:100%; background:#fbeaea;">
+  <tr><td style="padding:14px 18px 6px 18px;" bgcolor="#fbeaea">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#fbeaea"><tr>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#fbeaea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e5e5e5; border-radius:0px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/T7SuPP/images/f4045d61-0ee2-41a3-8fbf-6281da7b3891.gif" width="15" height="15" alt="Safety Sector" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://www.safetysector.com.au/stainless-steel-security-bollard-Australia/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/120/images/801/BSMSS140__31978.1544173434.386.513.jpg?c=2" alt="Stainless Steel Security Bollard 1200mm" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:0px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://www.safetysector.com.au/stainless-steel-security-bollard-Australia/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:700; line-height:1.3; color:#000000; text-align:center;">Stainless Steel Security Bollard 1200mm</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://www.safetysector.com.au/stainless-steel-security-bollard-Australia/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:1.45; color:#555555; text-align:center;">Safety Bollards</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#000000" style="background:#000000; border-radius:0px;"><a href="https://www.safetysector.com.au/stainless-steel-security-bollard-Australia/" target="_blank" class="pricebtn" style="display:inline-block; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $456.50</a></td></tr></table></td></tr>
+        </table>
+      </td>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#fbeaea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e5e5e5; border-radius:0px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/T7SuPP/images/f4045d61-0ee2-41a3-8fbf-6281da7b3891.gif" width="15" height="15" alt="Safety Sector" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://www.safetysector.com.au/stainless-steel-inground-bollard/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/121/images/803/BFGSS90__47286.1741843403.386.513.jpg?c=2" alt="316 Stainless Steel Inground Bollard 900mm" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:0px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://www.safetysector.com.au/stainless-steel-inground-bollard/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:700; line-height:1.3; color:#000000; text-align:center;">316 Stainless Steel Inground Bollard 900mm</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://www.safetysector.com.au/stainless-steel-inground-bollard/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:1.45; color:#555555; text-align:center;">Safety Bollards</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#000000" style="background:#000000; border-radius:0px;"><a href="https://www.safetysector.com.au/stainless-steel-inground-bollard/" target="_blank" class="pricebtn" style="display:inline-block; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $226.95</a></td></tr></table></td></tr>
+        </table>
+      </td>
+    </tr></table>
+  </td></tr>
+</table>
+
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-panel" bgcolor="#fbeaea" style="width:100%; background:#fbeaea;">
+  <tr><td style="padding:14px 18px 6px 18px;" bgcolor="#fbeaea">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#fbeaea"><tr>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#fbeaea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e5e5e5; border-radius:0px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/T7SuPP/images/f4045d61-0ee2-41a3-8fbf-6281da7b3891.gif" width="15" height="15" alt="Safety Sector" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://www.safetysector.com.au/stainless-steel-fixed-bollard/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/122/images/805/BFGSS90__35677.1544173331.386.513.jpg?c=2" alt="316 Stainless Steel Fixed Bollard 1200mm" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:0px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://www.safetysector.com.au/stainless-steel-fixed-bollard/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:700; line-height:1.3; color:#000000; text-align:center;">316 Stainless Steel Fixed Bollard 1200mm</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://www.safetysector.com.au/stainless-steel-fixed-bollard/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:1.45; color:#555555; text-align:center;">Safety Bollards</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#000000" style="background:#000000; border-radius:0px;"><a href="https://www.safetysector.com.au/stainless-steel-fixed-bollard/" target="_blank" class="pricebtn" style="display:inline-block; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $464.10</a></td></tr></table></td></tr>
+        </table>
+      </td>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#fbeaea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e5e5e5; border-radius:0px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/T7SuPP/images/f4045d61-0ee2-41a3-8fbf-6281da7b3891.gif" width="15" height="15" alt="Safety Sector" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://www.safetysector.com.au/parking-space-protector/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/545/images/1027/A__99292.1741843411.386.513.jpg?c=2" alt="Parking Space Protector" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:0px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://www.safetysector.com.au/parking-space-protector/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:700; line-height:1.3; color:#000000; text-align:center;">Parking Space Protector</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://www.safetysector.com.au/parking-space-protector/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:1.45; color:#555555; text-align:center;">Safety Bollards</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#000000" style="background:#000000; border-radius:0px;"><a href="https://www.safetysector.com.au/parking-space-protector/" target="_blank" class="pricebtn" style="display:inline-block; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $89.10</a></td></tr></table></td></tr>
+        </table>
+      </td>
+    </tr></table>
+  </td></tr>
+</table>
+
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-panel" bgcolor="#fbeaea" style="width:100%; background:#fbeaea;">
+  <tr><td style="padding:14px 18px 6px 18px;" bgcolor="#fbeaea">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#fbeaea"><tr>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#fbeaea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e5e5e5; border-radius:0px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/T7SuPP/images/f4045d61-0ee2-41a3-8fbf-6281da7b3891.gif" width="15" height="15" alt="Safety Sector" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://www.safetysector.com.au/fold-down-bollards/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/546/images/1032/A__50284.1741843411.386.513.jpg?c=2" alt="Fold Down Bollard" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:0px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://www.safetysector.com.au/fold-down-bollards/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:700; line-height:1.3; color:#000000; text-align:center;">Fold Down Bollard</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://www.safetysector.com.au/fold-down-bollards/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:1.45; color:#555555; text-align:center;">Safety Bollards</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#000000" style="background:#000000; border-radius:0px;"><a href="https://www.safetysector.com.au/fold-down-bollards/" target="_blank" class="pricebtn" style="display:inline-block; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $93.50</a></td></tr></table></td></tr>
+        </table>
+      </td>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#fbeaea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e5e5e5; border-radius:0px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/T7SuPP/images/f4045d61-0ee2-41a3-8fbf-6281da7b3891.gif" width="15" height="15" alt="Safety Sector" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://www.safetysector.com.au/fold-down-parking-bollard/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/547/images/1038/A__46437.1741843411.386.513.jpg?c=2" alt="Fold Down Parking Bollard" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:0px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://www.safetysector.com.au/fold-down-parking-bollard/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:700; line-height:1.3; color:#000000; text-align:center;">Fold Down Parking Bollard</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://www.safetysector.com.au/fold-down-parking-bollard/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:1.45; color:#555555; text-align:center;">Safety Bollards</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#000000" style="background:#000000; border-radius:0px;"><a href="https://www.safetysector.com.au/fold-down-parking-bollard/" target="_blank" class="pricebtn" style="display:inline-block; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $176.00</a></td></tr></table></td></tr>
+        </table>
+      </td>
+    </tr></table>
+  </td></tr>
+</table>
+
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-panel" bgcolor="#fbeaea" style="width:100%; background:#fbeaea;">
+  <tr><td style="padding:14px 18px 6px 18px;" bgcolor="#fbeaea">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#fbeaea"><tr>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#fbeaea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e5e5e5; border-radius:0px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/T7SuPP/images/f4045d61-0ee2-41a3-8fbf-6281da7b3891.gif" width="15" height="15" alt="Safety Sector" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://www.safetysector.com.au/surface-mounted-parking-bollard-165mm/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/551/images/1056/DSC_0031_clipped_rev_1__87054.1741843411.386.513.jpg?c=2" alt="Car Park Bollard 165 x 1300mm" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:0px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://www.safetysector.com.au/surface-mounted-parking-bollard-165mm/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:700; line-height:1.3; color:#000000; text-align:center;">Car Park Bollard 165 x 1300mm</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://www.safetysector.com.au/surface-mounted-parking-bollard-165mm/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:1.45; color:#555555; text-align:center;">Safety Bollards</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#000000" style="background:#000000; border-radius:0px;"><a href="https://www.safetysector.com.au/surface-mounted-parking-bollard-165mm/" target="_blank" class="pricebtn" style="display:inline-block; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $205.00</a></td></tr></table></td></tr>
+        </table>
+      </td>
+      
+      <td class="pc" width="50%" valign="top" style="padding:0 6px 12px 6px;" bgcolor="#fbeaea">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="#ffffff" style="background:#ffffff; border:1px solid #e5e5e5; border-radius:0px; box-shadow:0 1px 4px rgba(0,0,0,0.06); height:100%;">
+          <tr><td align="right" bgcolor="#ffffff" style="padding:8px 10px 0 0; font-size:0; line-height:0;"><img src="https://d3k81ch9hvuctc.cloudfront.net/company/T7SuPP/images/f4045d61-0ee2-41a3-8fbf-6281da7b3891.gif" width="15" height="15" alt="Safety Sector" class="brandmark" style="display:inline-block; width:15px; height:15px; opacity:0.8; border:0;" /></td></tr>
+          <tr><td class="pimg" align="center" valign="top" height="200" bgcolor="#ffffff" style="height:200px; padding:2px 14px 8px 14px;"><a href="https://www.safetysector.com.au/Disabled-car-park-bollard-165-x-1300mm/" target="_blank" style="text-decoration:none;"><img src="https://cdn11.bigcommerce.com/s-498h0egvgn/products/552/images/1063/DSC_0033_clipped_rev_1__41801.1741843411.386.513.jpg?c=2" alt="Disabled Car Park Bollard 165 x 1300mm" width="188" height="188" style="display:block; width:188px; max-width:100%; height:auto; border:0; line-height:100%; border-radius:0px; margin:0 auto;" /></a></td></tr>
+          <tr><td class="pnc" align="center" valign="top" height="40" bgcolor="#ffffff" style="height:40px; padding:0 12px;"><a href="https://www.safetysector.com.au/Disabled-car-park-bollard-165-x-1300mm/" target="_blank" style="text-decoration:none;"><p class="dm-text" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:700; line-height:1.3; color:#000000; text-align:center;">Disabled Car Park Bollard 165 x 1300mm</p></a></td></tr>
+          <tr><td class="pdc" align="center" valign="top" height="34" bgcolor="#ffffff" style="height:34px; padding:2px 12px 0 12px;"><a href="https://www.safetysector.com.au/Disabled-car-park-bollard-165-x-1300mm/" target="_blank" style="text-decoration:none;"><p class="dm-sub" style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:1.45; color:#555555; text-align:center;">Safety Bollards</p></a></td></tr>
+          <tr><td class="ppc" align="center" valign="top" bgcolor="#ffffff" style="padding:10px 12px 16px 12px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;"><tr><td align="center" bgcolor="#000000" style="background:#000000; border-radius:0px;"><a href="https://www.safetysector.com.au/Disabled-car-park-bollard-165-x-1300mm/" target="_blank" class="pricebtn" style="display:inline-block; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:800; line-height:1; color:#ffffff; padding:11px 22px; text-decoration:none;">AUD $225.25</a></td></tr></table></td></tr>
+        </table>
+      </td>
+    </tr></table>
+  </td></tr>
+</table>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" style="background:#ffffff;">
+  <tr>
+    <td style="padding:28px 20px 8px 20px;">
+      <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:22px; font-weight:800; color:#000000; text-align:center;">Why Safety Sector</p>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding:12px 12px 28px 12px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="trust-card" width="25%" align="center" valign="top" style="padding:4px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e5e5e5; border-radius:10px; width:100%;">
+              <tr>
+                <td style="padding:18px 6px 14px 6px; text-align:center;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto 8px auto;">
+                    <tr><td align="center" style="width:36px; height:36px; background:#fbeaea; border-radius:50%; font-size:16px; line-height:36px; color:#e11b22;">&#9993;&#xFE0E;</td></tr>
+                  </table>
+                  <p style="margin:0 0 2px 0; font-family:Arial,Helvetica,sans-serif; font-size:12px; font-weight:700; line-height:1.35; color:#000000;">Australia-Wide Delivery</p>
+                  <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:9px; color:#555555;">Fast dispatch nationwide</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td class="trust-card" width="25%" align="center" valign="top" style="padding:4px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e5e5e5; border-radius:10px; width:100%;">
+              <tr>
+                <td style="padding:18px 6px 14px 6px; text-align:center;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto 8px auto;">
+                    <tr><td align="center" style="width:36px; height:36px; background:#fbeaea; border-radius:50%; font-size:16px; line-height:36px; color:#e11b22;">&#10003;</td></tr>
+                  </table>
+                  <p style="margin:0 0 2px 0; font-family:Arial,Helvetica,sans-serif; font-size:12px; font-weight:700; line-height:1.35; color:#000000;">Up to 10-Year Warranty</p>
+                  <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:9px; color:#555555;">Built to Australian standards</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td class="trust-card" width="25%" align="center" valign="top" style="padding:4px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e5e5e5; border-radius:10px; width:100%;">
+              <tr>
+                <td style="padding:18px 6px 14px 6px; text-align:center;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto 8px auto;">
+                    <tr><td align="center" style="width:36px; height:36px; background:#fbeaea; border-radius:50%; font-size:16px; line-height:36px; color:#e11b22;">&#8635;</td></tr>
+                  </table>
+                  <p style="margin:0 0 2px 0; font-family:Arial,Helvetica,sans-serif; font-size:12px; font-weight:700; line-height:1.35; color:#000000;">30-Day Returns</p>
+                  <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:9px; color:#555555;">Hassle-free process</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td class="trust-card" width="25%" align="center" valign="top" style="padding:4px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e5e5e5; border-radius:10px; width:100%;">
+              <tr>
+                <td style="padding:18px 6px 14px 6px; text-align:center;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto 8px auto;">
+                    <tr><td align="center" style="width:36px; height:36px; background:#fbeaea; border-radius:50%; font-size:16px; line-height:36px; color:#e11b22;">&#9742;&#xFE0E;</td></tr>
+                  </table>
+                  <p style="margin:0 0 2px 0; font-family:Arial,Helvetica,sans-serif; font-size:12px; font-weight:700; line-height:1.35; color:#000000;">Trusted by 100,000+</p>
+                  <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:9px; color:#555555;">15+ years in market</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#000000;">
+  <tr>
+    <td align="center" style="padding:32px 40px;">
+
+      <p style="margin:0 0 8px 0; font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:1.5; color:#ffffff;">
+        <a href="{% unsubscribe_link %}" style="color:#000000; text-decoration:underline;">Unsubscribe</a>
+        &nbsp;|&nbsp;
+        <a href="https://www.safetysector.com.au/privacy-policy/" style="color:#000000; text-decoration:underline;">Privacy Policy</a>
+      </p>
+      <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:1.5; color:#ffffff;">
+        Safety Sector Pty Ltd<br />3 Wordie Place, Padstow, NSW 2211, Australia
+      </p>
+    </td>
+  </tr>
+</table>
+
+        </td>
+      </tr>
+    </table>
+  </center>
+
+</body>
+</html>

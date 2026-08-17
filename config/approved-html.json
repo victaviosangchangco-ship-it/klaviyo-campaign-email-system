@@ -1,0 +1,30 @@
+{
+  "_doc": "OPTIONAL per-campaign approved-creative registry. When a calendar campaign_id has an entry here AND the referenced file exists and passes the same QA validators, the live orchestrator attaches THAT approved, human-built Output HTML to the Klaviyo draft VERBATIM — instead of regenerating a (different) creative from BigCommerce. This is opt-in and gated per campaign: an absent entry = the default regeneration pipeline (unchanged). Duplicate protection, audience selection (from the calendar row), sender resolution, and DRAFT-only behavior are all unchanged. RDD and any unlisted campaign are unaffected. Each value: { html: repo-relative path (required), subject: draft subject to match the approved creative (optional; falls back to the calendar subject_line), preview_text: draft preheader (optional; falls back to calendar preview_text, then auto-generated per CLAUDE.md §6.24) }.",
+  "campaigns": {
+    "SS-2026-32": {
+      "html": "Brands/SS/Campaigns/Weekly/Output/SS-2026-W32.html",
+      "subject": "Fix it strong. Built to last.",
+      "preview_text": "This week's fixings range: concrete, brick and masonry fixings and drill bits, in stock now and ready to ship Australia-wide."
+    },
+    "RDD-2026-35": {
+      "html": "Brands/RDD/Campaigns/Weekly/Output/RDD-2026-35.html",
+      "subject": "Set Up a Healthier Study Space for the Whole Family",
+      "preview_text": "From kids ergonomic chairs to sit stand desks and study accessories, find a comfortable setup that supports better posture and focus."
+    },
+    "RDD-2026-37": {
+      "html": "Brands/RDD/Campaigns/Weekly/Output/RDD-2026-37.html",
+      "subject": "Bigger Screen, Better Experiences",
+      "preview_text": "Portable and floor standing projector screens for movies, presentations and events, bright and easy to set up wherever you go."
+    },
+    "SS-2026-LAUNCH-mobility-daily-living-aids": {
+      "html": "Brands/SS/Campaigns/Product Launch/Output/SS-2026-LAUNCH-mobility-daily-living-aids.html",
+      "subject": "Just Launched: Mobility and Daily Living Aids",
+      "preview_text": "New at Safety Sector. Crutches, walkers, shower and bath aids, toileting supports and more, in stock and shipping Australia wide."
+    },
+    "SS-2026-LAUNCH-everyday-mobility-accessories": {
+      "html": "Brands/SS/Campaigns/Product Launch/Output/SS-2026-LAUNCH-everyday-mobility-accessories.html",
+      "subject": "New Arrival: One Holder for Your Drink and Phone",
+      "preview_text": "The 360° adjustable holder that fits strollers, wheelchairs, bikes and more, so what you need stays within easy reach wherever the day takes you."
+    }
+  }
+}

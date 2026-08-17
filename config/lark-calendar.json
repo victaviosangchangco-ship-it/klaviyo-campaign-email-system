@@ -1,0 +1,41 @@
+{
+  "_doc": "Lark Campaign Calendars — NON-SECRET connection settings for the read-only Lark Base API provider. Credentials are NEVER stored here: the App ID and App Secret are resolved from the git-ignored root .env (see appIdEnvVar / appSecretEnvVar). Base/table/view identifiers are not secrets and are version-controlled so every read target is auditable side by side.",
+
+  "baseUrl": "https://open.larksuite.com/open-apis",
+  "envPath": ".env",
+  "appIdEnvVar": "LARK_APP_ID",
+  "appSecretEnvVar": "LARK_APP_SECRET",
+
+  "defaults": {
+    "pageSize": 500,
+    "dateTimezoneOffsetMinutes": 660,
+    "cacheTtlMs": 45000
+  },
+
+  "calendars": {
+    "SS": {
+      "label": "Safety Sector Campaign Calendar",
+      "appToken": "L9D5bxduGaCsQWs1j1jlLhtUgMh",
+      "tableId": "tblbfhWEc0KSFiNj",
+      "viewId": "vewnRfaYtC",
+      "_base": "SS Annual Marketing Content Calendar- Vic working copy",
+      "_table": "Marketing content calendar",
+      "_view": "Overview (grid)"
+    },
+    "RDD": {
+      "label": "Retail Display Direct Campaign Calendar",
+      "appToken": "VJ16bGmDkaqLSQsnp5plyye4gFo",
+      "tableId": "tblDsQnkLJz4vX0t",
+      "viewId": "vewO9kHUNA",
+      "_base": "RDD Campaign Calendar - Vic Working Copy",
+      "_table": "Table",
+      "_view": "Grid (grid)"
+    }
+  },
+
+  "_brandKeyNote": "Each key is the brand code and MUST match the campaign_id prefix in that Base (SS-2026-01 → SS). The provider enforces this: rows whose campaign_id prefix does not match the calendar's brand key are rejected, and a calendar containing NO rows of its own brand fails loudly as a mis-pointed appToken.",
+  "_dateNote": "dateTimezoneOffsetMinutes converts a Lark date field (epoch milliseconds) to a calendar date. VALIDATED 2026-08-12: at offset 0 only 1 of 9 date-named campaigns landed on its real date (Christmas read as 24 Dec, Boxing Day as 25 Dec, New Year's Day as 31 Dec, Australia Day as 25 Jan, Valentine's as 13 Feb, Black Friday as 26 Nov) — every date was exactly ONE DAY EARLY. At 600 or 660, 8 of 9 match. MECHANISM (confirmed on 3 records, exact): the Base stores a date as 16:00Z on the PREVIOUS day, i.e. midnight at UTC+8 — NOT Australian local time. Recovering the date therefore needs any offset >= 480 minutes; 660 is used for margin. To WRITE a date back in the table's own convention, encode it as Date.UTC(y,m,d) - 8h. Set per-calendar only to override. Do not change without re-running the named-date validation.",
+  "_scopes": "Read path uses bitable:app / bitable:app:readonly (confirmed sufficient — live 200 on both Bases). The read client (bitable-client.js) issues GET requests only; no create/update/delete endpoint is referenced anywhere.",
+  "_writeNote": "WRITE path (calendar-writer.js + calendar-update-service.js + `npm run calendar:update`) is guarded, dry-run-by-default, and requires an explicit --write/confirm:true. It uses PUT /records/{record_id} (single) and POST /records/batch_update|batch_create (multi); there is NO delete. Writing requires the Lark app to hold the READ-WRITE bitable:app scope AND edit permission on the Base — bitable:app:readonly is NOT sufficient for writes. Whether that scope/permission is currently granted is unverified until a controlled, approved live write is run (dry-run + all guards are confirmed working live). Permissions and app release are NEVER changed by the code.",
+  "_legacy": "The superseded single-calendar shape ({ \"calendar\": { ... } }) is still accepted by loadLarkConfig() for one transition period and is surfaced under the brand key \"DEFAULT\" unless it carries an explicit \"brand\"."
+}
