@@ -2,13 +2,92 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": false,
   "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/ss-2026-w32-hero-banner.jpg",
+      "destination": "/hero-banners/ss-2026-w32-hero-banner.jpg"
+    },
+    {
+      "source": "/Edit_banner_lower_text_202608161332.jpeg",
+      "destination": "/hero-banners/Edit_banner_lower_text_202608161332.jpeg"
+    },
+    {
+      "source": "/ss-2026-launch-mobility-hero.jpg",
+      "destination": "/hero-images/ss-2026-launch-mobility-hero.jpg"
+    },
+    {
+      "source": "/ss-2026-launch-mobility-hero-v2.jpg",
+      "destination": "/hero-images/ss-2026-launch-mobility-hero-v2.jpg"
+    },
+    {
+      "source": "/ss-flow-abandoned-checkout-hero-v1.jpg",
+      "destination": "/flow-assets/ss-flow-abandoned-checkout-hero-v1.jpg"
+    },
+    {
+      "source": "/ss-2026-w32-wth-durability-photo-v1.jpg",
+      "destination": "/featured-images/ss-2026-w32-wth-durability-photo-v1.jpg"
+    },
+    {
+      "source": "/ss-2026-w32-wth-durability-photo-v2.jpg",
+      "destination": "/featured-images/ss-2026-w32-wth-durability-photo-v2.jpg"
+    },
+    {
+      "source": "/ss-2026-w32-wth-durability-v1.png",
+      "destination": "/featured-images/ss-2026-w32-wth-durability-v1.png"
+    },
+    {
+      "source": "/ss-2026-w32-wth-industrial-photo-v1.jpg",
+      "destination": "/featured-images/ss-2026-w32-wth-industrial-photo-v1.jpg"
+    },
+    {
+      "source": "/ss-2026-w32-wth-industrial-photo-v2.jpg",
+      "destination": "/featured-images/ss-2026-w32-wth-industrial-photo-v2.jpg"
+    },
+    {
+      "source": "/ss-2026-w32-wth-industrial-v1.png",
+      "destination": "/featured-images/ss-2026-w32-wth-industrial-v1.png"
+    },
+    {
+      "source": "/ss-2026-w32-wth-masonry-photo-v1.jpg",
+      "destination": "/featured-images/ss-2026-w32-wth-masonry-photo-v1.jpg"
+    },
+    {
+      "source": "/ss-2026-w32-wth-masonry-photo-v2.jpg",
+      "destination": "/featured-images/ss-2026-w32-wth-masonry-photo-v2.jpg"
+    },
+    {
+      "source": "/ss-2026-w32-wth-masonry-v1.png",
+      "destination": "/featured-images/ss-2026-w32-wth-masonry-v1.png"
+    },
+    {
+      "source": "/ss-2026-w32-wth-wheelstop-photo-v1.jpg",
+      "destination": "/featured-images/ss-2026-w32-wth-wheelstop-photo-v1.jpg"
+    },
+    {
+      "source": "/ss-2026-w32-wth-wheelstop-photo-v2.jpg",
+      "destination": "/featured-images/ss-2026-w32-wth-wheelstop-photo-v2.jpg"
+    },
+    {
+      "source": "/ss-2026-w32-wth-wheelstop-v1.png",
+      "destination": "/featured-images/ss-2026-w32-wth-wheelstop-v1.png"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" },
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        }
       ]
     }
   ]

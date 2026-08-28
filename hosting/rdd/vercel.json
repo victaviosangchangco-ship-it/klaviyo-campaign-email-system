@@ -2,13 +2,36 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": false,
   "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/Replace_product_in_design_template_202608162013.jpeg",
+      "destination": "/hero-banners/Replace_product_in_design_template_202608162013.jpeg"
+    },
+    {
+      "source": "/rdd-bottle-stay-cool-hero-v1.jpg",
+      "destination": "/hero-images/rdd-bottle-stay-cool-hero-v1.jpg"
+    },
+    {
+      "source": "/rdd-bottle-stay-cool-hero-v2.jpg",
+      "destination": "/hero-images/rdd-bottle-stay-cool-hero-v2.jpg"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" },
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        }
       ]
     }
   ]
