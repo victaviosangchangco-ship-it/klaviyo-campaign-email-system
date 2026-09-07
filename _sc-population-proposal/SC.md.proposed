@@ -65,19 +65,24 @@ noted, per `CLAUDE.md §5`).
 
 ## Colour palette
 
-Six-digit hex only (`CLAUDE.md §6.20`). Palette confirmed identically across Design.md and both positioning
-docs — **no conflict**.
+Six-digit hex only (`CLAUDE.md §6.20`).
+
+> **Palette agrees across Maria's design-system draft and both positioning docs — but NO approved SC email
+> send to date has adopted it.** All three Weekly Outputs (SC-2026-W29 / W30 / W32) use a teal `#3d7a94` +
+> beige `#f5f1ea` system, and the stashed Father's Day send uses a third palette (`#032a58` / `#4870b5` /
+> warm neutrals). Whether SC email migrates to Maria's palette or continues on the shipped teal/beige is an
+> open decision pending Bruce/Maria — see `SC-BRAND-DOC-GAPS.md`.
 
 | Role | Name | Hex | Usage | Confidence |
 |---|---|---|---|---|
-| Dominant / primary | Gray Blue (navy) | `#465669` | Headings, primary text, icon discs, caption bars, primary CTA fill | [Confirmed — Design.md, both docs] |
-| Accent | Gray Cyan (teal) | `#466464` | Accent details, secondary emphasis | [Confirmed — Design.md, both docs] |
-| Secondary (soft) | Gray Turquoise | `#8FA3A1` | Soft secondary / muted supporting elements | [Confirmed — Design.md, both docs] |
-| Supporting text | Dark Gray | `#232323` | Body / supporting text where higher contrast than navy is wanted | [Confirmed — Design.md, both docs] |
-| Background | White | `#FFFFFF` | Primary visual foundation; white/light backgrounds carry the layout | [Confirmed — Design.md, both docs] |
+| Dominant / primary | Gray Blue (navy) | `#465669` | Headings, primary text, icon discs, caption bars, primary CTA fill | [Inferred — Design.md + positioning docs (Draft for Review, sign-off pending); no approved SC send has yet adopted this palette] |
+| Accent | Gray Cyan (teal) | `#466464` | Accent details, secondary emphasis | [Inferred — Design.md + positioning docs (Draft for Review, sign-off pending); no approved SC send has yet adopted this palette] |
+| Secondary (soft) | Gray Turquoise | `#8FA3A1` | Soft secondary / muted supporting elements | [Inferred — Design.md + positioning docs (Draft for Review, sign-off pending); no approved SC send has yet adopted this palette] |
+| Supporting text | Dark Gray | `#232323` | Body / supporting text where higher contrast than navy is wanted | [Inferred — Design.md + positioning docs (Draft for Review, sign-off pending); no approved SC send has yet adopted this palette] |
+| Background | White | `#FFFFFF` | Primary visual foundation; white/light backgrounds carry the layout | [Inferred — Design.md + positioning docs (Draft for Review, sign-off pending); no approved SC send has yet adopted this palette] |
 
 - White and light backgrounds provide the **main visual foundation**; navy `#465669` is the dominant brand
-  colour on type and the primary CTA. [Confirmed — Design.md]
+  colour on type and the primary CTA. [Inferred — Design.md]
 - **Product-specific colours must remain accurate** — never re-tint or recolour product imagery. [Confirmed]
 
 ## Typography
@@ -181,7 +186,8 @@ Credential **isolation** and the shared-store rules are owned by `CLAUDE.md §12
 
 ## Outstanding items to confirm
 
-See `SC-BRAND-DOC-GAPS.md` (repo root) for the consolidated blocker list. Summary: email header logo source
+See `SC-BRAND-DOC-GAPS.md` (repo root) for the consolidated blocker list. Summary: **palette migration
+decision** (Maria's `#465669` vs the shipped `#3d7a94`/beige — pending Bruce/Maria), email header logo source
 (`W2Ua5v` official vs `XAUdQX` prior-send), email Poppins fallback stack (conflicts with legacy config
 fonts), exact CTA fill/radius (pending master Brand Guideline), Klaviyo verified sender + reply-to, SC
 `featuredCategoryIds` validation, hosted SC icon set, default Weekly audience.

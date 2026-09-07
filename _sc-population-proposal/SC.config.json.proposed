@@ -22,7 +22,7 @@
       "current": "#3d7a94 (teal, inferred from render)",
       "proposed": "Primary/CTA fill #465669 (Gray Blue navy, dominant); accent #466464 (Gray Cyan). Design.md confirmed palette.",
       "confidence": "Inferred (config) vs Confirmed palette (Design.md + both docs)",
-      "reason": "The rendered emails used a single teal; Maria's authoritative palette is navy-dominant with a distinct teal accent. This is a visual-direction change — reconcile deliberately (may change the approved SC look), do not auto-apply. GAP #8."
+      "reason": "The rendered emails used a single teal; Maria's authoritative palette is navy-dominant with a distinct teal accent. This is a visual-direction change — reconcile deliberately (may change the approved SC look), do not auto-apply. Palette migration = GAP #12 (owner Bruce/Maria); exact CTA fill still deferred to the master Guideline = GAP #8."
     },
     {
       "field": "designTokens.BODY_BG / SECTION_BG / CARD_BORDER_COLOR (beige panels)",

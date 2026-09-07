@@ -37,11 +37,16 @@ structure exactly. Shared Standards and CLAUDE.md rules are **cited, never resta
 2. **Typography.** Confirmed brand font is **Poppins**; `SC.config.json` carries a legacy
    `Helvetica Neue` / `Georgia` serif pair inferred from the render. SC.md records Poppins as the brand
    font and flags the email fallback stack as [To be confirmed]. (GAP #7)
-3. **Palette / CTA colour.** `SC.config.json`'s design tokens (single teal `#3d7a94`, beige panels) were
-   **inferred from the rendered W29/W30 emails** and diverge from Maria's authoritative palette (navy
-   `#465669` dominant, teal `#466464` accent, white foundation). SC.md uses Maria's confirmed palette;
-   the config reconciliation is documented in `SC.config.json.proposed` as a deliberate visual-direction
-   decision for Bruce/Maria — **not** an automatic edit. (GAP #8)
+3. **Palette / CTA colour — every approved SC send diverges from Maria's palette; migration decision
+   pending.** This is a conflict of scale, not a doc-vs-inference nuance: **no** approved SC send has ever
+   used Maria's palette. All three Weekly Outputs (SC-2026-W29 / W30 / W32) ship teal `#3d7a94` + beige
+   `#f5f1ea`, and the stashed Father's Day send uses a third palette (`#032a58` / `#4870b5` / warm neutrals).
+   Maria's `#465669` navy palette is therefore **prospective** — a future brand direction, not the shipped
+   reality. SC.md.proposed records Maria's palette but tags it **[Inferred]** (not [Confirmed]) with an
+   explicit conflict note; `SC.config.json.proposed` **leaves the shipped teal/beige tokens in place** and
+   documents the swap as a pending Bruce/Maria decision — **not** an automatic edit. Tracked as **GAP #12**
+   (palette migration; owner Bruce/Maria), with the exact CTA fill still deferred to the master Guideline
+   (GAP #8). (GAP #12 / #8)
 4. **Master Brand Guideline not in-repo.** Maria's docs defer the exact CTA treatment + colour sheet to a
    master "SectorCare Brand Guideline" that is not yet in the repo; it **supersedes** [Inferred] values
    when it lands.
@@ -55,8 +60,9 @@ rules were deliberately excluded** — email layout is governed by `CLAUDE.md §
 ## Buildable vs blocked (one paragraph)
 
 After Phase 2, **SC is buildable for design/draft/preview work** (`Output/` build for QA): the brand
-identity, confirmed palette, typography direction, tone, imagery, CTA wording, footer/contact facts,
-product source, hosting and Klaviyo account are all populated. **A real SEND is still blocked** on the
+identity, palette (recorded [Inferred], with the migration decision open — GAP #12), typography direction,
+tone, imagery, CTA wording, footer/contact facts, product source, hosting and Klaviyo account are all
+populated. **A real SEND is still blocked** on the
 [To be confirmed] items in `SC-BRAND-DOC-GAPS.md` — chiefly a **verified Klaviyo sender + reply-to**
 (GAP #1/#2), a **confirmed per-campaign audience** (GAP #3, never auto-reused), **`featuredCategoryIds`
 validation** against the shared catalog (GAP #5), and any **coupon code** created + active in BigCommerce
