@@ -1,0 +1,50 @@
+{
+  "_proposal": "PARTIAL PATCH — NOT for automated apply. This document lists the field-level changes that would align config/brands/SC.config.json with the newly-confirmed SectorCare brand sources (Maria's Design.md + positioning docs). Per the Phase-2 plan this file stays QUARANTINED: apply manually, field by field, only after review, because the config also resolves live Klaviyo credentials and its current designTokens are [Inferred] from the rendered W29/W30 emails, which DIVERGE from Maria's authoritative palette/typography. Do not blindly overwrite the whole config. Six-digit hex only (CLAUDE.md §6.20). No secrets are ever stored in config (§12).",
+  "_generated": "2026-09-07 (SC brand-doc population, Phase 1)",
+
+  "conflicts_to_reconcile_before_apply": [
+    {
+      "field": "logo.url / logo.darkUrl",
+      "current": "https://d3k81ch9hvuctc.cloudfront.net/company/XAUdQX/images/f7015926-fe41-4710-8b2f-d8ec95626866.png (account XAUdQX, prior-connected)",
+      "proposed": "https://d3k81ch9hvuctc.cloudfront.net/company/W2Ua5v/images/47898cac-310d-44a3-8d9a-29791b93b07d.png (SC's own account W2Ua5v; official mark per Design.md §5)",
+      "confidence": "Confirmed (official mark) vs Confirmed (prior-send render)",
+      "reason": "Design.md names the W2Ua5v asset as the only permitted logo. The current config value renders but is hosted on the prior account. Confirm + verify HTTPS 200 before applying. GAP #6."
+    },
+    {
+      "field": "designTokens.FONT_STACK / HEADING_FONT_STACK",
+      "current": "'Helvetica Neue',Helvetica,Arial,sans-serif  /  Georgia,'Times New Roman',serif",
+      "proposed": "'Poppins',Arial,Helvetica,sans-serif  (both body and heading; Poppins is the confirmed brand typeface, Design.md)",
+      "confidence": "Inferred (config) vs Confirmed brand font (Design.md)",
+      "reason": "The serif heading stack was inferred from the W29/W30 render and contradicts the confirmed Poppins direction. GAP #7. Confirm the exact email fallback stack before applying."
+    },
+    {
+      "field": "designTokens.ACCENT_COLOR / LINK_COLOR / BADGE_BG / BUTTON_BG",
+      "current": "#3d7a94 (teal, inferred from render)",
+      "proposed": "Primary/CTA fill #465669 (Gray Blue navy, dominant); accent #466464 (Gray Cyan). Design.md confirmed palette.",
+      "confidence": "Inferred (config) vs Confirmed palette (Design.md + both docs)",
+      "reason": "The rendered emails used a single teal; Maria's authoritative palette is navy-dominant with a distinct teal accent. This is a visual-direction change — reconcile deliberately (may change the approved SC look), do not auto-apply. GAP #8."
+    },
+    {
+      "field": "designTokens.BODY_BG / SECTION_BG / CARD_BORDER_COLOR (beige panels)",
+      "current": "#f2f2f0 / #f5f1ea / #e6e0d6 (warm beige support panels, inferred)",
+      "proposed": "White #FFFFFF as the primary visual foundation per Design.md ('white and light backgrounds provide the main visual foundation'); confirm whether the warm beige panels stay as an SC email convention.",
+      "confidence": "Inferred (config) vs Confirmed background direction (Design.md)",
+      "reason": "Design.md leads on white; the beige panels were an email inference. Confirm before changing — the approved SC sends used beige, so this is a design decision for Bruce/Maria, not an automatic edit."
+    }
+  ],
+
+  "safe_confirmations_no_change_needed": {
+    "identity.phone": "02 9172 5607 — now Confirmed (sectorcare.com.au), was Inferred. Optionally raise confidence.",
+    "identity.address": "Set to '3 Wordie Place, Padstow NSW 2211' (Confirmed, sectorcare.com.au) — currently null/To-be-confirmed.",
+    "identity.privacyUrl": "https://sectorcare.com.au/privacy-policy/ — unchanged, Confirmed.",
+    "klaviyo.account.idHint": "W2Ua5v — unchanged, Confirmed.",
+    "klaviyo.sender.fromLabel": "SectorCare — unchanged."
+  },
+
+  "still_to_be_confirmed_do_not_set": [
+    "klaviyo.sender.fromEmail (verified Klaviyo sender) — GAP #1",
+    "klaviyo.sender.replyToEmail — GAP #2",
+    "product.featuredCategoryIds validation against live catalog 498h0egvgn — GAP #5",
+    "default Weekly audience (never in config as a permanent default; confirm per campaign, §13.1) — GAP #3"
+  ]
+}
