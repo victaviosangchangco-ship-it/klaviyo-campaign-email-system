@@ -68,7 +68,7 @@ to sections that are not yet drafted link out to their modular source file.
 | 03 | Brands — Shared Standards | ✅ Drafted |
 | 03 | Brands — SS | ✅ Drafted (populated from approved SS sources; some values *Inferred* / *To be confirmed*) |
 | 03 | Brands — RDD | ✅ Drafted (brand code, website & standard elements confirmed; all brand-specific values *To be confirmed*) |
-| 03 | Brands — SC | ⬜ Not yet drafted — [source](03-Brands/SC.md) |
+| 03 | Brands — SC | ✅ Drafted (populated from Maria's SectorCare design-system draft + positioning docs + approved SC sources; some values *Inferred* / *To be confirmed* — see SC-BRAND-DOC-GAPS.md) |
 | 03 | Brands — Stack | ⬜ Not yet drafted — [source](03-Brands/Stack.md) |
 | 04 | Technical | ⬜ Not yet drafted — [source](04-Technical/) |
 | 05 | Future / Roadmap | ✅ Drafted |
