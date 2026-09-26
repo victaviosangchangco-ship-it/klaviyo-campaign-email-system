@@ -99,6 +99,28 @@ function loadApprovedHtml(campaignId, { repoRoot = REPO_ROOT } = {}) {
   };
 }
 
+// Declared, campaign-specific Hero Banner for calendar-driven Weekly generation
+// (config/campaign-heroes.json — SYSTEM PATCH: Weekly Hero Banner Resolution).
+// Returns { url, alt, height, link|null } for THIS exact campaignId, or null
+// when none is declared (the caller then BLOCKS with HERO_ASSET_REQUIRED rather
+// than falling back to a text-only hero or another campaign's artwork). An
+// entry missing a real `url` is treated as not declared — never a partial hero.
+function loadCampaignHero(campaignId, { repoRoot = REPO_ROOT } = {}) {
+  const id = String(campaignId == null ? '' : campaignId).trim();
+  if (!id) return null;
+  const file = path.join(repoRoot, 'config', 'campaign-heroes.json');
+  if (!fs.existsSync(file)) return null;
+  const map = readJson(file);
+  const entry = map && map.campaigns && map.campaigns[id];
+  if (!entry || typeof entry !== 'object' || !entry.url) return null;
+  return {
+    url: entry.url,
+    alt: entry.alt || null,
+    height: entry.height || null,
+    link: entry.link || null,
+  };
+}
+
 module.exports = {
   REPO_ROOT,
   repoPath,
@@ -108,4 +130,5 @@ module.exports = {
   loadContentCalendar,
   loadCampaignOverride,
   loadApprovedHtml,
+  loadCampaignHero,
 };

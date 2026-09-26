@@ -1,0 +1,35 @@
+<!--
+  Component: CTA-secondary.ss (SS Weekly visual-system override)
+  Purpose: SS's own approved closing CTA — a premium light bordered panel with a
+           headline, one supporting line, and a single strong red CTA button (NOT
+           an outline/ghost button — the generic CTA-secondary.html's treatment).
+           As shipped in SS-2026-W32/W36/W38 ("Shop the Full Range" / "Contact Us").
+           Loaded INSTEAD of the generic CTA-secondary.html by renderer.js's
+           brandFile() when brand.code === "SS".
+  Required inputs: [[CTA2_LABEL]], [[CTA2_URL]], [[CTA2_HEADLINE]]
+  Optional inputs: [[CTA2_SUBTEXT]] (omit visually if blank — still a valid empty <p>)
+  Dependencies: shared .tap class (44px tap target) from base-head.
+-->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="[[BODY_BG]]" style="background:[[BODY_BG]];">
+  <tr>
+    <td class="mp" style="padding:24px 24px 34px 24px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f7f7f7" style="width:100%; background:#f7f7f7; border:1px solid #e4e3df; border-radius:16px;">
+        <tr>
+          <td align="center" style="padding:34px 28px 36px 28px;">
+            <h2 class="dm-text" style="margin:0 0 8px 0; font-family:'Arial Black',Arial,Helvetica,sans-serif; font-size:22px; font-weight:800; line-height:1.15; letter-spacing:-0.2px; color:#111111;">[[CTA2_HEADLINE]]</h2>
+            <p class="dm-sub" style="margin:0 auto 22px auto; max-width:400px; font-family:[[FONT_STACK]]; font-size:14px; line-height:1.55; color:[[MUTED_TEXT_COLOR]];">[[CTA2_SUBTEXT]]</p>
+            <!--[if mso]>
+            <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="[[CTA2_URL]]" style="height:54px;v-text-anchor:middle;width:290px;" arcsize="0%" fillcolor="[[ACCENT_COLOR]]" strokecolor="[[ACCENT_COLOR]]">
+              <w:anchorlock/>
+              <center style="color:[[BUTTON_TEXT_COLOR]];font-family:Arial,sans-serif;font-size:15px;font-weight:bold;letter-spacing:1px;">[[CTA2_LABEL]]</center>
+            </v:roundrect>
+            <![endif]-->
+            <!--[if !mso]><!-- -->
+            <a href="[[CTA2_URL]]" target="_blank" class="tap" style="background:[[ACCENT_COLOR]]; color:[[BUTTON_TEXT_COLOR]]; display:inline-block; font-family:[[FONT_STACK]]; font-size:15px; font-weight:800; letter-spacing:1px; line-height:1; text-align:center; text-decoration:none; text-transform:uppercase; padding:18px 40px; border-radius:0;">[[CTA2_LABEL]]</a>
+            <!--<![endif]-->
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>

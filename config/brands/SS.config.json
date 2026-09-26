@@ -11,7 +11,8 @@
     "displayName": { "value": "Safety Sector", "confidence": "Confirmed", "source": "SS.md" },
     "website": { "value": "https://www.safetysector.com.au/", "confidence": "Confirmed", "source": "SS.md" },
     "address": { "value": "3 Wordie Place, Padstow, NSW 2211, Australia", "confidence": "Confirmed", "source": "SS.md footer" },
-    "phone": { "value": null, "confidence": "To be confirmed", "source": "SS.md — phone not captured in approved source" },
+    "phone": { "value": "02 9790 2182", "confidence": "Confirmed", "source": "Matches the phone number already shipped in approved outputs SS-2026-W29/W36/W38 (Brands/SS/Campaigns/Weekly/Draft/SS-2026-W36-draft-v1.html) — SS.md itself still lists this as 'To be confirmed'; flag for a sign-off pass, but do not treat it as invented since it is already live in production sends." },
+    "email": { "value": "sales@safetysector.com.au", "confidence": "Confirmed", "source": "SS.md — contact email (also used as support inbox)" },
     "privacyUrl": { "value": "https://www.safetysector.com.au/privacy-policy/", "confidence": "Inferred", "source": "Verified live HTTP 200 on 2026-08-10 (safetysector.com.au/privacy-policy/). Populated to unblock DRAFT footer rendering; confirm with SS before a real send (CLAUDE.md §6.23)." },
     "allProductsUrl": { "value": "https://www.safetysector.com.au/products/", "confidence": "Inferred", "source": "SS.md — live collection page; confirm intended All-Products destination" }
   },
@@ -20,13 +21,21 @@
     "url": { "value": "https://d3k81ch9hvuctc.cloudfront.net/company/T7SuPP/images/f4045d61-0ee2-41a3-8fbf-6281da7b3891.gif", "confidence": "Confirmed", "source": "SS.md — primary wordmark (Klaviyo-hosted, SS account T7SuPP)" },
     "darkUrl": { "value": "https://d3k81ch9hvuctc.cloudfront.net/company/T7SuPP/images/f649010e-1543-4913-83fe-9c37cbcef1c3.png", "confidence": "Confirmed", "source": "SS.md — standalone red mark for dark backgrounds" },
     "alt": "Safety Sector",
-    "width": 128,
+    "width": 122,
     "align": "left",
     "_sizingNote": "CLAUDE.md §6.1 — SS logo LEFT-aligned, ~120-130px wide, generous whitespace (never oversized). Exact height To-be-confirmed (wordmark GIF); the renderer is not exercised for SS in this pass."
   },
 
+  "social": {
+    "_note": "Verified [Confirmed] in 03-Brands MD Files/SS.md and BRD.md, and already live in the approved SS Product Launch draft (Brands/SS/Campaigns/Product Launch/Draft/SS-2026-LAUNCH-Product-Launch-Draft-v2.html). Icon image assets are SS's own Klaviyo-hosted files (same cloudfront path as the logo, account T7SuPP).",
+    "facebookUrl": { "value": "https://www.facebook.com/safetysectorau/", "confidence": "Confirmed", "source": "SS.md; BRD.md; approved SS Product Launch draft" },
+    "facebookIconUrl": { "value": "https://d3k81ch9hvuctc.cloudfront.net/company/T7SuPP/images/729d0170-4d85-4e78-8191-5c95b43dcff8.png", "confidence": "Confirmed", "source": "SS Klaviyo account T7SuPP asset library" },
+    "instagramUrl": { "value": "https://www.instagram.com/safetysector.au/", "confidence": "Confirmed", "source": "SS.md; BRD.md; approved SS Product Launch draft" },
+    "instagramIconUrl": { "value": "https://d3k81ch9hvuctc.cloudfront.net/company/T7SuPP/images/3d16ee5f-c347-4841-ba03-2228f4d70bb4.png", "confidence": "Confirmed", "source": "SS Klaviyo account T7SuPP asset library" }
+  },
+
   "designTokens": {
-    "_note": "Grounded in SS.md palette/type + approved SS outputs. [Inferred] hex values are sampled and pending sign-off (SS.md Outstanding items). Six-digit hex only. SS house style: high-contrast black/white, single red accent, SHARP corners (0 radius) per SS.md button standard.",
+    "_note": "Grounded in SS.md palette/type + approved SS outputs SS-2026-W32/W36/W38 (SS Weekly visual-system recovery, 2026-09-20 — see platform/qa/brand-visual.js). [Inferred] hex values are sampled and pending sign-off (SS.md Outstanding items). Six-digit hex only. SS house style: high-contrast black/white, single red accent, SHARP corners (0 radius) per SS.md button standard. BUTTON_BG/BUTTON_RADIUS/CTA_BUTTON_RADIUS drive ONLY the primary CTA + coupon button (Components/CTA.html, coupon.html) — the SS product-grid override (Components/product-grid.ss.html) renders price as plain ACCENT_COLOR text, not a button, so it does not read BUTTON_BG at all. FOOTER_BG/FOOTER_TEXT_COLOR/LINK_COLOR were previously #000000/#ffffff/#000000, which rendered the Unsubscribe/Privacy links in BLACK text on a BLACK footer background (invisible, CLAUDE.md §11) — corrected to the approved light footer band.",
     "FONT_STACK": "Arial,Helvetica,sans-serif",
     "HEADING_FONT_STACK": "Arial,Helvetica,sans-serif",
     "HEADING_WEIGHT": "800",
@@ -35,21 +44,21 @@
     "H2_SIZE": "22px",
     "BODY_SIZE": "16px",
     "META_SIZE": "13px",
-    "SMALL_SIZE": "12px",
+    "SMALL_SIZE": "14px",
 
     "BODY_BG": "#ffffff",
     "TEXT_COLOR": "#000000",
-    "MUTED_TEXT_COLOR": "#555555",
+    "MUTED_TEXT_COLOR": "#6f6f6f",
     "ACCENT_COLOR": "#e11b22",
-    "LINK_COLOR": "#000000",
+    "LINK_COLOR": "#777777",
 
     "SECTION_BG": "#fbeaea",
     "CARD_BG": "#ffffff",
-    "CARD_BORDER_COLOR": "#e5e5e5",
+    "CARD_BORDER_COLOR": "#e6e6e6",
     "BADGE_BG": "#000000",
     "BADGE_TEXT_COLOR": "#ffffff",
 
-    "BUTTON_BG": "#000000",
+    "BUTTON_BG": "#e11b22",
     "BUTTON_TEXT_COLOR": "#ffffff",
     "BUTTON_RADIUS": "0px",
     "CTA_BUTTON_RADIUS": "0px",
@@ -61,23 +70,28 @@
 
     "TRUST_ICON_BG": "#fbeaea",
 
-    "FOOTER_BG": "#000000",
-    "FOOTER_TEXT_COLOR": "#ffffff",
+    "FOOTER_BG": "#f7f7f7",
+    "FOOTER_TEXT_COLOR": "#9a9a9a",
 
     "DARK_BODY_BG": "#111111",
     "DARK_TEXT_COLOR": "#ffffff",
-    "_confidence": { "ACCENT_COLOR": "Inferred", "SECTION_BG": "Inferred", "FOOTER_BG": "Confirmed", "TEXT_COLOR": "Confirmed", "BUTTON_BG": "Confirmed" }
+    "_confidence": { "ACCENT_COLOR": "Inferred", "SECTION_BG": "Inferred", "FOOTER_BG": "Inferred", "TEXT_COLOR": "Confirmed", "BUTTON_BG": "Inferred" }
   },
 
   "trust": {
     "_note": "Monochrome text-presentation glyphs only (CLAUDE.md §6.21). Grounded in SS.md in-market trust claims. Hosted mono-PNG icon set To-be-confirmed (SS.md Outstanding items).",
-    "title": "Why Safety Sector",
+    "title": "Why Australian businesses trust Safety Sector",
     "items": [
       { "glyph": "&#9993;&#xFE0E;", "label": "Australia-Wide Delivery", "sub": "Fast dispatch nationwide" },
       { "glyph": "&#10003;", "label": "Up to 10-Year Warranty", "sub": "Built to Australian standards" },
       { "glyph": "&#8635;", "label": "30-Day Returns", "sub": "Hassle-free process" },
       { "glyph": "&#9742;&#xFE0E;", "label": "Trusted by 100,000+", "sub": "15+ years in market" }
     ]
+  },
+
+  "product": {
+    "defaultCount": 18,
+    "_note": "SS/RDD Weekly standard: 18 products per campaign. Overridable per-campaign via campaign.product_count."
   },
 
   "bigcommerce": {

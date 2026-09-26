@@ -1,0 +1,23 @@
+<!--
+  Component: header.ss (SS Weekly visual-system override)
+  Purpose: SS's own approved header treatment — white background, left-aligned logo,
+           a subtle bottom divider — as shipped in SS-2026-W32/W36/W38. Loaded INSTEAD of
+           the generic header.html by renderer.js's brandFile() when brand.code === "SS"
+           (CLAUDE.md §6.1). The generic header renders a solid ACCENT_COLOR block, which
+           is RDD's approved look (RDD-2026-W31), not SS's — SS needs its own file because
+           the difference is structural (a border, not a colour), not something a shared
+           token can express without a change that would also touch RDD.
+  Required inputs: [[LOGO_URL]], [[LOGO_ALT]], [[LOGO_HEIGHT]]
+  Optional inputs: [[LOGO_DARK_URL]], [[LOGO_WIDTH]] (default 220), [[LOGO_LINK_URL]]
+  Dependencies: none. Uses shared .dm-logo-light / .dm-logo-dark / .dm-bg classes from base-head.
+  Structural notes carried over verbatim from header.html (do not undo when editing):
+    · bgcolor attribute AND inline background on both <table> and <td> (Gmail mobile).
+    · explicit width/height on both <img> tags (Apple Mail iOS zero-height collapse).
+    · anchor is inline, <img> is the block element (never display:block on the anchor).
+    · [if !mso] guard around the dark-mode logo (Outlook always shows the light logo).
+-->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="[[BODY_BG]]" style="width:100%; background:[[BODY_BG]]; border-bottom:1px solid #ececec;">
+  <tr>
+    <td align="left" bgcolor="[[BODY_BG]]" style="padding:24px 24px 22px 24px; background:[[BODY_BG]]; text-align:left; border-bottom:1px solid #ececec;"><a href="[[LOGO_LINK_URL]]" target="_blank" style="text-decoration:none;"><img src="[[LOGO_URL]]" alt="[[LOGO_ALT]]" width="[[LOGO_WIDTH]]" height="[[LOGO_HEIGHT]]" border="0" class="dm-logo-light" style="display:inline-block; width:[[LOGO_WIDTH]]px; max-width:[[LOGO_WIDTH]]px; height:auto; border:0; outline:none; text-decoration:none; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:18px; color:[[TEXT_COLOR]];" /></a><!--[if !mso]><!--><a href="[[LOGO_LINK_URL]]" target="_blank" style="text-decoration:none;"><img src="[[LOGO_DARK_URL]]" alt="[[LOGO_ALT]]" width="[[LOGO_WIDTH]]" height="[[LOGO_HEIGHT]]" border="0" class="dm-logo-dark" style="display:none; width:[[LOGO_WIDTH]]px; max-width:[[LOGO_WIDTH]]px; height:auto; border:0; outline:none; text-decoration:none;" /></a><!--<![endif]--></td>
+  </tr>
+</table>

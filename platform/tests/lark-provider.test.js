@@ -538,8 +538,8 @@ test('field mapping preserves the documented XLSX quirks', async () => {
   assert.strictEqual(row.campaign_id, 'SS-2026-01');
   assert.strictEqual(row.brand, 'SS'); // derived from the campaign_id prefix
   assert.strictEqual(row.campaign_name, 'New Year Safety Reset'); // rich-text flattened
-  // Lark topic_category → campaign_type (slugged)
-  assert.strictEqual(row.campaign_type, 'promotional-sale');
+  // Lark topic_category → topic_category_slug (slugged)
+  assert.strictEqual(row.topic_category_slug, 'promotional-sale');
   // Lark product_categories → the system's topic_category
   assert.strictEqual(row.topic_category, 'Hi-Vis Workwear');
   assert.strictEqual(row.send_date, '2026-01-05');

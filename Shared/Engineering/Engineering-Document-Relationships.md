@@ -5,7 +5,7 @@
 | **Status** | ACTIVE |
 | **Version** | 1.0.0 |
 | **Owner** | Project Owner |
-| **Applies to** | **Klaviyo Campaign Email System** · **Klaviyo Flow and Claude Code** |
+| **Applies to** | **Klaviyo Campaign Email System** · **Klaviyo Flows Automation System** |
 | **Mirroring** | Byte-identical copies in both projects. Both canonical. Any change applies to both in the same edit. |
 | **Scope** | Where knowledge lives, what each layer owns, precedence on conflict, and where a new fact goes. **Contains no normative build rules.** |
 
@@ -257,7 +257,7 @@ block activation. See `Engineering-QA-Process.md` §2 (Gate G3) and ADR-008.
 The two projects use different filenames for the same layers. The **layers are identical**; only the paths
 differ.
 
-| L | **Klaviyo Flow and Claude Code** | **Klaviyo Campaign Email System** |
+| L | **Klaviyo Flows Automation System** | **Klaviyo Campaign Email System** |
 |---|---|---|
 | L0 | `Shared/Engineering/` | `Shared/Engineering/` *(mirrored, identical)* |
 | L1 | `Shared/Email-Hero-Engineering-Standard.md` · `Shared/Frameworks/Cerberus/` | *(identical, mirrored)* |

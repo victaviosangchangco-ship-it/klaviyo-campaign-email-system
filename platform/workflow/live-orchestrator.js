@@ -26,7 +26,7 @@
 
 const path = require('path');
 const fs = require('fs');
-const { runWeeklyPipeline } = require('./pipeline');
+const { resolveCalendarCampaign, buildCalendarService, runResolvedWeeklyPipeline } = require('./campaign-generator');
 const { loadApprovedHtml } = require('../common/config');
 const { generatePreviewText } = require('../ai/copy');
 const validators = require('../qa/validators');
@@ -40,63 +40,19 @@ const { createDraftCampaignService, resolveSender } = require('../integrations/k
 const { createTemplateService, templateNameFor } = require('../integrations/klaviyo/template-service');
 const { createRecipientEstimator } = require('../integrations/klaviyo/recipient-estimation');
 const { readApprovedOutput } = require('../integrations/klaviyo/approved-output');
-const { createCalendarService } = require('../integrations/calendar/calendar-service');
-const { JsonCalendarProvider } = require('../integrations/calendar/providers/json-provider');
-const { LarkCalendarProvider } = require('../integrations/calendar/providers/lark-provider');
 const { isoWeekId } = require('../integrations/calendar/adapter');
 const { guardKlaviyoDir } = require('../integrations/klaviyo/safety');
 const { ApprovalRequired, ConfigError, QaBlocker } = require('../common/errors');
+const { freshInventoryRecheck } = require('../integrations/bigcommerce/inventory');
+const { createProductSource } = require('../integrations/bigcommerce/adapter');
 
-// Deterministically pick ONE calendar campaign. Precedence:
-//   1. explicit campaignId (--campaign) — exact id, brand-checked
-//   2. a target ISO week (--week, else the current week):
-//        • exactly one match → use it
-//        • MORE than one     → refuse (never silently take the first); the caller
-//                              must disambiguate with --campaign
-//        • none, and --week was explicit → error
-//        • none, and no --week          → fall back to the soonest upcoming campaign
-// Read-only: uses only the Calendar Service query surface (no service change).
-async function resolveCalendarCampaign({ calendarService, brandCode, campaignId = null, week = null, now = new Date() }) {
-  const brand = String(brandCode).toUpperCase();
-
-  if (campaignId) {
-    const c = await calendarService.getCampaignById(campaignId);
-    if (!c) {
-      throw new ApprovalRequired(`No calendar campaign with id "${campaignId}". Run \`npm run calendar:import\` and check config/campaign-calendar.generated.json.`);
-    }
-    if (String(c.brand).toUpperCase() !== brand) {
-      throw new ApprovalRequired(`Campaign ${c.campaign_id} is brand ${c.brand}, not ${brand}. Pass the matching --brand.`);
-    }
-    return c;
-  }
-
-  const targetWeek = week || isoWeekId(now);
-  const all = await calendarService.listCampaigns({ brand });
-  const inWeek = all.filter((c) => c.send_date && isoWeekId(new Date(c.send_date)) === targetWeek);
-
-  if (inWeek.length === 1) return inWeek[0];
-  if (inWeek.length > 1) {
-    const ids = inWeek.map((c) => c.campaign_id).join(', ');
-    throw new ApprovalRequired(
-      `${inWeek.length} ${brand} campaigns are planned for ${targetWeek} (${ids}). ` +
-        `Pick one explicitly with --campaign <id> — the engine will not choose for you.`
-    );
-  }
-
-  // Nothing in the target week.
-  if (week) {
-    throw new ApprovalRequired(`No ${brand} campaign planned for ${week}. Check the calendar or pass --campaign <id>.`);
-  }
-  const next = await calendarService.getNextCampaign({ brand, now });
-  if (!next) {
-    throw new ApprovalRequired(`No upcoming ${brand} campaign on/after ${now.toISOString().slice(0, 10)}. Import the latest calendar or pass --campaign <id>.`);
-  }
-  return next;
-}
+// Campaign resolution (resolveCalendarCampaign) and the calendar-source
+// selection (buildCalendarService) now live in ONE place — platform/workflow/
+// campaign-generator.js — shared with the plain `create` CLI path (SYSTEM
+// PATCH: Safe One-Command Routing). Re-exported below for existing callers.
 
 async function runLiveCampaign(ctx, deps = {}) {
-  const { repoRoot, brand, platformConfig, calendarConfig, logger, options, runId, generatedAt } = ctx;
-  const runPipeline = deps.runPipeline || runWeeklyPipeline;
+  const { repoRoot, brand, platformConfig, logger, options } = ctx;
 
   // Safety guard first (may be skipped only when tests inject services).
   if (!deps.skipGuard) guardKlaviyoDir(repoRoot);
@@ -112,28 +68,13 @@ async function runLiveCampaign(ctx, deps = {}) {
     const fileEnv = parseEnvFile(path.join(repoRoot, klaviyoConfig.envPath));
     client = new KlaviyoClient({ apiBaseUrl: klaviyoConfig.apiBaseUrl, revision: klaviyoConfig.revision, apiKey: resolveVar(fileEnv, klaviyoConfig.apiKeyEnvVar) });
   }
-  // Calendar source. DEFAULT (unchanged): the JSON provider pointed at the
-  // GENERATED runtime calendar (config-driven), not the hand-authored
-  // content-calendar.json. Path comes from platform.config.json → paths.calendar.
-  //
-  // OPT-IN: `--calendar lark` reads the brand's calendar LIVE from the Lark Base
-  // API instead (read-only). Same CalendarProvider contract, same Calendar
-  // Service, same downstream pipeline — only the source differs. The XLSX import
-  // path remains available and is untouched.
+  // Calendar source. DEFAULT (SYSTEM PATCH: Stale Calendar Guard, 2026-09):
+  // live Lark Base API (read-only) — the generated runtime JSON is an EXPLICIT
+  // fallback only (`--calendar json`), guarded against silent staleness
+  // (json-provider.js STALE_BLOCK_DAYS). Selection logic lives in
+  // campaign-generator.js (shared with the plain `create` path).
   if (!calendarService) {
-    const calendarSource = String(options.calendarSource || 'json').toLowerCase();
-    if (calendarSource === 'lark') {
-      logger && logger.info && logger.info(`Calendar source: LIVE Lark Base API (brand ${brand.code}) — read-only.`);
-      calendarService = createCalendarService({
-        provider: new LarkCalendarProvider({ brand: brand.code, logger }),
-        logger,
-      });
-    } else {
-      const calendarRel = (platformConfig.paths && platformConfig.paths.calendar) || 'config/campaign-calendar.generated.json';
-      const calendarFile = path.isAbsolute(calendarRel) ? calendarRel : path.join(repoRoot, calendarRel);
-      logger && logger.info && logger.info(`Calendar source: generated runtime JSON (${calendarRel}).`);
-      calendarService = createCalendarService({ provider: new JsonCalendarProvider({ filePath: calendarFile }), logger });
-    }
+    calendarService = buildCalendarService({ repoRoot, brand, platformConfig, options, logger });
   }
   listService = listService || createListService({ client, logger });
   segmentService = segmentService || createSegmentService({ client, logger });
@@ -228,11 +169,11 @@ async function runLiveCampaign(ctx, deps = {}) {
     };
   } else {
     // Drive generation off the calendar campaign's week so the generated id equals
-    // the calendar campaign_id (coherent end-to-end).
-    pipelineResult = await runPipeline({
-      repoRoot, brand, platformConfig, calendarConfig, logger, runId, generatedAt,
-      options: { ...options, date: new Date(campaign.send_date), calendarCampaign: campaign },
-    });
+    // the calendar campaign_id (coherent end-to-end). Reuses the SAME
+    // resolved-campaign pipeline invocation as the plain `create` path
+    // (campaign-generator.js) — no second implementation of "run the pipeline
+    // for a resolved campaign".
+    pipelineResult = await runResolvedWeeklyPipeline({ ctx, campaign, runPipeline: deps.runPipeline });
 
     // --- 5. QA GATE — never bypass ------------------------------------------
     if (!pipelineResult.qa || !pipelineResult.qa.pass) {
@@ -272,6 +213,45 @@ async function runLiveCampaign(ctx, deps = {}) {
   if (pipelineResult.pkg && pipelineResult.pkg.subject) {
     effectiveCampaign.subject_line = pipelineResult.pkg.subject;
     logger && logger.info && logger.info(`Subject: "${effectiveCampaign.subject_line}"`);
+  }
+
+  // --- PRE-KLAVIYO FRESH INVENTORY RECHECK ------------------------------------
+  // Re-fetch every product from BigCommerce by ID to verify CURRENT stock state.
+  // Does NOT reuse the pre-export snapshot — a second, independent live fetch.
+  if (pipelineResult.pkg && pipelineResult.pkg.products && pipelineResult.pkg.products.length) {
+    const fetchProducts = deps.fetchProducts || ((ids) => {
+      const src = createProductSource({
+        repoRoot, brand, logger,
+        cacheDir: path.join(repoRoot, platformConfig.paths.cache),
+      });
+      return src.getProductsByIds(ids, { source: 'live' });
+    });
+    try {
+      const recheck = await freshInventoryRecheck(
+        pipelineResult.pkg.products.map((p) => p.id), fetchProducts,
+        { brandCode: brand.code, context: `pre-Klaviyo ${campaign.campaign_id}` }
+      );
+      const unavailable = [
+        ...recheck.failed.map((f) => ({ id: Number(f.product.id), reason: f.verdict.reason })),
+        ...recheck.notFound,
+      ];
+      if (unavailable.length) {
+        throw new ApprovalRequired(
+          `PRE_KLAVIYO_INVENTORY_BLOCK: ${unavailable.length} product(s) are no longer purchasable ` +
+          `(fresh BigCommerce re-fetch). Refusing to create/update Klaviyo draft for ${campaign.campaign_id}.\n` +
+          unavailable.map((u) => `  [${u.id}] ${u.reason}`).join('\n')
+        );
+      }
+      logger && logger.info && logger.info('Pre-Klaviyo fresh inventory recheck: all products confirmed purchasable (fresh BigCommerce data).');
+    } catch (err) {
+      if (err.code === 'FRESH_RECHECK_FETCH_FAILED') {
+        throw new ApprovalRequired(
+          `PRE_KLAVIYO_INVENTORY_BLOCK (fetch failed): could not verify inventory — refusing to draft. ${err.message}`
+        );
+      }
+      if (err instanceof ApprovalRequired) throw err;
+      throw err;
+    }
   }
 
   // --- 6-7. resolve the audience (for the summary; also validated at draft) --
@@ -362,7 +342,9 @@ async function runLiveCampaign(ctx, deps = {}) {
     sendStatus: 'NOT_APPROVED_TO_SEND',
   };
 
-  return { ...pipelineResult, klaviyo };
+  // `campaign` (the resolved calendar record) is attached for reporting only —
+  // every gate above already ran against it; this adds no new behavior.
+  return { ...pipelineResult, campaign, klaviyo };
 }
 
 module.exports = { runLiveCampaign, resolveCalendarCampaign };

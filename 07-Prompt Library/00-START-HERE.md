@@ -1,90 +1,79 @@
 # 00 — START HERE (Universal Entry Point)
 
 **This is the first file to open for _any_ campaign task in this workspace.** It routes you to the
-right rules, the right playbook, the right generate prompt, and the right QA gate, in the right order.
-It does not restate rules — it points to them. On any conflict, the **BRD wins** (see CLAUDE.md §2).
+right playbook, generate prompt, and QA gate. It does not restate rules — it points to them.
 
-> New here? Read [`../CLAUDE.md`](../CLAUDE.md) once end-to-end first — it is the operating guide.
-> This file is the per-task launcher you return to every time.
+> **Context efficiency:** load only the files your current task needs. See CLAUDE.md §3 and §4.
 
 ---
 
-## 1. Universal execution order (follow every time)
+## 1. Execution order (load only what is needed)
 
-1. **Read `CLAUDE.md`** — operating rules, standards, QA gates. (Reusable system rules live here.)
-2. **Read `BRD.md`** — business goals, strategy, psychology, human workflow.
-3. **Read the brand's approved sources** — `03-Brands MD Files/<CODE>.md`, plus `BrandConfig.md` /
-   `Design.md` where available. Carry confidence tags (`[Confirmed]` / `[Inferred]` / `To be confirmed`).
-4. **Read the Campaign Playbook** for the campaign _type_ — `../Playbooks/<Type>-Playbook.md`.
-5. **Read the current prompt** — the type's generate prompt below + the specific send `Brief/`.
-6. **Generate** — build from `Templates/` + `Components/` + `Shared/` + verified brand/product values.
-7. **QA** — run the type's QA checklist; render and verify across clients (§8.1).
-8. **Update Review Notes** — record what was checked, in which clients, and the approval trail.
-9. **Update `CLAUDE.md` if the lesson is reusable** — convert any new, reusable finding into a
-   permanent rule (root-cause-first, CLAUDE.md §8.1.7). Never edit the BRD from production work.
+1. **CLAUDE.md** is already loaded (lean router — operating rules, safety, workflow).
+2. **Resolve the campaign through the calendar service** (`getCampaignById`, `getCampaignByWeek`,
+   or `getNextCampaign`). Do NOT load the full `config/campaign-calendar.generated.json`.
+3. **Read the campaign's `cadence` field** to select the Playbook (table below).
+   If cadence is null or unresolvable: **STOP and report** — never guess.
+4. **Load the brand facts** — `03-Brands MD Files/<CODE>.md` + `config/brands/<CODE>.config.json`.
+5. **Load the cadence Playbook** — `../Playbooks/<Cadence>-Playbook.md`.
+6. **Read the current Brief** — `Brands/<CODE>/Campaigns/<Cadence>/Brief/`.
+7. **Generate** — assemble from `Components/` + `Templates/` + verified brand/product data.
+   Runtime: `07-Prompt Library/Generate-HTML.md`.
+8. **QA** — `07-Prompt Library/QA-Checklist.md` (self-contained).
+9. **Record in `Review/`** — what was checked, in which clients, pass/fail.
 
-**STOP rule (permanent):** if information is missing, **stop and request clarification** — never invent
-brand values, product data, SKUs, prices, URLs, images, or coupon codes (CLAUDE.md §5, §5.1, §6.5).
+**Do NOT automatically load:** full BRD.md, full Hero Engineering Standard, full Cerberus docs,
+other brands' files, old campaign Reviews/Drafts, CLAUDE-LEGACY.md, full design-tokens.md,
+full font-stacks.md (load only when the task requires visual system decisions).
 
----
-
-## 2. Step 0 — Choose the campaign type FIRST (Campaign Selection Engine)
-
-Before building anything, decide **which campaign type** this is. Each type has its own psychology,
-hero, copy, CTA, product strategy, and QA. **Never reuse the Weekly layout for another type.**
-(Full decision logic: CLAUDE.md "Campaign Selection Engine".)
-
-| Type | Use when | Playbook | Generate prompt |
-|------|----------|----------|-----------------|
-| **Weekly** | Recurring product-led send, broad coverage | `Weekly-Playbook.md` | `Generate-Weekly-Campaign.md` |
-| **Monthly** | Monthly roundup / bigger narrative | `Monthly-Playbook.md` | `Generate-Monthly-Campaign.md` |
-| **Product Launch** | Introduce a new product/range; announcement, benefits, premium | `Launch-Playbook.md` | `Generate-Product-Launch-Campaign.md` |
-| **Holiday** | Dated calendar event (EOFY, BFCM, Christmas) | `Holiday-Playbook.md` | `Generate-Holiday-Campaign.md` |
-| **Seasonal** | Season-change range refresh, emotional theme | `Seasonal-Playbook.md` | `Generate-Seasonal-Campaign.md` |
-| **Category** | Deep dive on one category/range | `Category-Playbook.md` | `Generate-Category-Campaign.md` |
-| **Clearance** | Stock clearance / markdowns, urgency + value | `Clearance-Playbook.md` | `Generate-Clearance-Campaign.md` |
-| **Brand Story** | Values / about / trust narrative, low product density | `Brand-Story-Playbook.md` | `Generate-Brand-Story-Campaign.md` |
-| **Educational** | How-to / compliance / buying guide | `Educational-Playbook.md` | `Generate-Educational-Campaign.md` |
-| **Automation** | Triggered content (⚠ automated **flows** live in the separate Klaviyo Flow project) | `Automation-Playbook.md` | — |
-
-Playbooks live in [`../Playbooks/`](../Playbooks/). Generate prompts live in this folder.
+**STOP rule:** if information is missing, **stop and request clarification** — never invent
+brand values, product data, SKUs, prices, URLs, images, or coupon codes.
 
 ---
 
-## 3. Where the work goes (file-driven workflow)
+## 2. Choose the cadence (structural workflow) FIRST
 
-Each send moves left→right through six stages inside
+The campaign's `cadence` field determines the Playbook. Its `campaign_type` field determines
+the content/theme approach (product-insights, promotional-sale, holiday-gifting, etc.).
+
+| Cadence | Use when | Playbook | Generate prompt |
+|---------|----------|----------|-----------------|
+| **weekly** | Recurring product-led send | `Weekly-Playbook.md` | `Generate-Weekly-Campaign.md` |
+| **monthly** | Monthly roundup / bigger narrative | `Monthly-Playbook.md` | `Generate-Monthly-Campaign.md` |
+| **product-launch** | New product/range announcement | `Launch-Playbook.md` | `Generate-Product-Launch-Campaign.md` |
+| **holiday** | Calendar event (EOFY, BFCM, Christmas) | `Holiday-Playbook.md` | `Generate-Holiday-Campaign.md` |
+| **seasonal** | Season-change range refresh | `Seasonal-Playbook.md` | `Generate-Seasonal-Campaign.md` |
+| **category** | Deep dive on one category/range | `Category-Playbook.md` | `Generate-Category-Campaign.md` |
+| **clearance** | Stock clearance / markdowns | `Clearance-Playbook.md` | `Generate-Clearance-Campaign.md` |
+| **brand-story** | Values / trust narrative | `Brand-Story-Playbook.md` | `Generate-Brand-Story-Campaign.md` |
+| **educational** | How-to / compliance / guide | `Educational-Playbook.md` | `Generate-Educational-Campaign.md` |
+| **automation** | Triggered content (flows = separate project) | `Automation-Playbook.md` | — |
+
+Playbooks: `../Playbooks/`. Generate prompts: this folder. Never reuse the Weekly layout for another cadence.
+
+---
+
+## 3. Where the work goes
+
 `Brands/<CODE>/Campaigns/<Type>/`:
-
 `Brief/` → `References/` → `Assets/` → `Draft/` → `Review/` → `Output/`
 
-- Build in `Draft/` (versioned `-draft-vN.html`, **full history kept — never delete drafts**); `Output/`
-  always holds the **latest build** as one un-versioned file for browser/Klaviyo preview, QA and review.
-  **Approval-to-send is tracked in `Brief/` + `Review/`, not by withholding HTML from `Output/`**
-  (CLAUDE.md §4.1/§9).
-- Naming conventions: CLAUDE.md §10.
-- `Product Launch/Assets/` has sub-folders: `Hero/`, `Products/`, `Lifestyle/`, `Icons/`.
+Build in `Draft/` (versioned, keep all versions). `Output/` = latest build for preview/QA.
+Approval tracked in `Brief/` + `Review/`, not by file presence. See CLAUDE.md §8.
 
 ---
 
-## 4. Product & brand data — the non-negotiables
+## 4. Product & brand data
 
-- **Products:** retrieve from the brand's approved source (BigCommerce). Verify each product on its own
-  **product page / via the API**: active, `visible=true`, in stock, real price, live URL (HTTP 200),
-  public image. A **hidden/unpublished** product returns **404** on its live URL and must **not** be
-  linked in an email (it will be a dead link). Never invent product data; report blockers and wait for
-  approval (CLAUDE.md §5.1).
-- **Brand values:** only from approved sources, with confidence tags. Absent value → `To be confirmed`.
-- **Coupons:** confirmed created + active in the commerce platform before send; unique per-campaign
-  titles; never invent a code — use a clearly-marked placeholder (CLAUDE.md §6.3–§6.5).
+- **Products:** BigCommerce API. Verify each on its own product page (active, visible, in stock,
+  real price, live URL HTTP 200). Hidden product = 404 = dead link. Never invent.
+- **Brand values:** approved sources only, with confidence tags. Absent → `To be confirmed`.
+- **Coupons:** only when the campaign has a promotion (see `Standards/coupon-contract.md`).
 
 ---
 
 ## 5. QA / send gate
 
-Run the type's QA checklist (`QA-Checklist.md`, or `QA-Launch-Checklist.md` for launches) and the
-email-client compatibility gates in **CLAUDE.md §8.1**: verify in Klaviyo Preview + Gmail Web + Gmail
-Mobile + Apple Mail + Outlook; confirm clickability **after Klaviyo import**; confirm responsive
-rendering; confirm images/product/CTA/coupon links resolve. Never approve on localhost/desktop alone.
-
-_Created as part of File-Driven System V2. Keep this file short — it routes, it does not duplicate._
+Run `QA-Checklist.md` (self-contained). Verify across: Klaviyo Preview + Gmail Web + Gmail Mobile
++ Apple Mail + Outlook. Confirm clickability **after Klaviyo import**. Never approve on
+localhost/desktop alone.

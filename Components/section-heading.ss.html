@@ -1,0 +1,24 @@
+<!--
+  Component: section-heading.ss (SS Weekly visual-system override)
+  Purpose: SS's own approved section framing — white background, a short red accent bar,
+           a bold black H2 and a grey one-line subhead. No tinted panel, no badge pill.
+           As shipped in SS-2026-W32/W36/W38. Loaded INSTEAD of the generic
+           section-heading.html by renderer.js's brandFile() when brand.code === "SS"
+           (CLAUDE.md §6.21). The generic component's tinted panel + "In Stock" pill is
+           RDD's approved dashboard-style framing, not SS's editorial one — a genuinely
+           different layout, not a colour swap.
+  Required inputs: [[SECTION_TITLE]]
+  Optional inputs: [[SECTION_SUBTITLE]] (omit the <p> when absent)
+  Fallback behavior: if [[SECTION_TITLE]] is absent, omit the whole component (do not
+                     render an empty accent bar).
+  Dependencies: shared .mp (mobile inset) from base-head.
+-->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="[[BODY_BG]]" style="background:[[BODY_BG]];">
+  <tr>
+    <td class="mp" style="padding:24px 30px 2px 30px;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:44px; height:4px; background:[[ACCENT_COLOR]]; font-size:0; line-height:0;">&nbsp;</td></tr></table>
+      <h2 class="dm-text" style="margin:14px 0 6px 0; font-family:[[HEADING_FONT_STACK]]; font-size:[[H2_SIZE]]; font-weight:[[HEADING_WEIGHT]]; line-height:1.1; letter-spacing:-0.3px; color:[[TEXT_COLOR]];">[[SECTION_TITLE]]</h2>
+      <p class="dm-sub" style="margin:0; font-family:[[FONT_STACK]]; font-size:[[SMALL_SIZE]]; line-height:1.55; color:[[MUTED_TEXT_COLOR]];">[[SECTION_SUBTITLE]]</p>
+    </td>
+  </tr>
+</table>

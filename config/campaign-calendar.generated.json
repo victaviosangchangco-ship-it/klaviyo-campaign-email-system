@@ -1,7 +1,7 @@
 {
   "_doc": "GENERATED runtime calendar — do not edit by hand. Produced from the exported Lark Base calendar by `npm run calendar:import`. Same {campaigns:[…]} shape the Content Calendar Service reads. config/content-calendar.json is a separate, hand-authored file and is untouched.",
   "_generatedFrom": "Calendar Campaign/RDD Campaign Calendar.xlsx",
-  "_generatedAt": "2026-08-10T01:36:59.856Z",
+  "_generatedAt": "2026-09-17T03:39:31.115Z",
   "_importer": "platform/integrations/calendar/import/import-xlsx.js",
   "_counts": {
     "read": 59,
@@ -12,6 +12,7 @@
     {
       "campaign_id": "RDD-2026-01",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "promotional-sale",
       "campaign_name": "New Year's Day – New Year, New Gear Sale – 10% Off Storewide",
       "topic_category": "Storewide",
@@ -31,11 +32,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-02",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "newsletter",
       "campaign_name": "January Newsletter – New Year Goals, Product Updates & Sale Wrap-Up",
       "topic_category": "Storewide",
@@ -52,11 +57,15 @@
       "status": "pending",
       "notes": "Suggested new campaign – consistent monthly newsletter cadence",
       "audience_type": "segment",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-03",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "product-insights",
       "campaign_name": "How to Set Up Effective Crowd Control for Safe Queue Management",
       "topic_category": "Crowd Control",
@@ -73,11 +82,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "segment",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-04",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "promotional-sale",
       "campaign_name": "Australia Day – Aussie Made Favourites – 15% Off Sit Stand Desks",
       "topic_category": "Sit Stand Desks",
@@ -97,11 +110,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-05",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "promotional-sale",
       "campaign_name": "Valentine's Day – Flash Sale – 14% Off Projector Screens",
       "topic_category": "Projector Screens",
@@ -121,11 +138,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-06",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "product-insights",
       "campaign_name": "Unlock the Advantages of A3 Snap Frames for Your Business",
       "topic_category": "Snap Frames",
@@ -142,11 +163,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "segment",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-07",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "promotional-sale",
       "campaign_name": "Professional Acrylic Display Solutions for Clear Communication – 10% Off",
       "topic_category": "Acrylic Displays",
@@ -166,11 +191,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-08",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "clearance",
       "campaign_name": "End-of-Summer Clearance – Up to 40% Off Summer Stock",
       "topic_category": "Overstock / Summer Range",
@@ -190,11 +219,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-09",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "newsletter",
       "campaign_name": "March Newsletter – Autumn Edit, STACK Products & Upcoming Events",
       "topic_category": "Storewide",
@@ -211,11 +244,15 @@
       "status": "pending",
       "notes": "Suggested new campaign – STACK product spotlight opportunity",
       "audience_type": "segment",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-10",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "promotional-sale",
       "campaign_name": "Autumn Kickoff – 15% Off Glass Whiteboards",
       "topic_category": "Glass Whiteboards",
@@ -235,11 +272,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-11",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "promotional-sale",
       "campaign_name": "Grab Attention Instantly With A-Frame Sandwich Boards – 10% Off",
       "topic_category": "A-Frame Sandwich Boards",
@@ -259,11 +300,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-12",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "product-insights",
       "campaign_name": "Why Indoor Notice Boards Are Essential for Business Communication",
       "topic_category": "Indoor Notice Boards",
@@ -280,11 +325,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "segment",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-13",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "promotional-sale",
       "campaign_name": "Easter Warm-Up – 10% Off Storewide",
       "topic_category": "Storewide",
@@ -304,11 +353,15 @@
       "status": "pending",
       "notes": "Promo code corrected from EASTER15 to EASTER10 to match the 10% offer",
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-14",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "gift-promotion",
       "campaign_name": "Easter Weekend – Free Easter Gift on Orders Over $100",
       "topic_category": "Storewide",
@@ -328,11 +381,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-15",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "product-launch",
       "campaign_name": "Introducing STACK – Modular Furniture for the Modern Workplace",
       "topic_category": "STACK Products",
@@ -349,11 +406,15 @@
       "status": "pending",
       "notes": "Suggested new campaign – manual review recommended before sending",
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-16",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "product-insights",
       "campaign_name": "How Ergonomic Office Chairs Support Better, Healthier Workdays",
       "topic_category": "Ergonomic Office Chairs",
@@ -370,11 +431,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "segment",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-17",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "promotional-sale",
       "campaign_name": "ANZAC Day – Quiet Hours Online Sale – 10% Off Selected Items",
       "topic_category": "Overstock / Selected Items",
@@ -394,11 +459,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-18",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "promotional-sale",
       "campaign_name": "Update Signage in Seconds With Snap Lock Frames – 10% Off",
       "topic_category": "Snap Lock Frames",
@@ -418,11 +487,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-19",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "gift-promotion",
       "campaign_name": "Mother's Day – Free Gift With Purchase Over $100",
       "topic_category": "Storewide",
@@ -442,11 +515,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-20",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "product-insights",
       "campaign_name": "Why a Dedicated Projector Screen Elevates Every Presentation",
       "topic_category": "Projector Screens",
@@ -463,11 +540,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "segment",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-21",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "newsletter",
       "campaign_name": "May Newsletter – Mother's Day Wrap-Up & EOFY Early Access Preview",
       "topic_category": "Storewide",
@@ -484,11 +565,15 @@
       "status": "pending",
       "notes": "Suggested new campaign – EOFY hype-builder newsletter",
       "audience_type": "segment",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-23",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "promotional-sale",
       "campaign_name": "Work Comfortably, Sit Smarter – 10% Off Ergonomic Office Chairs",
       "topic_category": "Ergonomic Office Chairs",
@@ -508,11 +593,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-24",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "product-insights",
       "campaign_name": "How Sit Stand Desks Support Healthier, More Flexible Workdays",
       "topic_category": "Sit Stand Desks",
@@ -529,11 +618,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "segment",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-25",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "eofy-sale",
       "campaign_name": "EOFY Mega Sale – Up to 50% Off + Tax Write-Off Deals",
       "topic_category": "Overstock Items",
@@ -553,11 +646,15 @@
       "status": "pending",
       "notes": "HIGHEST PRIORITY CAMPAIGN – major revenue driver, promo runs to June 30",
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-26",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "promotional-sale",
       "campaign_name": "Upgrade Every Desk With Smarter Office Accessories – 10% Off",
       "topic_category": "Desk Accessories",
@@ -577,11 +674,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-27",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "promotional-sale",
       "campaign_name": "Keep Outdoor Areas Clean With Outdoor Cigarette Bins – 10% Off",
       "topic_category": "Outdoor Cigarette Bins",
@@ -601,11 +702,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-28",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "clearance",
       "campaign_name": "New Financial Year Clearance – Fresh Stock, Fresh Savings",
       "topic_category": "Overstock Items",
@@ -625,11 +730,15 @@
       "status": "pending",
       "notes": "HIGHEST PRIORITY CAMPAIGN – mirrors SectorCare NFY timing July 1",
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-29",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "product-insights",
       "campaign_name": "Choosing the Right Safety Bollard for Every Workplace",
       "topic_category": "Safety Bollards",
@@ -646,11 +755,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "segment",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-30",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "newsletter",
       "campaign_name": "July Newsletter | New Financial Year Edition",
       "topic_category": "Storewide",
@@ -667,11 +780,15 @@
       "status": "pending",
       "notes": "Suggested new campaign – consistent newsletter cadence",
       "audience_type": "segment",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-31",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "product-insights",
       "campaign_name": "Why More Workplaces Are Choosing Magnetic Glass Whiteboards",
       "topic_category": "Magnetic Glass Whiteboards",
@@ -688,11 +805,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "segment",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-32",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "category-spotlight",
       "campaign_name": "Upgrade Your Sports Facility with 10% Off Selected Equipment",
       "topic_category": "Sport Facility Equipment",
@@ -712,11 +833,15 @@
       "status": "pending",
       "notes": "Suggested new campaign – sport facility category spotlight",
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-33",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "promotional-sale",
       "campaign_name": "Prevent Vehicle Rollaways with Reliable Wheel Chocks",
       "topic_category": "Rubber Wheel Chocks",
@@ -736,11 +861,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-34",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "product-insights",
       "campaign_name": "Create Clearer Spaces with Professional Acrylic Displays",
       "topic_category": "Acrylic Displays",
@@ -757,11 +886,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "segment",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-35",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "product-insights",
       "campaign_name": "Reduce Slip Risks with Anti-Slip Stair Nosing",
       "topic_category": "Anti-Slip Stair Nosing",
@@ -778,11 +911,15 @@
       "status": "pending",
       "notes": "Date corrected from 2025 to 2026 – verify with coordinator",
       "audience_type": "segment",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "SC-2026-32",
       "brand": "SC",
+      "cadence": "weekly",
       "campaign_type": "weekly",
       "campaign_name": "SectorCare Weekly — Bath Aids",
       "topic_category": "Bath Aids",
@@ -799,11 +936,15 @@
       "status": "Planned",
       "notes": "Auto-added for multi-brand Klaviyo draft automation (SC).",
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "SS-2026-32",
       "brand": "SS",
+      "cadence": "weekly",
       "campaign_type": "weekly",
       "campaign_name": "Safety Sector Weekly — Safety Bollards",
       "topic_category": "Safety Bollards",
@@ -820,35 +961,40 @@
       "status": "Planned",
       "notes": "Auto-added for multi-brand Klaviyo draft automation (SS).",
       "audience_type": "segment",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-36",
       "brand": "RDD",
-      "campaign_type": "promotional-sale",
-      "campaign_name": "Father's Day Workplace Comfort Sale",
-      "topic_category": "Sit Stand Desks, Ergonomic Chairs",
-      "subject_line": "Give Dad the Gift of Workplace Comfort",
+      "cadence": "weekly",
+      "campaign_type": "holiday-gifting",
+      "campaign_name": "Father's Day: Click & Collect Home Office Gifts",
+      "topic_category": "Ergonomic Office Chairs, Sit-Stand Desks, Desk Accessories, Storage",
+      "subject_line": "Father's Day is Sunday. Collect Dad's Gift Locally",
       "preview_text": null,
       "send_date": "2026-08-27",
       "send_time": null,
-      "promotion": {
-        "code": "DADDEALS15",
-        "text": "15% off sit stand desks & chairs"
-      },
+      "promotion": null,
       "list": "RDD - All Subscribers",
       "segment": null,
-      "campaign_type_label": "Promotional sale",
-      "key_topic": "15% off selected ergonomic workplace products.",
+      "campaign_type_label": "Holiday gifting",
+      "key_topic": "Father's Day + LOCAL PICKUP. Skip the delivery wait, Pickup from the Sydney warehouse (order online, collect in store). Ergonomic chairs, sit-stand desks, desk accessories. CTA: Shop Father's Day Gifts to /products/, choose Pickup at checkout. No discount.",
       "tone": "warm, celebratory, gifting",
       "status": "pending",
-      "notes": null,
+      "notes": "Revised to Local Pickup focus per Bruce. Pickup VERIFIED (retaildisplaydirect.com.au/shipping-returns). Draft v5: removed the two-hours wording and the Why RDD trust section; relabelled Click & Collect to Pickup. Klaviyo draft updated. Intended send today 1pm.",
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-37",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "promotional-sale",
       "campaign_name": "Flexible Display Solutions with Mobile TV Stands",
       "topic_category": "Mobile TV Stands",
@@ -868,11 +1014,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-38",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "product-insights",
       "campaign_name": "Smarter Access Control with Expandable Barriers",
       "topic_category": "Expandable Barriers",
@@ -889,11 +1039,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "segment",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-39",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "promotional-sale",
       "campaign_name": "Spring Refresh Sale – Acrylic Displays 15% Off",
       "topic_category": "Acrylic Displays",
@@ -913,11 +1067,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-40",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "product-insights",
       "campaign_name": "Workplace Safety Signage That Keeps You Compliant",
       "topic_category": "Statutory Signs",
@@ -934,11 +1092,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "segment",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-41",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "promotional-sale",
       "campaign_name": "Improve Crowd Flow with Professional Barriers",
       "topic_category": "Rope Barriers & Retractable Stanchions",
@@ -958,11 +1120,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-42",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "awareness-campaign",
       "campaign_name": "National Safe Work Month – Save 10%",
       "topic_category": "Safety Signs, Statutory Signs",
@@ -982,11 +1148,15 @@
       "status": "pending",
       "notes": "Suggested new campaign – October is National Safe Work Month in Australia",
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-43",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "product-insights",
       "campaign_name": "Choosing the Right Access Ramp for Every Facility",
       "topic_category": "Access Ramps",
@@ -1003,11 +1173,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "segment",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-44",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "promotional-sale",
       "campaign_name": "Stay Organised with Cork & Pin Boards",
       "topic_category": "Cork & Pin Boards",
@@ -1027,11 +1201,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-45",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "promotional-sale",
       "campaign_name": "Halloween Business Sale – 13% Off Storewide",
       "topic_category": "Storewide",
@@ -1051,11 +1229,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-46",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "promotional-sale",
       "campaign_name": "Professional Display Starts with Brochure Stands",
       "topic_category": "Magazine & Brochure Stands",
@@ -1075,11 +1257,15 @@
       "status": "pending",
       "notes": "Date corrected from 2027 to 2026",
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-48",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "clearance",
       "campaign_name": "Black Friday VIP Preview – 15% Off Overstock",
       "topic_category": "Overstock Items",
@@ -1099,11 +1285,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "segment",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-49",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "newsletter",
       "campaign_name": "November Newsletter | Black Friday Preview",
       "topic_category": "Storewide",
@@ -1120,11 +1310,15 @@
       "status": "pending",
       "notes": "Suggested new campaign – Black Friday hype-builder newsletter",
       "audience_type": "segment",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-50",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "promotional-sale",
       "campaign_name": "Black Friday Business Sale – 15% Off Storewide",
       "topic_category": "Storewide",
@@ -1144,11 +1338,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-51",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "promotional-sale",
       "campaign_name": "Build More Accessible Spaces with Braille Signage",
       "topic_category": "Braille Signs",
@@ -1168,11 +1366,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-52",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "promotional-sale",
       "campaign_name": "Cyber Monday Final Hours – 15% Off Storewide",
       "topic_category": "Storewide",
@@ -1192,11 +1394,15 @@
       "status": "pending",
       "notes": null,
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-53",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "gift-promotion",
       "campaign_name": "Christmas Business Sale – 15% Off + Free Gift",
       "topic_category": "Overstock Items",
@@ -1216,11 +1422,15 @@
       "status": "pending",
       "notes": "Date corrected – promo end was incorrectly set to Feb 2026",
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-54",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "gift-promotion",
       "campaign_name": "Season's Greetings from Retail Display Direct",
       "topic_category": "Overstock Items",
@@ -1240,11 +1450,15 @@
       "status": "pending",
       "notes": "Date corrected – promo end was incorrectly set to Feb 2026",
       "audience_type": "list",
-      "audience_id": null
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     },
     {
       "campaign_id": "RDD-2026-55",
       "brand": "RDD",
+      "cadence": "weekly",
       "campaign_type": "clearance",
       "campaign_name": "Boxing Day Clearance – 15% Off + Free Gift",
       "topic_category": "Overstock Items",
@@ -1264,22 +1478,10 @@
       "status": "pending",
       "notes": "Date corrected – promo end was incorrectly set to Mar 2026",
       "audience_type": "list",
-      "audience_id": null
-    },
-    {
-      "campaign_id": "SS-2026-LAUNCH-mobility-daily-living-aids",
-      "brand": "SS",
-      "campaign_type": "product-launch",
-      "campaign_name": "Mobility and Daily Living Aids Launch",
-      "topic_category": "Mobility and Daily Living Aids",
-      "subject_line": "Just Launched: Mobility and Daily Living Aids",
-      "preview_text": null,
-      "send_date": "2026-08-12",
-      "send_time": null,
-      "promotion": null,
-      "segment": null,
-      "list": null,
-      "_note": "RUNTIME launch row (not from XLSX; the importer regex rejects a LAUNCH id). Audience via run-scoped --segment override. Re-add after any calendar:import."
+      "audience_id": null,
+      "audience_2_type": null,
+      "audience_2_name": null,
+      "audience_2_id": null
     }
   ]
 }

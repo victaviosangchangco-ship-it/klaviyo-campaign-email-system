@@ -1,61 +1,118 @@
 # QA Checklist (all brands, all campaign types)
 
-Run this before promoting any build and before send. It **cites** the CLAUDE.md gates rather than
-restating them — open each referenced section and apply it. Record the outcome in the send's `Review/`
-notes (which Draft version, which clients checked, pass/fail per item). **Never approve on a
-localhost/desktop/browser preview alone** (CLAUDE.md §8.1.1).
+Run before promoting any build and before send. This checklist is **self-contained** — it has the
+actual pass/fail conditions. You do NOT need to open CLAUDE.md or any other document to run it.
+Record the outcome in the send's `Review/` notes (which Draft version, which clients checked,
+pass/fail per item). **Never approve on localhost/desktop/browser preview alone.**
 
-## 1. Content & brand
-- [ ] Correct campaign **type** chosen first (§5.3) and the matching playbook/generate prompt followed.
-- [ ] Fresh theme vs. the last approved send; no repeated hero/eyebrow/headline/intro (§5.2); improves on the baseline (§5.1.1).
-- [ ] Intro copy concise, business-outcome led, **no em dashes / dash interruptions** (§6.2); does not restate the hero.
-- [ ] Only approved brand values; confidence tags carried; nothing invented (§5).
+---
 
-## 2. Product data (never invented — §5.1)
-- [ ] Every product retrieved from the approved source (BigCommerce API = source of truth).
-- [ ] Each product **verified on its own product page / via API**: `is_visible=true`, in stock, real price, live URL **HTTP 200**, public image.
-- [ ] No hidden/unpublished product linked (its live URL 404s = dead link, §5.4/§6.7). Blockers reported, not fabricated.
+## 1. Content & Brand
+
+- [ ] Correct campaign **type** chosen and the matching Playbook followed.
+- [ ] Fresh theme vs. the last approved send; no repeated hero/eyebrow/headline/intro concept.
+- [ ] Intro copy concise (one short paragraph max), no em dashes, does not restate the hero.
+- [ ] Only approved brand values used. Nothing invented. Confidence tags carried.
+- [ ] Preview text present, campaign-specific, does not duplicate the subject line.
+
+## 2. Product Data (never invented)
+
+- [ ] Every product from the approved source (BigCommerce API).
+- [ ] Each product verified on its **own product page**: `is_visible=true`, in stock, real price,
+      live URL **HTTP 200**, public image.
+- [ ] No hidden/unpublished product linked (its live URL returns 404 = dead link).
 - [ ] Prices match the storefront (GST-inclusive as displayed).
+- [ ] Products match the campaign theme/category — no unrelated SKUs mixed in.
 
-## 3. Links & containment (§6.6, §6.7, §8.1.2)
-- [ ] Every `href` returns **HTTP 200** (product, category, hero, CTA, coupon, logo, image `src`). No `#`/empty/placeholder.
-- [ ] **Zero `<table>` inside any `<a>`**; product card = image / title / price as **separate sibling anchors** to the same URL.
-- [ ] **Zero `display:block` on an image-wrapping `<a>`**; anchor stays inline, `<img>` is the block element.
-- [ ] Clickability verified **after a real Klaviyo test import**, not just the editor/localhost.
+## 3. Links & Containment
 
-## 4. Hero (§6.14, §6.15, §8.1.4)
-- [ ] Single embedded artwork, one clickable anchor, edge-to-edge (no white strips/gaps), correct destination.
-- [ ] Full pixel `width`/`height` attributes; `display:block`; does not shrink/collapse on Gmail mobile or Apple Mail iOS.
+- [ ] Every `href` returns **HTTP 200**. No `#`, empty, placeholder, localhost, or local paths.
+- [ ] **Zero `<table>` inside any `<a>`**. Product card = image / title / price as **separate
+      sibling anchors** to the same URL.
+- [ ] **Zero `display:block` on an image-wrapping `<a>`**. Anchor stays inline, `<img>` is block.
+- [ ] **Zero nested anchors** (`<a>` inside `<a>`).
+- [ ] Clickability verified **after Klaviyo test import**, not just editor/localhost.
 
-## 5. Product grid & price badges — RESPONSIVE (§6.8, §6.9, §6.17)  ← mandatory, desktop + mobile
-- [ ] Equal-height cards via fixed-height `<td>` cells (not `min-height`); image/title/price begin at the same vertical position across a row (§6.8).
-- [ ] 2-column default, balanced; odd last card centred with `colspan` (§6.9).
-- [ ] **Price badges are shrink-to-fit centred `<table>`s (§6.17)** — content-width, never a bare `display:inline-block` anchor, never `%`/fixed width.
-- [ ] **On Gmail mobile (Android & iOS): price badges stay compact/centred and do NOT stretch to card width** (§6.17).
-- [ ] Desktop appearance unchanged vs the approved baseline after any mobile fix.
-- [ ] Mobile `.pc img{width:100%}` does **not** enlarge brand marks/icons (exclusion class present, §6.17).
-- [ ] Tap targets ≥44px via padding, not by widening.
+## 4. Hero
 
-## 6. Mobile / rendering reliability (§6.16, §8.3)
-- [ ] Mobile-safe fluid wrapper + table **and** cell `bgcolor` on every coloured section (no white gutters/seams on Gmail mobile).
-- [ ] Body never scrolls horizontally; wide content contained.
-- [ ] File well under Gmail's ~102 KB clip; footer not clipped.
+- [ ] Edge-to-edge in the 600px container. No white strips, gaps, or gutters.
+- [ ] Real pixel `width`/`height` attributes. `display:block` on the `<img>`.
+- [ ] If linked: one inline `<a>`, anchor NOT `display:block`. Correct destination.
+- [ ] Does not shrink or collapse on Gmail mobile or Apple Mail iOS.
+- [ ] Hero cell: `font-size:0; line-height:0; padding:0`. Zero whitespace between tags.
 
-## 7. Ghost Element Inspection (§8.2) & Gmail QA (§8.3)
-- [ ] Zero empty/nested/whitespace-only anchors, empty `<td>`/`<tr>`, ghost tables, zero-size/hidden links, literal `…`/`...`.
-- [ ] Tag balance (`<table>/<tr>/<td>/<a>` open == close).
-- [ ] No Gmail "…" expansion bubble on a **fresh subject/thread**; production comments stripped to functional MSO conditionals only.
+## 5. Product Grid & Price Badges (desktop + mobile)
 
-## 8. Accessibility & images (§8, CS-11)
-- [ ] Meaningful `alt` on every image; images are public absolute **HTTPS**, 200, `image/*`, no redirects; payload modest (Gmail-mobile safe).
-- [ ] Optimising an image preserved the approved creative (same asset re-encoded/resized, not substituted).
+- [ ] Equal-height cards via fixed-height `<td>` cells (not `min-height` / not flexbox).
+- [ ] Image, title, description, price begin at the same vertical position across each row.
+- [ ] 2-column default. Odd last card centred with `colspan` spanning full grid width.
+- [ ] **Price badges = shrink-to-fit centred `<table>`** (content-width, fill/radius on `<td>`,
+      inline `<a>` inside). NOT a bare `display:inline-block` anchor. NOT `%` or fixed width.
+- [ ] **Gmail mobile (Android & iOS): price badges stay compact/centred, NOT full card width.**
+- [ ] Desktop appearance unchanged vs the approved baseline.
+- [ ] Mobile `.pc img{width:100%}` does NOT enlarge brand marks/icons (exclusion class present).
+- [ ] Tap targets ≥ 44px via padding, not by widening.
 
-## 9. Client matrix — verify & record which were checked (§8.1.1, §6.16)
-- [ ] Klaviyo Preview · Gmail Web · **Gmail Android** · **Gmail iOS** · Apple Mail (incl. iPhone) · Outlook · Yahoo.
-- [ ] Desktop layout identical to the approved baseline; mobile visually matches desktop intent.
+## 6. Mobile / Rendering
 
-## 10. Send gate (§8.1.6, §9) — send only when ALL true and recorded in `Review/`
-- [ ] Approval recorded (CR-17) · clickability verified post-Klaviyo · responsive verified (incl. §6.17 price badges) · images load · product/CTA/coupon links work · no unresolved blockers.
+- [ ] Mobile-safe fluid wrapper + table **AND** cell `bgcolor` on every coloured section.
+- [ ] No white gutters or seams on Gmail mobile (Android & iOS).
+- [ ] Body never scrolls horizontally.
+- [ ] Built HTML well under Gmail's ~102 KB clip threshold. Footer not clipped.
+- [ ] Non-functional HTML comments stripped. Only MSO conditionals remain.
 
-_Cite-don't-restate. If a check reveals a reusable lesson, fix root cause and promote it to a permanent
-CLAUDE.md rule (§8.1.7)._
+## 7. Ghost Element Inspection
+
+- [ ] Zero empty/whitespace-only anchors.
+- [ ] Zero empty `<td>`, `<tr>`, ghost tables.
+- [ ] Zero hidden links (zero-width, zero-height, `display:none`).
+- [ ] No literal `…` / `...` in the markup.
+- [ ] Tag balance: `<table>` open == close; `<tr>` open == close; `<td>` open == close;
+      `<a>` open == close.
+
+## 8. Footer & Merge Tags
+
+- [ ] Footer uses `{% unsubscribe_link %}` in `href` (NOT `{% unsubscribe %}`).
+- [ ] No `{{ manage_preferences_url }}` or other invented merge variables.
+- [ ] Links: **Unsubscribe · Privacy Policy**. Manage Preferences only if explicitly requested.
+- [ ] No HTML attributes or tag fragments visible as text in the footer.
+- [ ] Footer compact, professional, matches the brand's approved footer design.
+
+## 9. Accessibility & Images
+
+- [ ] Meaningful `alt` on every content image. `alt=""` on decorative images.
+- [ ] Every `<img src>` is public absolute HTTPS, HTTP 200, `image/*`, no redirects.
+- [ ] Image payload reasonable (no multi-hundred-KB PNG photos; favour compressed JPEG).
+- [ ] Icons are monochrome line style (Apple/Stripe aesthetic). No emoji, no cartoon icons.
+
+## 10. Coupon / Promo (CONDITIONAL — skip if no promotion in this campaign)
+
+- [ ] Coupon code verified created + active in BigCommerce.
+- [ ] Promo title is unique to this campaign (not recycled from a previous send).
+- [ ] SC-specific: fixed-dollar discount "$20 off orders over $200" unless explicitly overridden.
+- [ ] No invented coupon code. Placeholder clearly marked if code not yet provided.
+
+## 11. Client Matrix — verify & record which were checked
+
+- [ ] Klaviyo Preview
+- [ ] Gmail Web
+- [ ] **Gmail Android**
+- [ ] **Gmail iOS**
+- [ ] Apple Mail (incl. iPhone)
+- [ ] Outlook
+- [ ] Desktop layout identical to approved baseline; mobile matches desktop intent.
+
+## 12. Send Gate — send only when ALL true and recorded in `Review/`
+
+- [ ] User approval recorded.
+- [ ] Clickability verified post-Klaviyo import.
+- [ ] Responsive rendering verified (incl. price badges on Gmail mobile).
+- [ ] All images load correctly.
+- [ ] All product/CTA/coupon links work.
+- [ ] No unresolved blockers (404, hidden products, missing assets, failing QA).
+- [ ] Preview text is non-empty and campaign-specific.
+
+---
+
+_Self-contained QA. If a check reveals a reusable lesson, fix the root cause and add it to the
+appropriate Standards/ contract or CLAUDE.md._

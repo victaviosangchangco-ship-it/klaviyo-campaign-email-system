@@ -179,7 +179,7 @@ Credential **isolation** and the shared-store rules are owned by `CLAUDE.md §12
 | Store domain | https://sectorcare.com.au | [Confirmed] |
 | Product categories | Electric Wheelchair · Mobility Scooter · Manual Wheelchair · Rollators · Walker Frame · Bath Aids · Toilet Aids · Walking Aids · Bed Aids · Disability Ramps (mobility & daily-living aids) | [Confirmed — sectorcare.com.au] |
 | `featuredCategoryIds` | Live in `SC.config.json`; validate against the live catalog before a build (`§12`). | [To be confirmed] |
-| Image hosting | `hosting/sc/` → SC Vercel project; publish via `Scripts/publish-assets.js --brand SC`, verify HTTPS 200 (`CLAUDE.md §7.1`). | [Confirmed] |
+| Image hosting | **Primary: ImageKit CDN** — place assets in `Image kit hosting/sc/`, upload via `npm run imagekit:upload --brand SC --src <path>` or `npm run imagekit:watch`, verify HTTPS 200 at the returned `ik.imagekit.io` URL (`CLAUDE.md §12`). **Fallback/legacy: Vercel** — `hosting/sc/` → `Scripts/publish-assets.js --brand SC` → git deploy → `assets-sc.vercel.app`. Existing Vercel URLs in shipped campaigns remain valid; new assets default to ImageKit. | [Confirmed] |
 | Klaviyo account | `W2Ua5v` ("Sector Care") | [Confirmed — live `GET /accounts`] |
 | Klaviyo key env var | `SC_KLAVIYO_API_KEY` in `Brands/SC/.env` (`§12`) | [Confirmed] |
 | Default Weekly audience | **[To be confirmed]** — never auto-reuse a prior send's segment/list; confirm per campaign (`CLAUDE.md §13.1`). | [To be confirmed] |

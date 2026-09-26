@@ -5,7 +5,7 @@
 | **Status** | ACTIVE |
 | **Version** | 1.0.0 |
 | **Owner** | Project Owner |
-| **Applies to** | **Klaviyo Campaign Email System** · **Klaviyo Flow and Claude Code** |
+| **Applies to** | **Klaviyo Campaign Email System** · **Klaviyo Flows Automation System** |
 | **Mirroring** | Byte-identical copies in both projects. Both canonical. Any change applies to both in the same edit. |
 | **Scope** | The permanent QA **process** and its four gates. Individual build rules stay in the standards and each `CLAUDE.md`; the Hero checklist stays in STD-HERO §11. |
 

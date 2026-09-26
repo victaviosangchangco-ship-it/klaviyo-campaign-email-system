@@ -179,6 +179,7 @@ function createBcClient(config = {}) {
       availability: product.availability ?? null, // 'available' | 'disabled' | 'preorder'
       isVisible: product.is_visible ?? null,
       dateModified: product.date_modified ?? null,
+      description: product.description || '',
     };
   }
 
@@ -230,6 +231,18 @@ function createBcClient(config = {}) {
   async function getProductById(productId) {
     const data = await bcGet(`/catalog/products/${productId}?include=images`);
     return data.data ? shapeProduct(data.data) : null;
+  }
+
+  // Read-only catalog-wide keyword search (v3 `keyword` filter — matches product
+  // name/sku/upc). Last-resort discovery tier for a themed campaign whose exact
+  // category is too thin: the caller still runs every hit through the relevance
+  // gate, this only widens the candidate pool with REAL catalog data.
+  async function searchProducts(keyword, limit = 12) {
+    const term = String(keyword == null ? '' : keyword).trim();
+    if (!term) return [];
+    const data = await bcGet(`/catalog/products?keyword=${encodeURIComponent(term)}&include=images&limit=${limit}`);
+    const items = Array.isArray(data.data) ? data.data : [];
+    return items.map(shapeProduct);
   }
 
   // "Relevant product updates": most recently modified visible products.
@@ -316,6 +329,7 @@ function createBcClient(config = {}) {
     resolveCategory,
     getProductsByCategoryId,
     getProductById,
+    searchProducts,
     getRecentlyUpdatedProducts,
     getTreeCategories,
     getCategoryById,

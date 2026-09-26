@@ -154,12 +154,28 @@ test('campaign_id is immutable on update', async () => {
   assert.match(JSON.stringify(plan.errors), /immutable on update/);
 });
 
-test('the allow-list is exactly the 15-field calendar schema', () => {
-  assert.strictEqual(ALLOWED_FIELDS.size, 15);
+test('the allow-list is exactly the 23-field calendar schema (15 core + 3 secondary-audience + 4 planning-taxonomy + 1 hierarchy link)', () => {
+  // Was 19 until the Sep–Dec 2026 planning-taxonomy rollout (campaign_type,
+  // seasonal_trigger, focus_category, priority) added 4 more Single Select
+  // columns to calendar-writer's ALLOWED_FIELDS on 2026-09-18 (see
+  // calendar-field-manager.js + xlsx-mapping.js OPTIONAL_HEADERS, which now
+  // reads these on import too — SYSTEM PATCH: Campaign-Type Collision Fix).
+  assert.strictEqual(ALLOWED_FIELDS.size, 23);
   for (const f of ['campaign_id', 'scheduled_date', 'promo_code', 'notes', 'status']) {
     assert.ok(ALLOWED_FIELDS.has(f), `${f} must be writable`);
   }
-  for (const f of ['record_id', 'Parent items', '__proto__']) {
+  // Additive multi-audience columns are writable via the same guarded path.
+  for (const f of ['audience_2_type', 'audience_2_name', 'audience_2_id']) {
+    assert.ok(ALLOWED_FIELDS.has(f), `${f} must be writable`);
+  }
+  // Sep–Dec 2026 planning-taxonomy columns — writable, and now also imported
+  // (see xlsx-mapping.js) instead of being write-only/silently dropped on read.
+  for (const f of ['campaign_type', 'seasonal_trigger', 'focus_category', 'priority']) {
+    assert.ok(ALLOWED_FIELDS.has(f), `${f} must be writable`);
+  }
+  // Hierarchy/grouping link field (additive) — writable as an array of record ids.
+  assert.ok(ALLOWED_FIELDS.has('Parent items'), 'Parent items must be writable');
+  for (const f of ['record_id', '__proto__', 'audience_3_type']) {
     assert.ok(!ALLOWED_FIELDS.has(f), `${f} must NOT be writable`);
   }
 });

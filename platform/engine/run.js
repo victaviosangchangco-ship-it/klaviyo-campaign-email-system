@@ -11,7 +11,7 @@
 const path = require('path');
 const config = require('../common/config');
 const { Logger } = require('../common/logger');
-const { runWeeklyPipeline } = require('../workflow/pipeline');
+const { generateWeeklyCampaign } = require('../workflow/campaign-generator');
 const { runLiveCampaign } = require('../workflow/live-orchestrator');
 const {
   PlatformError,
@@ -67,7 +67,10 @@ async function createCampaign(options = {}) {
         dryRun: options.dryRun || false,
         week: options.week || null,
         campaign: options.campaign || null,
-        calendarSource: options.calendarSource || 'json',
+        // DEFAULT is live Lark (SYSTEM PATCH: Stale Calendar Guard). `--calendar json`
+        // opts into the generated-runtime-JSON fallback explicitly.
+        calendarSource: options.calendarSource || 'lark',
+        allowStaleCalendar: options.allowStaleCalendar || false,
         segment: options.segment || null,
         list: options.list || null,
         date: options.date || new Date(),
@@ -76,9 +79,13 @@ async function createCampaign(options = {}) {
       generatedAt,
     };
 
-    // Backward compatible: plain `create` runs the offline pipeline exactly as
-    // before. `--klaviyo` runs the FINAL MVP orchestrator (pipeline + Klaviyo draft).
-    const result = options.klaviyo ? await runLiveCampaign(ctx) : await runWeeklyPipeline(ctx);
+    // Every generation path is campaign-aware (SYSTEM PATCH: Safe One-Command
+    // Routing): plain `create` resolves the exact calendar campaign and runs the
+    // pipeline with it attached (generateWeeklyCampaign — CampaignThemePackage/
+    // theme relevance always engage); `--klaviyo` runs the FINAL MVP orchestrator
+    // (same campaign resolution, plus the Klaviyo draft steps). Neither path can
+    // reach the pipeline without a resolved campaign.
+    const result = options.klaviyo ? await runLiveCampaign(ctx) : await generateWeeklyCampaign(ctx);
 
     const logFile = logger.flush();
     printSummary({ result, runId, logFile });

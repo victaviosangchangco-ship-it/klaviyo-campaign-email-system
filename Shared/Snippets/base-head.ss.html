@@ -1,0 +1,120 @@
+<!--
+  Snippet: base-head.ss (SS Weekly visual-system override)
+  Purpose: Identical to base-head.html (document scaffold — doctype, <head>, meta, shared
+           <style> block) PLUS one SS-only addition: a `.col-2` mobile rule so the hybrid
+           2-up product card (product-grid.ss.html) collapses to one column under 600px, as
+           shipped in SS-2026-W32/W36/W38. Loaded INSTEAD of the generic base-head.html by
+           renderer.js's brandFile() when brand.code === "SS". No other brand emits
+           class="col-2", so this addition is inert everywhere else — it exists as a
+           separate file (not appended to the shared base-head.html) purely so the RDD/SC
+           rendering path stays byte-for-byte unchanged (golden-file safe, CLAUDE.md §7).
+           See base-head.html for the full rationale behind every other rule below —
+           unchanged and carried over verbatim.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="x-apple-disable-message-reformatting" />
+  <meta name="format-detection" content="telephone=no,address=no,email=no,date=no,url=no" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="supported-color-schemes" content="light dark" />
+  <title>[[SUBJECT_LINE]]</title>
+  <!--[if mso]>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <![endif]-->
+  <style>
+    :root { color-scheme: light dark; supported-color-schemes: light dark; }
+    body { margin:0; padding:0; width:100% !important; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; }
+    * { -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; }
+    table { border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; }
+    img { border:0; height:auto; line-height:100%; outline:none; text-decoration:none; -ms-interpolation-mode:bicubic; }
+    a { text-decoration:none; }
+    #outlook a { padding:0; }
+    th { font-weight:normal; }
+
+    div[style*="margin: 16px 0"] { margin:0 !important; }
+    #MessageViewBody, #MessageWebViewDiv { width:100% !important; }
+    .a6S { display:none !important; opacity:0.01 !important; }
+    img.g-img + div { display:none !important; }
+    .im { color:inherit !important; }
+
+    a[x-apple-data-detectors],
+    .unstyle-auto-detected-links a,
+    .aBn {
+      border-bottom:0 !important; cursor:default !important; color:inherit !important;
+      text-decoration:none !important; font-size:inherit !important; font-family:inherit !important;
+      font-weight:inherit !important; line-height:inherit !important;
+    }
+
+    @media only screen and (min-device-width:320px) and (max-device-width:374px) {
+      u ~ div .email-container { min-width:320px !important; }
+    }
+    @media only screen and (min-device-width:375px) and (max-device-width:413px) {
+      u ~ div .email-container { min-width:375px !important; }
+    }
+    @media only screen and (min-device-width:414px) {
+      u ~ div .email-container { min-width:414px !important; }
+    }
+
+    .email-container { width:600px; max-width:600px; margin:0 auto; }
+    .hero-img { width:100% !important; max-width:100% !important; height:auto !important; }
+    .prod-name { min-height:34px; }
+    .prod-sub  { min-height:52px; }
+
+    @media screen and (max-width:600px) {
+      .email-container { width:100% !important; }
+      .stack-col, .pc { display:block !important; width:100% !important; max-width:100% !important; box-sizing:border-box !important; }
+      .pc img { width:100% !important; height:auto !important; }
+      .pc img.brandmark { width:15px !important; max-width:15px !important; height:auto !important; }
+      .pimg, .pnc, .pdc { height:auto !important; }
+      .pricebtn { display:inline-block !important; width:auto !important; padding:12px 26px !important; }
+      .center-sm { text-align:center !important; }
+      .mp { padding-left:16px !important; padding-right:16px !important; }
+      .hh { font-size:28px !important; }
+      .tap { padding-top:16px !important; padding-bottom:16px !important; }
+      .cat-td { display:inline-block !important; width:50% !important; box-sizing:border-box !important; padding:4px !important; text-align:center !important; vertical-align:top !important; }
+      .pill { display:block !important; padding:14px 8px !important; }
+      .trust-card { width:50% !important; padding:6px !important; }
+      .coupon-code { font-size:24px !important; letter-spacing:2px !important; word-break:break-all !important; }
+      .prod-name { min-height:0 !important; }
+      .prod-sub  { min-height:0 !important; font-size:14px !important; line-height:1.5 !important; }
+
+      .stack-column,
+      .stack-column-center {
+        display:block !important; width:100% !important;
+        max-width:100% !important; direction:ltr !important;
+      }
+      .stack-column-center { text-align:center !important; }
+      .center-on-narrow {
+        text-align:center !important; display:block !important;
+        margin-left:auto !important; margin-right:auto !important; float:none !important;
+      }
+      table.center-on-narrow { display:inline-block !important; }
+      .center-half { width:100% !important; }
+
+      /* [SS-only] Hybrid 2-up product card (product-grid.ss.html) collapses to one
+         column on mobile. No other component/brand emits class="col-2". */
+      .col-2 { display:block !important; width:100% !important; max-width:100% !important; min-width:100% !important; }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .dm-bg   { background:[[DARK_BODY_BG]] !important; }
+      .dm-text { color:[[DARK_TEXT_COLOR]] !important; }
+      .dm-logo-light { display:none !important; }
+      .dm-logo-dark  { display:block !important; }
+    }
+    [data-ogsc] .dm-bg   { background:[[DARK_BODY_BG]] !important; }
+    [data-ogsc] .dm-text { color:[[DARK_TEXT_COLOR]] !important; }
+    [data-ogsc] .dm-logo-light { display:none !important; }
+    [data-ogsc] .dm-logo-dark  { display:block !important; }
+  </style>
+</head>

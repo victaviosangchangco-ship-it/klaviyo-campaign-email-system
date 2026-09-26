@@ -78,6 +78,11 @@
     ]
   },
 
+  "product": {
+    "defaultCount": 18,
+    "_note": "SS/RDD Weekly standard: 18 products per campaign. Overridable per-campaign via campaign.product_count."
+  },
+
   "bigcommerce": {
     "_note": "Non-secret store-structural mapping. Mirrors Brands/RDD/integration/rdd.config.js. Credentials load from Brands/RDD/.env at runtime. Read-only (GET) only.",
     "envPath": "Brands/RDD/.env",

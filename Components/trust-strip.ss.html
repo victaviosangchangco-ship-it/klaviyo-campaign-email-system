@@ -1,0 +1,74 @@
+<!--
+  Component: trust-strip.ss (SS Weekly visual-system override)
+  Purpose: SS's own approved trust block — a left-aligned heading over FOUR bordered
+           cards laid out 2x2 (not 4-across), each a plain glyph (no circle/tinted
+           background), a bold label and a grey sub-label. As shipped in
+           SS-2026-W32/W36/W38. Loaded INSTEAD of the generic trust-strip.html by
+           renderer.js's brandFile() when brand.code === "SS" (CLAUDE.md §6.21). The
+           generic component's centred title + circular tinted icon + 4-across desktop
+           grid is RDD's approved treatment (RDD-2026-W31) — SS's is a genuinely
+           different card layout (2x2 always, bordered, left-aligned copy), not a
+           colour swap.
+  Required inputs: for each of 4 items — [[TRUST_n_GLYPH]] (a unicode glyph / HTML
+                   entity, asset-free), [[TRUST_n_LABEL]] (n = 1..4)
+  Optional inputs: [[TRUST_TITLE]] (left-aligned heading; omit the row when absent),
+                   [[TRUST_n_SUB]] (sub-label)
+  Fallback behavior: the whole component is optional; omit entirely if the brand has no
+                     trust items. Render all four cells or none. Glyphs are asset-free —
+                     never fabricate a claim (e.g. a certification) that isn't verified.
+  Dependencies: shared .trust-card (width:50% on mobile, already the desktop width here
+                too, so this component looks identical at both sizes) from base-head.
+-->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="[[BODY_BG]]" style="background:[[BODY_BG]];">
+  <tr>
+    <td class="mp" style="padding:28px 24px 4px 24px;">
+      <h2 class="dm-text" style="margin:0; font-family:[[HEADING_FONT_STACK]]; font-size:[[H2_SIZE]]; font-weight:[[HEADING_WEIGHT]]; line-height:1.15; color:[[TEXT_COLOR]]; text-align:left;">[[TRUST_TITLE]]</h2>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding:14px 18px 22px 18px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="trust-card" width="50%" align="left" valign="top" style="padding:6px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="[[CARD_BG]]" style="border:1px solid [[CARD_BORDER_COLOR]]; border-radius:10px; background:[[CARD_BG]];">
+              <tr><td style="padding:18px 16px;">
+                <div style="font-size:22px; line-height:1; color:[[TEXT_COLOR]];">[[TRUST_1_GLYPH]]</div>
+                <p class="dm-text" style="margin:12px 0 2px 0; font-family:[[FONT_STACK]]; font-size:[[SMALL_SIZE]]; font-weight:700; line-height:1.3; color:[[TEXT_COLOR]];">[[TRUST_1_LABEL]]</p>
+                <p class="dm-sub" style="margin:0; font-family:[[FONT_STACK]]; font-size:12px; line-height:1.4; color:[[MUTED_TEXT_COLOR]];">[[TRUST_1_SUB]]</p>
+              </td></tr>
+            </table>
+          </td>
+          <td class="trust-card" width="50%" align="left" valign="top" style="padding:6px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="[[CARD_BG]]" style="border:1px solid [[CARD_BORDER_COLOR]]; border-radius:10px; background:[[CARD_BG]];">
+              <tr><td style="padding:18px 16px;">
+                <div style="font-size:22px; line-height:1; color:[[TEXT_COLOR]];">[[TRUST_2_GLYPH]]</div>
+                <p class="dm-text" style="margin:12px 0 2px 0; font-family:[[FONT_STACK]]; font-size:[[SMALL_SIZE]]; font-weight:700; line-height:1.3; color:[[TEXT_COLOR]];">[[TRUST_2_LABEL]]</p>
+                <p class="dm-sub" style="margin:0; font-family:[[FONT_STACK]]; font-size:12px; line-height:1.4; color:[[MUTED_TEXT_COLOR]];">[[TRUST_2_SUB]]</p>
+              </td></tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td class="trust-card" width="50%" align="left" valign="top" style="padding:6px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="[[CARD_BG]]" style="border:1px solid [[CARD_BORDER_COLOR]]; border-radius:10px; background:[[CARD_BG]];">
+              <tr><td style="padding:18px 16px;">
+                <div style="font-size:22px; line-height:1; color:[[TEXT_COLOR]];">[[TRUST_3_GLYPH]]</div>
+                <p class="dm-text" style="margin:12px 0 2px 0; font-family:[[FONT_STACK]]; font-size:[[SMALL_SIZE]]; font-weight:700; line-height:1.3; color:[[TEXT_COLOR]];">[[TRUST_3_LABEL]]</p>
+                <p class="dm-sub" style="margin:0; font-family:[[FONT_STACK]]; font-size:12px; line-height:1.4; color:[[MUTED_TEXT_COLOR]];">[[TRUST_3_SUB]]</p>
+              </td></tr>
+            </table>
+          </td>
+          <td class="trust-card" width="50%" align="left" valign="top" style="padding:6px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="[[CARD_BG]]" style="border:1px solid [[CARD_BORDER_COLOR]]; border-radius:10px; background:[[CARD_BG]];">
+              <tr><td style="padding:18px 16px;">
+                <div style="font-size:22px; line-height:1; color:[[TEXT_COLOR]];">[[TRUST_4_GLYPH]]</div>
+                <p class="dm-text" style="margin:12px 0 2px 0; font-family:[[FONT_STACK]]; font-size:[[SMALL_SIZE]]; font-weight:700; line-height:1.3; color:[[TEXT_COLOR]];">[[TRUST_4_LABEL]]</p>
+                <p class="dm-sub" style="margin:0; font-family:[[FONT_STACK]]; font-size:12px; line-height:1.4; color:[[MUTED_TEXT_COLOR]];">[[TRUST_4_SUB]]</p>
+              </td></tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>

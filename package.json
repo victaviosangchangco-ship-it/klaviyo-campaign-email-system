@@ -15,11 +15,21 @@
     "create:rdd": "node platform/engine/cli.js create --brand RDD --type weekly",
     "calendar:import": "node platform/integrations/calendar/import/import-xlsx.js",
     "calendar:update": "node platform/engine/calendar-cli.js update",
+    "sync:campaign": "node platform/integrations/klaviyo/sync-campaign-draft.js",
+    "imagekit:upload": "node Scripts/imagekit-upload.js upload",
+    "imagekit:upload-all": "node Scripts/imagekit-upload.js upload-all",
+    "imagekit:validate": "node Scripts/imagekit-upload.js validate",
+    "imagekit:selftest": "node Scripts/imagekit-upload.js selftest",
+    "imagekit:watch": "node Scripts/imagekit-upload.js watch",
     "test": "node --test \"platform/tests/**/*.test.js\""
   },
   "devDependencies": {
+    "pngjs": "^7.0.0",
     "xlsx": "^0.18.5"
   },
   "author": "Fast Retail Group",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "dependencies": {
+    "imagekit": "^6.0.0"
+  }
 }

@@ -45,13 +45,49 @@ const ALLOWED_FIELDS = new Set([
   'audience_type',
   'audience_id',
   'audience_name',
+  // secondary audience slot (multi-audience support; additive, type-routed in mapping)
+  'audience_2_type',
+  'audience_2_name',
+  'audience_2_id',
   'status',
   'notes',
+  // Planning taxonomy fields (Sep–Dec 2026 seasonal-calendar rework). Single
+  // Select columns created via calendar-field-manager.js before these are ever
+  // written to. `status` itself is deliberately NOT touched by this rollout.
+  'campaign_type',
+  'seasonal_trigger',
+  'focus_category',
+  'priority',
+  // Hierarchy/grouping: a self-referential link field pointing at a parent row
+  // (e.g. the "Past campaigns" group). Value on write is an array of record ids.
+  'Parent items',
 ]);
 
 // campaign_id is the calendar's primary key; changing it on an existing record
 // would silently re-identify a campaign. Updatable only on create.
 const IMMUTABLE_ON_UPDATE = new Set(['campaign_id']);
+
+// Link fields hold an array of record ids on write, and read back as an array of
+// rich link objects [{ record_ids:[...], text, ... }]. They need array-of-ids
+// validation and a record-id-set comparison on verify (not the text comparator).
+const LINK_FIELDS = new Set(['Parent items']);
+
+function linkRecordIds(v) {
+  if (!Array.isArray(v)) return [];
+  const ids = [];
+  for (const x of v) {
+    if (typeof x === 'string') ids.push(x);
+    else if (x && Array.isArray(x.record_ids)) ids.push(...x.record_ids);
+    else if (x && typeof x.id === 'string') ids.push(x.id);
+  }
+  return ids.filter(Boolean);
+}
+
+function linkValuesEqual(requested, actual) {
+  const a = [...new Set(linkRecordIds(requested))].sort();
+  const b = [...new Set(linkRecordIds(actual))].sort();
+  return a.length === b.length && a.every((x, i) => x === b[i]);
+}
 
 const DEFAULTS = { timeoutMs: 15000, maxBatch: 20, maxRetries: 3, backoffBaseMs: 300 };
 
@@ -162,6 +198,10 @@ class LarkCalendarWriter {
         errors.push(`field "${key}" is not in the Campaign Calendar schema — refusing to write it`);
       } else if (!isCreate && IMMUTABLE_ON_UPDATE.has(key)) {
         errors.push(`field "${key}" is immutable on update (it identifies the campaign)`);
+      } else if (LINK_FIELDS.has(key)) {
+        const v = fields[key];
+        const ok = Array.isArray(v) && v.length > 0 && v.every((x) => typeof x === 'string' && /^rec/.test(x));
+        if (!ok) errors.push(`field "${key}" must be a non-empty array of record ids (e.g. ["recXXXX"])`);
       }
     }
     return errors;
@@ -407,7 +447,8 @@ class LarkCalendarWriter {
         const rec = byId.get(it.record_id);
         for (const [field, requested] of Object.entries(it.fields)) {
           const actual = rec ? rec.fields[field] : undefined;
-          results.push({ recordId: it.record_id, field, requested, actual, match: Boolean(rec) && valuesEqual(requested, actual) });
+          const cmp = LINK_FIELDS.has(field) ? linkValuesEqual : valuesEqual;
+          results.push({ recordId: it.record_id, field, requested, actual, match: Boolean(rec) && cmp(requested, actual) });
         }
       }
     } else {
@@ -416,7 +457,8 @@ class LarkCalendarWriter {
         const rec = byCampaign.get(cid);
         for (const [field, requested] of Object.entries(it.fields)) {
           const actual = rec ? rec.fields[field] : undefined;
-          results.push({ campaignId: cid, field, requested, actual, match: Boolean(rec) && valuesEqual(requested, actual) });
+          const cmp = LINK_FIELDS.has(field) ? linkValuesEqual : valuesEqual;
+          results.push({ campaignId: cid, field, requested, actual, match: Boolean(rec) && cmp(requested, actual) });
         }
       }
     }
@@ -450,6 +492,8 @@ module.exports = {
   LarkCalendarWriter,
   ALLOWED_FIELDS,
   IMMUTABLE_ON_UPDATE,
+  LINK_FIELDS,
+  linkValuesEqual,
   encodeCalendarDate,
   decodeCalendarDate,
 };

@@ -18,13 +18,34 @@
 'use strict';
 
 const path = require('path');
-const { readText } = require('../common/fs-utils');
+const { readText, exists } = require('../common/fs-utils');
 const { substitute, assertNoTokens, stripDescriptiveComments } = require('./tokens');
 const { RenderError } = require('../common/errors');
 
 // Resolve a repo-relative asset path used by an ASSEMBLE marker.
 function load(repoRoot, relPath) {
   return readText(path.join(repoRoot, relPath));
+}
+
+// Brand-aware file selection: a brand whose APPROVED visual system genuinely
+// diverges from the generic (RDD-modeled) components/skeleton gets its own
+// "<name>.<code>.<ext>" file alongside the generic one; renderer.js loads it
+// INSTEAD of the generic file when present, otherwise falls through unchanged.
+// This is additive and file-existence-gated: a brand with no override file
+// renders through the exact same code path as before (byte-identical,
+// golden-test safe) — nothing here can change RDD/SC output. Introduced to fix
+// the SS Weekly visual regression (CLAUDE.md §6.1/§6.20/§6.21): the shared
+// components encode RDD's approved look (solid-colour header block, boxed
+// button-style price, 4-across trust icons); SS's own approved system
+// (SS-2026-W32/W36/W38) uses a white bordered header, plain-text accent-colour
+// pricing and bordered 2x2 trust cards instead, so it needs its own files
+// rather than a token tweak to a structurally different design.
+function brandFile(repoRoot, genericPath, brand) {
+  const code = brand && brand.code ? String(brand.code).toLowerCase() : '';
+  if (!code) return genericPath;
+  const dot = genericPath.lastIndexOf('.');
+  const variantPath = `${genericPath.slice(0, dot)}.${code}${genericPath.slice(dot)}`;
+  return exists(path.join(repoRoot, variantPath)) ? variantPath : genericPath;
 }
 
 // Load a component and make it substitution-ready: run optional-element removal
@@ -61,6 +82,21 @@ function buildBrandTokens(brand) {
     PRIVACY_URL: id.privacyUrl.value,
     FOOTER_LOGO_URL: logo.url.value,
     BRANDMARK_URL: logo.url.value,
+    // Optional — only referenced by brand-specific override files (e.g. Components/
+    // contact-block.html, footer.ss.html). null/undefined for a brand without these
+    // facts is harmless: a token never appears in a generic component that a brand
+    // without the fact never loads (brandFile() gates which file loads).
+    COMPANY_PHONE_DISPLAY: (id.phone && id.phone.value) || null,
+    COMPANY_PHONE_TEL: (id.phone && id.phone.value) ? `+61${String(id.phone.value).replace(/\D/g, '').replace(/^0/, '')}` : null,
+    COMPANY_EMAIL: (id.email && id.email.value) || null,
+    // Same names footer.html's own doc comment already documents (FACEBOOK_URL/
+    // FB_ICON_URL/INSTAGRAM_URL/IG_ICON_URL) — reused rather than invented, even
+    // though the generic footer.html's pruneFooter() strips that block before
+    // substitution today, so these only ever reach a brand-specific footer file.
+    FACEBOOK_URL: (brand.social && brand.social.facebookUrl && brand.social.facebookUrl.value) || null,
+    FB_ICON_URL: (brand.social && brand.social.facebookIconUrl && brand.social.facebookIconUrl.value) || null,
+    INSTAGRAM_URL: (brand.social && brand.social.instagramUrl && brand.social.instagramUrl.value) || null,
+    IG_ICON_URL: (brand.social && brand.social.instagramIconUrl && brand.social.instagramIconUrl.value) || null,
     // alignment defaults for text sections
     HERO_ALIGN: 'left',
     INTRO_ALIGN: 'left',
@@ -97,8 +133,78 @@ function esc(str) {
     .replace(/"/g, '&quot;');
 }
 
+// Strip HTML tags and entities from a BigCommerce product description, returning
+// a clean first sentence suitable for a product-card subtitle. Grounded in
+// verified BigCommerce data (CLAUDE.md §5.1 — never invented).
+function extractShortDesc(html) {
+  if (!html) return '';
+  const text = String(html)
+    .replace(/<br\s*\/?>/gi, '. ')
+    .replace(/<\/(?:p|div|li|h[1-6])>/gi, '. ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/&#?\w+;/gi, '')
+    .replace(/\.\s*\./g, '.')
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (!text || text.length < 4) return '';
+  const sentenceMatch = text.match(/^(.{8,80}?[.!?])(?:\s|$)/);
+  if (sentenceMatch) return sentenceMatch[1];
+  if (text.length <= 60) return text.endsWith('.') ? text : `${text}.`;
+  const capped = text.slice(0, 60).replace(/\s+\S*$/, '').trim();
+  return capped ? `${capped}.` : '';
+}
+
+// SS Weekly reusable card description (CLAUDE.md §5.1 — never invent):
+// Priority 1: extract from the product's own BigCommerce description field
+//   (the actual product description from the live catalog — verified data).
+// Priority 2: derive from the product name by stripping the category label
+//   and keeping the differentiating remainder (legacy fallback).
+// Returns '' when no safe, product-specific description can be produced.
+function deriveSsCardDescription(product) {
+  const rawDesc = (product && product.rawDescription) || '';
+  if (rawDesc) {
+    const extracted = extractShortDesc(rawDesc);
+    if (extracted) {
+      const nameNorm = String(product.name || '').trim().toLowerCase().replace(/[-–—]/g, ' ').replace(/\s+/g, ' ');
+      if (extracted.toLowerCase().replace(/\.$/, '').trim() !== nameNorm) {
+        return extracted;
+      }
+    }
+  }
+  const n = String((product && product.name) || '').trim();
+  const cat = String((product && product.desc) || '').trim();
+  if (!n || !cat) return '';
+  const re = new RegExp(cat.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+  if (!re.test(n)) return '';
+  let remainder = n
+    .replace(re, ' ')
+    .replace(/\s*[-–—:]\s+/g, ' ')
+    .replace(/^[\s,&]+|[\s,&]+$/g, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+  if (remainder.length < 4) return '';
+  if (remainder.length > 60) remainder = `${remainder.slice(0, 60).replace(/\s+\S*$/, '')}…`;
+  return remainder;
+}
+
+// Card display description, in priority order:
+//   1. an authored override (product.cardDescription) — even an explicit ''
+//      wins, since a human curator already made that call.
+//   2. for SS: derive from BigCommerce description (primary) or product name
+//      (fallback) — reusable for ANY SS Weekly build.
+//   3. every other brand/path: unchanged — product.desc (category label).
+function cardDescOf(product, brand) {
+  if (product.cardDescription != null) return product.cardDescription;
+  if (brand && brand.code === 'SS') return deriveSsCardDescription(product);
+  return product.desc || '';
+}
+
 // Render one product-grid row (a pair of cards) from the existing component.
-function renderProductRow(componentHtml, brandTokens, left, right) {
+function renderProductRow(componentHtml, brandTokens, left, right, brand) {
   const map = {
     ...brandTokens,
     // grid price badge radius is the compact 4px, not the pill CTA radius
@@ -106,14 +212,14 @@ function renderProductRow(componentHtml, brandTokens, left, right) {
     PRODUCT_1_URL: left.url,
     PRODUCT_1_IMAGE_URL: left.imageUrl,
     PRODUCT_1_TITLE: esc(left.name),
-    PRODUCT_1_DESC: esc(left.desc || ''),
+    PRODUCT_1_DESC: esc(cardDescOf(left, brand)),
     PRODUCT_1_PRICE: esc(left.priceLabel),
     PRODUCT_1_IMAGE_W: left.imageW || 188,
     PRODUCT_1_IMAGE_H: left.imageH || 188,
     PRODUCT_2_URL: right.url,
     PRODUCT_2_IMAGE_URL: right.imageUrl,
     PRODUCT_2_TITLE: esc(right.name),
-    PRODUCT_2_DESC: esc(right.desc || ''),
+    PRODUCT_2_DESC: esc(cardDescOf(right, brand)),
     PRODUCT_2_PRICE: esc(right.priceLabel),
     PRODUCT_2_IMAGE_W: right.imageW || 188,
     PRODUCT_2_IMAGE_H: right.imageH || 188,
@@ -132,6 +238,17 @@ function pruneIntro(raw, count = 2) {
   if (count < 2) out = out.replace(/<p[^>]*>\s*\[\[INTRO_PARA_2\]\]\s*<\/p>/, '');
   return out;
 }
+// Optional-element removal for the coupon component: drop the eyebrow and/or
+// fine-print lines when we have no real (non-invented) text for them, rather
+// than leaving an empty <p> (§8.2). Never invent a marketing eyebrow or an
+// expiry date the calendar didn't provide (Standards/coupon-contract.md).
+function pruneCoupon(raw, { hasEyebrow, hasFinePrint }) {
+  let out = raw;
+  if (!hasEyebrow) out = out.replace(/<p[^>]*>\s*\[\[COUPON_EYEBROW\]\]\s*<\/p>\s*/, '');
+  if (!hasFinePrint) out = out.replace(/<p[^>]*>\s*\[\[COUPON_FINEPRINT\]\]\s*<\/p>\s*/, '');
+  return out;
+}
+
 function pruneFooter(raw) {
   // RDD social URLs + footer blurb are "To be confirmed" (RDD.md) — omit them
   // rather than invent (CLAUDE.md §5). Also drop the height-less footer logo img
@@ -173,28 +290,71 @@ function renderWeekly({ repoRoot, brand, pkg }) {
   const brandTokens = buildBrandTokens(brand);
 
   // --- load existing files (never rebuilt), comment-stripped + optional-pruned ---
-  const skeleton = load(repoRoot, 'Templates/Weekly/weekly-skeleton.html'); // markers stripped AFTER assembly
-  const baseHead = clean(repoRoot, 'Shared/Snippets/base-head.html');
+  // header/section-heading/product-grid/trust-strip/skeleton are brand-aware
+  // (brandFile) because their APPROVED markup differs by brand, not just by
+  // colour token; every other component is genuinely brand-agnostic and stays
+  // on the single shared file.
+  const skeleton = load(repoRoot, brandFile(repoRoot, 'Templates/Weekly/weekly-skeleton.html', brand)); // markers stripped AFTER assembly
+  const baseHead = clean(repoRoot, brandFile(repoRoot, 'Shared/Snippets/base-head.html', brand));
   const preheader = clean(repoRoot, 'Shared/Snippets/preheader.html');
-  const header = clean(repoRoot, 'Components/header.html');
+  const header = clean(repoRoot, brandFile(repoRoot, 'Components/header.html', brand));
   const hero = clean(repoRoot, 'Components/hero.html');
   const intro = clean(repoRoot, 'Components/intro.html', (raw) => pruneIntro(raw, (pkg.introParas || []).length));
-  const sectionHeading = clean(repoRoot, 'Components/section-heading.html');
-  const trust = clean(repoRoot, 'Components/trust-strip.html');
-  const footer = clean(repoRoot, 'Components/footer.html', pruneFooter);
+  const sectionHeading = clean(repoRoot, brandFile(repoRoot, 'Components/section-heading.html', brand));
+  const trust = clean(repoRoot, brandFile(repoRoot, 'Components/trust-strip.html', brand));
+  // pruneFooter is safe to run unconditionally on a brand-specific footer file too:
+  // its two regexes only match the generic file's literal `[[FOOTER_LOGO_URL]]`
+  // token and `<!-- Social -->`/`<!-- Compliance` comment pair — a brand file that
+  // uses neither (e.g. footer.ss.html, which has its own verified social block) is
+  // simply a no-op match.
+  const footerPath = brandFile(repoRoot, 'Components/footer.html', brand);
+  const footer = clean(repoRoot, footerPath, pruneFooter);
   const ctaComponent = clean(repoRoot, 'Components/CTA.html');
-  const productGridComponent = clean(repoRoot, 'Components/product-grid.html');
+  const productGridComponent = clean(repoRoot, brandFile(repoRoot, 'Components/product-grid.html', brand));
+  // Optional contact/help block — only ever reachable via a brand-specific
+  // skeleton that declares its ASSEMBLE marker (the generic skeleton does not,
+  // so this is inert for every brand without one).
+  const contactBlockPath = 'Components/contact-block.html';
+  const contactBlock = exists(path.join(repoRoot, contactBlockPath)) ? clean(repoRoot, contactBlockPath) : '';
 
   // --- pre-render the pieces that need per-instance token maps ---
-  const ctaHtml = substitute(
-    ctaComponent,
-    { ...brandTokens, BUTTON_RADIUS: brandTokens.CTA_BUTTON_RADIUS, BUTTON_WIDTH: ctaWidthPx(pkg.ctaLabel), CTA_LABEL: esc(pkg.ctaLabel), CTA_URL: pkg.ctaUrl },
-    { componentName: 'CTA.html' }
-  );
+  // A content-override campaign (platform/ai/copy.js buildOverridePackage) may
+  // OMIT cta_primary/hero_heading/hero_body entirely — e.g. when the hero banner
+  // is a baked-message graphic and the approved flow goes straight from the hero
+  // image into the first section heading, with no separate text headline/intro/
+  // primary-CTA block below it (CLAUDE.md §9 "hero establishes the theme; later
+  // sections support, not restate"). This is opt-in per override file: an
+  // existing override that already supplies these fields renders exactly as
+  // before (unaffected) — only a NEW override that leaves them blank skips them.
+  const isOverride = Boolean(pkg._decision && String(pkg._decision.generatedBy || '').startsWith('content-override'));
+  const skipTextHero = isOverride && Boolean(pkg.heroMessageBaked);
+  const skipPrimaryCta = isOverride && !pkg.ctaLabel;
+
+  const ctaHtml = pkg.ctaLabel
+    ? substitute(
+        ctaComponent,
+        { ...brandTokens, BUTTON_RADIUS: brandTokens.CTA_BUTTON_RADIUS, BUTTON_WIDTH: ctaWidthPx(pkg.ctaLabel), CTA_LABEL: esc(pkg.ctaLabel), CTA_URL: pkg.ctaUrl },
+        { componentName: 'CTA.html' }
+      )
+    : '';
 
   // Optional closing CTA (rendered into the CTA-secondary slot, after the products).
+  // A brand-specific override (Components/CTA-secondary.ss.html) renders a full
+  // headline+supporting-line panel (the approved SS "Shop the Full Range" close);
+  // the generic path is unchanged — a plain filled button via CTA.html, exactly as
+  // before, for any brand/override without that file.
+  const closingCtaTemplatePath = brandFile(repoRoot, 'Components/CTA-secondary.html', brand);
+  const closingCtaUsesPanel = closingCtaTemplatePath !== 'Components/CTA-secondary.html';
   const closingCtaHtml = pkg.closingCtaLabel
-    ? substitute(ctaComponent, { ...brandTokens, BUTTON_RADIUS: brandTokens.CTA_BUTTON_RADIUS, BUTTON_WIDTH: ctaWidthPx(pkg.closingCtaLabel), CTA_LABEL: esc(pkg.closingCtaLabel), CTA_URL: pkg.closingCtaUrl }, { componentName: 'CTA.html (closing)' })
+    ? (closingCtaUsesPanel
+        ? substitute(clean(repoRoot, closingCtaTemplatePath), {
+            ...brandTokens,
+            CTA2_HEADLINE: esc(pkg.closingCtaHeadline || pkg.closingCtaLabel),
+            CTA2_SUBTEXT: esc(pkg.closingCtaSubtext || ''),
+            CTA2_LABEL: esc(pkg.closingCtaLabel),
+            CTA2_URL: pkg.closingCtaUrl,
+          }, { componentName: 'CTA-secondary.ss.html' })
+        : substitute(ctaComponent, { ...brandTokens, BUTTON_RADIUS: brandTokens.CTA_BUTTON_RADIUS, BUTTON_WIDTH: ctaWidthPx(pkg.closingCtaLabel), CTA_LABEL: esc(pkg.closingCtaLabel), CTA_URL: pkg.closingCtaUrl }, { componentName: 'CTA.html (closing)' }))
     : '';
 
   // Optional image hero (edge-to-edge, one anchor, §6.14/§6.6). Rendered into the
@@ -207,6 +367,45 @@ function renderWeekly({ repoRoot, brand, pkg }) {
         HERO_IMAGE_HEIGHT: pkg.heroImage.height || 335,
         HERO_IMAGE_LINK: pkg.heroImage.link || brand.identity.website.value,
       }, { componentName: 'hero-image.html' })
+    : '';
+
+  // Optional support banner (after the product grids). Reuses the existing
+  // hero-image.html component (same edge-to-edge fluid-image contract) rather
+  // than a new one; absent when pkg.supportBanner is not set — never a blocker.
+  const supportBannerHtml = pkg.supportBanner
+    ? substitute(clean(repoRoot, 'Components/hero-image.html'), {
+        ...brandTokens,
+        HERO_IMAGE_URL: pkg.supportBanner.url,
+        HERO_IMAGE_ALT: esc(pkg.supportBanner.alt || ''),
+        HERO_IMAGE_HEIGHT: pkg.supportBanner.height || 335,
+        HERO_IMAGE_LINK: pkg.supportBanner.link || brand.identity.website.value,
+      }, { componentName: 'hero-image.html (support banner)' })
+    : '';
+
+  // Optional coupon/promo block (SYSTEM PATCH: Promotion/Coupon Resolution).
+  // Rendered ONLY when the calendar-authoritative campaign declared a real
+  // code + offer text (pkg.coupon, platform/ai/copy.js); otherwise the slot
+  // stays empty — never a placeholder, never an invented code/discount/expiry
+  // (Standards/coupon-contract.md). Optional fields not documented-default
+  // (EYEBROW/FINEPRINT) are pruned rather than left as an empty line.
+  const couponHtml = pkg.coupon
+    ? substitute(
+        clean(repoRoot, 'Components/coupon.html', (raw) => pruneCoupon(raw, { hasEyebrow: false, hasFinePrint: false })),
+        {
+          ...brandTokens,
+          COUPON_CODE: esc(pkg.coupon.code),
+          COUPON_OFFER_TEXT: esc(pkg.coupon.offerText),
+          CTA_URL: pkg.coupon.ctaUrl,
+          CTA_LABEL: esc(pkg.coupon.ctaLabel || 'Shop Now'),
+          // Documented component defaults (Components/coupon.html header comment) — not invented.
+          COUPON_BG: '#f0ebe4',
+          COUPON_BORDER_COLOR: brandTokens.ACCENT_COLOR,
+          BUTTON_BG: brandTokens.ACCENT_COLOR,
+          BUTTON_TEXT_COLOR: '#ffffff',
+          BUTTON_RADIUS: '24px',
+        },
+        { componentName: 'coupon.html' }
+      )
     : '';
 
   // Build the product region: grouped (section-heading + even 2-col grid per group)
@@ -222,7 +421,7 @@ function renderWeekly({ repoRoot, brand, pkg }) {
       }, { componentName: 'section-heading.html (group)' });
       const rows = [];
       for (let i = 0; i < g.products.length; i += 2) {
-        rows.push(renderProductRow(productGridComponent, brandTokens, g.products[i], g.products[i + 1]));
+        rows.push(renderProductRow(productGridComponent, brandTokens, g.products[i], g.products[i + 1], brand));
       }
       blocks.push(`${heading}\n${rows.join('\n')}`);
     }
@@ -231,7 +430,7 @@ function renderWeekly({ repoRoot, brand, pkg }) {
   } else {
     const productRows = [];
     for (let i = 0; i < products.length; i += 2) {
-      productRows.push(renderProductRow(productGridComponent, brandTokens, products[i], products[i + 1]));
+      productRows.push(renderProductRow(productGridComponent, brandTokens, products[i], products[i + 1], brand));
     }
     productSection = productRows.join('\n');
     sectionHeadingSlot = sectionHeading;
@@ -243,15 +442,17 @@ function renderWeekly({ repoRoot, brand, pkg }) {
     'Shared/Snippets/preheader.html': [preheader],
     'Components/header.html': [header],
     'Components/hero-image.html': [heroImageHtml], // image hero when provided, else empty
-    'Components/hero.html': [hero],
-    'Components/intro.html': [intro],
+    'Components/hero.html': [skipTextHero ? '' : hero],
+    'Components/intro.html': [skipTextHero ? '' : intro],
     'Components/category-pills.html': [''],
-    'Components/CTA.html': [ctaHtml],
+    'Components/CTA.html': [skipPrimaryCta ? '' : ctaHtml],
     'Components/section-heading.html': [sectionHeadingSlot, ''], // grouped: headings live inside the grid block
     'Components/product-grid.html': [productSection, ''],
+    'Components/support-banner.html': [supportBannerHtml], // optional, after the product grids
     'Components/CTA-secondary.html': [closingCtaHtml], // closing CTA when provided
-    'Components/coupon.html': [''],
+    'Components/coupon.html': [couponHtml],
     'Components/trust-strip.html': [trust],
+    'Components/contact-block.html': [contactBlock], // optional; only a brand-specific skeleton assembles this marker
     'Components/footer.html': [footer],
   };
   const assembled = skeleton.replace(/<!--\s*ASSEMBLE:\s*(\S+?)\s*-->/g, (m, p) => {

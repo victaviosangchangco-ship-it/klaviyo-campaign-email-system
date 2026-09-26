@@ -14,7 +14,7 @@ const { buildCampaignPayload, createDraftCampaignService } = require('../integra
 const RDD35 = {
   campaign_id: 'RDD-2026-35',
   brand: 'RDD',
-  campaign_type: 'product-insights',
+  topic_category_slug: 'product-insights',
   campaign_name: 'Reduce Slip Risks with Anti-Slip Stair Nosing',
   topic_category: 'Anti-Slip Stair Nosing',
   subject_line: 'Slips Cost More Than You Think – Anti-Slip Stair Nosing Guide',
@@ -50,34 +50,34 @@ test('generatePreviewText: empty-string preview_text → generated (treated as m
 // 4. Type-aware: a real promotion is surfaced; no promo is never faked.
 test('generatePreviewText: promotional type surfaces the REAL offer, never a fake one', () => {
   const promo = generatePreviewText({
-    campaign: { campaign_type: 'promotional-sale', topic_category: 'Wheel Chocks', promotion: { code: 'CHOCK10', text: '10% off wheel chocks' }, preview_text: null },
+    campaign: { topic_category_slug: 'promotional-sale', topic_category: 'Wheel Chocks', promotion: { code: 'CHOCK10', text: '10% off wheel chocks' }, preview_text: null },
     category: { name: 'Rubber Wheel Chocks' }, count: 8,
   });
   assert.match(promo, /10% off wheel chocks/i, 'uses the actual promo text');
 
   const noPromo = generatePreviewText({
-    campaign: { campaign_type: 'promotional-sale', topic_category: 'Wheel Chocks', promotion: null, preview_text: null },
+    campaign: { topic_category_slug: 'promotional-sale', topic_category: 'Wheel Chocks', promotion: null, preview_text: null },
     category: { name: 'Rubber Wheel Chocks' }, count: 8,
   });
   assert.ok(!/%|off|sale|discount/i.test(noPromo), 'no fabricated discount when there is no promotion');
 });
 
 // calendar-service now preserves planning extras (so generation can use key_topic),
-// while the 12 core fields are still guaranteed.
-test('normalizeCampaign preserves planning extras but always guarantees the 12 core', () => {
+// while the 13 core fields are still guaranteed.
+test('normalizeCampaign preserves planning extras but always guarantees the 13 core', () => {
   const c = normalizeCampaign({ campaign_id: 'RDD-2026-35', brand: 'RDD', key_topic: 'Improve workplace slip prevention.', tone: 'safety-focused' });
   assert.strictEqual(c.key_topic, 'Improve workplace slip prevention.');
   assert.strictEqual(c.tone, 'safety-focused');
   assert.strictEqual(c.subject_line, null); // core field still present, null-filled
-  // a row with no extras still yields exactly the 12 core keys (content-calendar.json shape)
+  // a row with no extras still yields exactly the 13 core keys (content-calendar.json shape)
   const bare = normalizeCampaign({ campaign_id: 'X', brand: 'RDD' });
-  assert.strictEqual(Object.keys(bare).length, 12);
+  assert.strictEqual(Object.keys(bare).length, 13);
 });
 
 // 5. buildCalendarPackage puts the generated preview into pkg.preheader.
 test('buildPackage (calendar-driven) sets a generated pkg.preheader when calendar preview is null', () => {
   const products = Array.from({ length: 14 }, (_, i) => ({
-    id: i, name: `ASN ${i}`, url: 'u', imageUrl: 'i', priceLabel: 'AUD $30.00', desc: 'Anti Slip Stair Nosings', isVisible: true,
+    id: i, name: `ASN ${i}`, url: 'u', imageUrl: 'i', priceLabel: 'AUD $30.00', desc: 'Anti Slip Stair Nosings', isVisible: true, availability: 'available', inventoryTracking: 'product', inventoryLevel: 10,
   }));
   const pkg = buildPackage({
     brand: { code: 'RDD', identity: { displayName: { value: 'RDD' }, allProductsUrl: { value: 'https://x/products/' } } },
