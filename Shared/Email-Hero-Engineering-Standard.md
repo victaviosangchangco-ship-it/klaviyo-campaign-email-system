@@ -1,7 +1,7 @@
 # Email Hero Engineering Standard
 
 > **The single source of truth for every Hero built in either project.**
-> Applies to the **Klaviyo Campaign Email System** and **Klaviyo Flow and Claude Code**, every brand
+> Applies to the **Klaviyo Campaign Email System** and **Klaviyo Flows Automation System**, every brand
 > (RDD · SS · SC · Stack · future), every campaign type and every flow type.
 >
 > **Read this document before designing, briefing, exporting or building any Hero.** It supersedes the
@@ -583,6 +583,44 @@ Single breakpoint at `max-width:620px`. Mobile CSS must never alter the desktop 
 **Degradation is acceptable; disappearance is not.** A square button in Outlook is fine. A missing
 button is a hard fail. A hybrid column that stays at its `max-width` instead of expanding is acceptable
 degradation (§9.6); a column that vanishes is not.
+
+### 8.7 Copy must fit the band — the band `height` is a floor, not a clamp (overlay / single-surface variants)
+
+**This is the Approved Flow Hero Banner Construction rule.** It governs any Hero that places live copy
+**on** a fixed-height aspect-locked band — Variant **B2**, and brand single-surface overlay Heroes such as
+the RDD aspect-locked single-surface Hero. (It does **not** apply to Variant **B1**, where the copy sits
+*below* the band on auto height and can never create this fault.)
+
+The copy block — eyebrow/headline + flourish + body + CTA **plus its own padding** — **must fit within the
+band height**. An HTML `height="N"` and inline `height:Npx` on the band cell is a **floor, not a clamp**:
+if the copy is taller, the cell grows, and because `background-size:contain` fills only the artwork's own
+aspect-locked height at the top, the extra cell height renders as a flat **bond-colour strip below the
+artwork** on the side that has no copy — an unexplained blank band under the Hero.
+
+Three guards, all required:
+
+- **Each headline line must fit the clear-zone text-block width at the headline font size**, or it wraps to
+  an extra line and overflows the band. Estimate `chars_per_line ≈ block_width ÷ (font_size × 0.55)` and
+  keep each line within it; join words that must not break with `&nbsp;`. *(A first line that silently
+  wrapped to three lines at 34px in a 280px block was the RDD Customer Winback v1 defect.)*
+- **Keep the body to one or two short lines.** A `{{ personalization }}` tag renders **longer in preview**
+  than the resolved value, and longer again for long profile values — size the copy for the longest
+  realistic render, not the preview default.
+- **Re-measure the copy stack against the band whenever the copy or the artwork changes.** Total copy
+  height ≤ band height, leaving a few px of slack for `valign:middle`.
+
+**The fix is always to fit the copy to the band** — shorten the line, shorten the body, or (as an approved
+design revision) re-cut the band's aspect to a taller artwork. **Never** paper over the strip with a spacer
+row, a negative margin, or a band taller than the artwork (which only letterboxes it).
+
+**Diagnostic (with §15.2):** a bond-colour strip that appears **below the artwork and looks the same at
+every width** is a copy-overflow — this rule. A strip or crop that **changes with width** is an aspect/lock
+fault — §3.7 and §13.5.
+
+*Derived from the RDD Customer Winback Hero (Draft v2), the reference implementation of this rule. The
+construction it fits — image band, headline with optional promotion, supporting line and CTA all within the
+band, on the artwork's bonded clear-zone colour — is the shared technical standard; brand identity (colour,
+type, logo, CTA style, imagery, copy) stays per-brand in each `Design.md` / `Flow.md`.*
 
 ---
 

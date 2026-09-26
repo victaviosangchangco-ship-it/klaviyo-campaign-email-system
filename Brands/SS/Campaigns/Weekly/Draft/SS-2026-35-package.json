@@ -1,0 +1,31 @@
+{
+  "campaignId": "SS-2026-35",
+  "brand": "SS",
+  "type": "weekly",
+  "generatedAt": "2026-09-20T14:42:28.567Z",
+  "runId": "SS-weekly-20260920-144228",
+  "subject": "Load. Move. Deliver. A Dependable Trolley for Every Task",
+  "previewText": "Explore 18 platform trolleys and loading ramps built for safer, faster load transport around your site.",
+  "productCount": 18,
+  "render": {
+    "productsRendered": 18,
+    "rows": 9,
+    "groups": 1,
+    "trimmedFrom": 18
+  },
+  "qa": {
+    "pass": 20,
+    "blocker": 0,
+    "warn": 0
+  },
+  "writeMode": "pipeline",
+  "sendStatus": "NOT_APPROVED_TO_SEND",
+  "_note": "Draft-only build (SYSTEM PATCH: Draft/Output Lifecycle). Output/ is untouched until an explicit, human-gated approval step promotes this Draft. Approval-to-send is tracked in Brief/ + Review/ and gated by CLAUDE.md §8.1. Klaviyo/send are out of MVP scope.",
+  "files": {
+    "html": "Brands\\SS\\Campaigns\\Weekly\\Draft\\SS-2026-35.html",
+    "draft": "Brands\\SS\\Campaigns\\Weekly\\Draft\\SS-2026-35-draft-v2.html",
+    "products_json": "Brands\\SS\\Campaigns\\Weekly\\Draft\\SS-2026-35-products.json",
+    "products_csv": "Brands\\SS\\Campaigns\\Weekly\\Draft\\SS-2026-35-products.csv",
+    "qa_report": "Brands\\SS\\Campaigns\\Weekly\\Draft\\SS-2026-35-qa-report.md"
+  }
+}

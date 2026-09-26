@@ -23,6 +23,7 @@
 const path = require('path');
 const fs = require('fs');
 const { IntegrationError } = require('../../common/errors');
+const { filterPurchasable } = require('./inventory');
 
 // The proven client currently lives under the RDD integration folder (the only
 // copy). It is brand-agnostic (createBcClient factory), so every brand uses it.
@@ -48,6 +49,7 @@ function enrich(product, categoryLabel) {
     salePrice: product.salePrice,
     priceLabel,
     desc: categoryLabel || '',
+    rawDescription: product.description || '',
     // verification-relevant fields (used by curation + QA)
     isVisible: product.isVisible,
     availability: product.availability,
@@ -74,6 +76,20 @@ function normalizeCategoryName(s) {
 
 // A tree-category object uses `category_id`; a legacy category uses `id`.
 const catIdOf = (c) => (c && (c.category_id != null ? c.category_id : c.id));
+
+// Split a calendar product_categories value into individual category names.
+// The calendar sometimes names more than one category for a single campaign —
+// comma-separated is the delimiter actually used in the live calendars (e.g.
+// "Rope Barriers and Posts, Retractable Barriers and Posts, Expandable
+// Barriers"). A single-category value (the common case) splits into exactly
+// one part, so callers that only ever saw one category before see the exact
+// same one part now.
+function splitCategoryNames(raw) {
+  return String(raw == null ? '' : raw)
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
 
 // Resolve the calendar's category name to ONE canonical BigCommerce category.
 //
@@ -129,6 +145,213 @@ async function resolveCategoryByName(bc, name, { treeId = null, allowList = null
   return pool[0];
 }
 
+// Resolve the calendar's product_categories value — possibly SEVERAL
+// comma-separated category names — to live products, merged + deduped by
+// product id (SYSTEM PATCH: Multi-Category Resolver, 2026-09). Standalone +
+// `bc`-injected (same pattern as resolveCategoryByName/discoverThemeCandidates)
+// so it is independently testable with a fake client. A single-category name
+// (the common case) resolves byte-identically to the pre-patch behavior.
+// Throws IntegrationError if NO part resolves, or if only SOME parts resolve
+// (never silently drops part of a stated multi-category theme).
+async function resolveMultiCategoryProducts(bc, name, { treeId = null, allowList = null, count = 24, brandCode = '?', logger = null } = {}) {
+  const log = (msg) => logger && logger.info && logger.info(msg);
+  const parts = splitCategoryNames(name);
+  const resolvedCats = [];
+  const unresolvedParts = [];
+  for (const part of parts) {
+    // eslint-disable-next-line no-await-in-loop
+    const c = await resolveCategoryByName(bc, part, { treeId, allowList });
+    if (c) resolvedCats.push(c);
+    else unresolvedParts.push(part);
+  }
+
+  const scopeNote = treeId != null
+    ? ` within ${brandCode}'s verified scope (category tree ${treeId}` +
+      (allowList && allowList.length ? ` + verified allow-list` : '') + ')'
+    : `'s BigCommerce catalog`;
+
+  if (!resolvedCats.length) {
+    throw new IntegrationError(
+      `Category "${name}" not found${scopeNote}. The calendar specifies this category; the engine will not ` +
+        `resolve outside this brand's storefront or substitute another (no cross-brand products; ` +
+        `CLAUDE.md §5.1.2/§12). Confirm the calendar category name for ${brandCode}.`,
+      { brand: brandCode, category: name, treeId }
+    );
+  }
+  if (unresolvedParts.length) {
+    // Never silently drop part of a stated multi-category theme — a themed
+    // send that's quietly missing one of its named categories is worse than
+    // stopping, so this fails loud rather than falling back to the parts
+    // that DID resolve (CLAUDE.md §5.1).
+    throw new IntegrationError(
+      `Category "${name}" is only PARTIALLY resolvable for ${brandCode}${scopeNote}: ` +
+        `${unresolvedParts.map((u) => `"${u}"`).join(', ')} not found. Resolved: ` +
+        `${resolvedCats.map((c) => `"${c.name}"`).join(', ')}. Fix the calendar row's product_categories — ` +
+        `the engine will not silently drop part of a themed category list.`,
+      { brand: brandCode, category: name, unresolved: unresolvedParts, resolved: resolvedCats.map((c) => c.name) }
+    );
+  }
+
+  log(`Resolved calendar categor${resolvedCats.length > 1 ? 'ies' : 'y'} "${name}" → BigCommerce ` +
+    `${resolvedCats.map((c) => `"${c.name}" (id ${c.id})`).join(', ')}.`);
+
+  // Fetch + merge products across every resolved category, deduped by product
+  // id (a product listed under two named categories is not double-counted).
+  // Identical to the pre-patch single-category behavior when resolvedCats.length === 1.
+  const seenIds = new Set();
+  const products = [];
+  for (const c of resolvedCats) {
+    // eslint-disable-next-line no-await-in-loop
+    const items = await bc.getProductsByCategoryId(c.id, count);
+    for (const p of items) {
+      if (seenIds.has(p.id)) continue;
+      seenIds.add(p.id);
+      products.push(enrich(p, c.name));
+    }
+  }
+  const primary = resolvedCats[0];
+  const url = bc.buildUrl(primary.custom_url && primary.custom_url.url, `/categories/${primary.id}`);
+
+  // INVENTORY SAFETY GATE: reject products that are not currently purchasable.
+  const { accepted, rejected } = filterPurchasable(products, { brandCode });
+  const purchasable = accepted.map((a) => a.product);
+  if (rejected.length) {
+    log(`Inventory gate (${brandCode} / "${name}"): ${rejected.length} product(s) rejected — ` +
+      rejected.slice(0, 3).map((r) => `[${r.verdict.product.id}] ${r.verdict.reason}`).join('; ') +
+      (rejected.length > 3 ? ` … +${rejected.length - 3} more` : ''));
+  }
+
+  log(`Categor${resolvedCats.length > 1 ? 'ies' : 'y'} "${name}" → ${purchasable.length} purchasable product(s) (${rejected.length} rejected by inventory gate).`);
+  return {
+    category: resolvedCats.length > 1
+      ? { id: primary.id, ids: resolvedCats.map((c) => c.id), name: resolvedCats.map((c) => c.name).join(', '), url }
+      : { id: primary.id, name: primary.name, url },
+    products: purchasable,
+    _inventoryAudit: { accepted: purchasable.length, rejected: rejected.length, rejectedDetails: rejected.map((r) => r.verdict) },
+  };
+}
+
+// Progressive, VERIFIED-ONLY candidate discovery for a themed campaign whose
+// exact resolved category currently has too few (or zero) live products
+// (RDD-2026-39 validation: "Acrylic Displays" resolved correctly but the
+// category had 0 products). Never invents data and never widens into unrelated
+// products — it only enlarges the CANDIDATE POOL with real, read-only catalog
+// data; platform/ai/theme-relevance.js's filterThemeRelevant remains the sole
+// authority on which candidates actually qualify (a broader hit is NOT
+// auto-accepted).
+//
+// Fixed discovery order (never reordered, never skipped):
+//   1. the exact resolved category (themePkg.topicCategory)
+//   2. that category's CHILD categories (BigCommerce parent_id)
+//   3. other categories whose NAME matches a meaningful theme search term
+//   4. a catalog-wide keyword search using the theme's own search terms
+//
+// Standalone + `bc`-injected (same pattern as resolveCategoryByName) so it is
+// independently testable with a fake client — no network, no closure state.
+// `bc` must implement: resolveCategory/getTreeCategories/getCategoryById (via
+// resolveCategoryByName), getAllCategories, getProductsByCategoryId, buildUrl,
+// and optionally searchProducts (tier 4 is skipped when absent).
+async function discoverThemeCandidates(bc, { themePkg, count = 24, treeId = null, allowList = null, logger = null } = {}) {
+  const name = (themePkg && themePkg.topicCategory) || '';
+  if (!name) throw new IntegrationError('discoverThemeCandidates requires themePkg.topicCategory.');
+  const log = (msg) => logger && logger.info && logger.info(msg);
+
+  const cat = await resolveCategoryByName(bc, name, { treeId, allowList });
+  if (!cat) {
+    throw new IntegrationError(
+      `Category "${name}" not found. The calendar specifies this category; the engine will not substitute another (CLAUDE.md §5.1.2/§12).`,
+      { category: name }
+    );
+  }
+  const catId = Number(catIdOf(cat));
+
+  const seen = new Set();
+  const tiers = { exact: 0, children: 0, nameMatch: 0, search: 0 };
+  const pool = [];
+  const push = (items, label, tierKey) => {
+    for (const p of items || []) {
+      if (seen.has(p.id)) continue;
+      seen.add(p.id);
+      pool.push(enrich(p, label));
+      tiers[tierKey] += 1;
+    }
+  };
+
+  // Tier 1: exact resolved category.
+  push(await bc.getProductsByCategoryId(catId, count), cat.name, 'exact');
+  log(`  tier 1 (exact category "${cat.name}"): ${tiers.exact} product(s).`);
+
+  const allCats = (await bc.getAllCategories()) || [];
+  const excludeIds = new Set([catId]);
+
+  // Tier 2: that category's CHILD categories.
+  const children = allCats.filter((c) => c.parent_id != null && Number(c.parent_id) === catId);
+  for (const child of children) {
+    const childId = Number(catIdOf(child));
+    excludeIds.add(childId);
+    // eslint-disable-next-line no-await-in-loop
+    push(await bc.getProductsByCategoryId(childId, count), child.name, 'children');
+  }
+  if (children.length) log(`  tier 2 (${children.length} child categor${children.length === 1 ? 'y' : 'ies'} of "${cat.name}"): ${tiers.children} product(s).`);
+
+  // Tier 3: other categories whose NAME shares a meaningful WORD with a theme
+  // search term (e.g. "Acrylic Sign Holders" via "acrylic") — tokenized, not a
+  // whole-phrase match, so a genuinely related sibling category is findable.
+  // This is intentionally permissive: filterThemeRelevant (re-applied downstream
+  // on the merged pool) still requires the PRODUCT's own category/name to match
+  // the theme's accepted family, so a loosely-matched category here can never
+  // smuggle an unrelated product past the gate.
+  const termWords = new Set();
+  for (const term of themePkg.searchTerms || []) {
+    for (const w of normalizeCategoryName(term).split(' ')) {
+      if (w.length >= 4) termWords.add(w);
+    }
+  }
+  const nameMatches = termWords.size
+    ? allCats.filter((c) => {
+        const id = Number(catIdOf(c));
+        if (excludeIds.has(id)) return false;
+        const n = normalizeCategoryName(c.name);
+        return n && [...termWords].some((w) => n.includes(w));
+      })
+    : [];
+  for (const nc of nameMatches) {
+    const ncId = Number(catIdOf(nc));
+    excludeIds.add(ncId);
+    // eslint-disable-next-line no-await-in-loop
+    push(await bc.getProductsByCategoryId(ncId, count), nc.name, 'nameMatch');
+  }
+  if (nameMatches.length) log(`  tier 3 (${nameMatches.length} name-matched categor${nameMatches.length === 1 ? 'y' : 'ies'}): ${tiers.nameMatch} product(s).`);
+
+  // Tier 4: catalog-wide keyword search using the theme's own search terms.
+  if (typeof bc.searchProducts === 'function') {
+    for (const term of themePkg.searchTerms || []) {
+      if (term.length < 4) continue;
+      // eslint-disable-next-line no-await-in-loop
+      push(await bc.searchProducts(term, count), '', 'search');
+    }
+    if (tiers.search) log(`  tier 4 (catalog keyword search): ${tiers.search} product(s).`);
+  }
+
+  const url = typeof bc.buildUrl === 'function' ? bc.buildUrl(cat.custom_url && cat.custom_url.url, `/categories/${catId}`) : null;
+
+  // INVENTORY SAFETY GATE: reject non-purchasable products from the discovery pool.
+  const invOpts = {};
+  const { accepted: invAccepted, rejected: invRejected } = filterPurchasable(pool, invOpts);
+  const purchasablePool = invAccepted.map((a) => a.product);
+  if (invRejected.length) {
+    log(`  inventory gate (theme discovery): ${invRejected.length} product(s) rejected from candidate pool.`);
+  }
+
+  // Child categories are a VERIFIED BigCommerce parent→child relationship (the
+  // catalog's own hierarchy), unlike tier 3's loose word-token name match — so
+  // the caller may safely treat them as additional accepted theme families.
+  // Tier 3/4 names are NOT included here; those candidates stay subject to the
+  // ORIGINAL strict family/name/description check.
+  const verifiedChildFamilies = children.map((c) => c.name).filter(Boolean);
+  return { category: { id: catId, name: cat.name, url }, tiers, verifiedChildFamilies, products: purchasablePool, _inventoryAudit: { accepted: purchasablePool.length, rejected: invRejected.length } };
+}
+
 // --- source: live ----------------------------------------------------------
 async function fetchLive(brand, logger) {
   const bc = brand._client; // injected below
@@ -160,8 +383,15 @@ async function fetchLive(brand, logger) {
   const recent = await bc.getRecentlyUpdatedProducts(12);
   push(recent, 'Latest Additions');
 
-  logger.info(`Live catalog pool assembled: ${pool.length} unique product(s).`);
-  return pool;
+  // INVENTORY SAFETY GATE: reject non-purchasable products.
+  const { accepted, rejected } = filterPurchasable(pool, { brandCode: brand.code });
+  const purchasable = accepted.map((a) => a.product);
+  if (rejected.length) {
+    logger.info(`Inventory gate: ${rejected.length}/${pool.length} product(s) rejected from live catalog pool.`);
+  }
+
+  logger.info(`Live catalog pool assembled: ${purchasable.length} purchasable product(s) (${rejected.length} rejected by inventory gate).`);
+  return purchasable;
 }
 
 // --- the adapter ------------------------------------------------------------
@@ -302,7 +532,8 @@ function createProductSource({ repoRoot, brand, logger, cacheDir }) {
       throw new IntegrationError(`No snapshot for ${brand.code} category "${name}". Run once with --source live first.`, { brand: brand.code });
     }
 
-    // live (default) — GET-only; resolve the category, then its products
+    // live (default) — GET-only; resolve the category (or categories — see
+    // resolveMultiCategoryProducts), then its products
     logger.info(`Retrieving live products for ${brand.code} in category "${name}" from BigCommerce (read-only)…`);
     let result;
     try {
@@ -311,25 +542,7 @@ function createProductSource({ repoRoot, brand, logger, cacheDir }) {
       const bcfg = brand.bigcommerce || {};
       const treeId = bcfg.categoryTreeId != null ? bcfg.categoryTreeId : null;
       const allowList = Array.isArray(bcfg.featuredCategoryIds) ? bcfg.featuredCategoryIds : null;
-      const cat = await resolveCategoryByName(bc, name, { treeId, allowList });
-      if (!cat) {
-        const scopeNote = treeId != null
-          ? ` within ${brand.code}'s verified scope (category tree ${treeId}` +
-            (allowList && allowList.length ? ` + verified allow-list` : '') + ')'
-          : `'s BigCommerce catalog`;
-        throw new IntegrationError(
-          `Category "${name}" not found${scopeNote}. The calendar specifies this category; the engine will not ` +
-            `resolve outside this brand's storefront or substitute another (no cross-brand products; ` +
-            `CLAUDE.md §5.1.2/§12). Confirm the calendar category name for ${brand.code}.`,
-          { brand: brand.code, category: name, treeId }
-        );
-      }
-      logger.info(`Resolved calendar category "${name}" → BigCommerce "${cat.name}" (id ${cat.id}, ${(cat.custom_url && cat.custom_url.url) || 'no-slug'}).`);
-      const items = await bc.getProductsByCategoryId(cat.id, count);
-      const products = items.map((p) => enrich(p, cat.name));
-      const url = bc.buildUrl(cat.custom_url && cat.custom_url.url, `/categories/${cat.id}`);
-      logger.info(`Category "${cat.name}" (id ${cat.id}) → ${products.length} product(s).`);
-      result = { category: { id: cat.id, name: cat.name, url }, products };
+      result = await resolveMultiCategoryProducts(bc, name, { treeId, allowList, count, brandCode: brand.code, logger });
     } catch (err) {
       if (err instanceof IntegrationError) throw err;
       throw new IntegrationError(
@@ -347,6 +560,45 @@ function createProductSource({ repoRoot, brand, logger, cacheDir }) {
       logger.warn(`Could not write category snapshot: ${e.message}`);
     }
     return result;
+  }
+
+  // Progressive, VERIFIED-ONLY candidate discovery for a themed campaign whose
+  // exact resolved category currently has too few (or zero) live products
+  // (RDD-2026-39 validation: "Acrylic Displays" resolved correctly but the
+  // category had 0 products). Thin wrapper over discoverThemeCandidates (below) —
+  // loads the real client, then delegates all tier logic to the standalone,
+  // independently-testable function.
+  async function getThemeCandidateProducts({ themePkg, count = 24, source = 'live', fixturePath = null } = {}) {
+    const name = (themePkg && themePkg.topicCategory) || '';
+    if (!name) throw new IntegrationError('getThemeCandidateProducts requires themePkg.topicCategory.');
+
+    // Fixture/snapshot: deterministic, tier-1 only — these are pre-shaped offline
+    // pools (tests/dev), not a live catalog to broaden search across.
+    if (source.startsWith('fixture') || source === 'snapshot') {
+      const tier1 = await getCategoryProducts({ categoryName: name, count, source, fixturePath });
+      return { category: tier1.category, tiers: { exact: tier1.products.length, children: 0, nameMatch: 0, search: 0 }, verifiedChildFamilies: [], products: tier1.products };
+    }
+
+    logger.info(`Theme product discovery for "${name}" (verified related-category + catalog-search fallback allowed)…`);
+    try {
+      brand._client = loadClient();
+      const bcfg = brand.bigcommerce || {};
+      const treeId = bcfg.categoryTreeId != null ? bcfg.categoryTreeId : null;
+      const allowList = Array.isArray(bcfg.featuredCategoryIds) ? bcfg.featuredCategoryIds : null;
+      const result = await discoverThemeCandidates(brand._client, { themePkg, count, treeId, allowList, logger });
+      logger.info(
+        `Theme discovery pool for "${name}": ${result.products.length} candidate(s) total ` +
+          `(exact ${result.tiers.exact}, children ${result.tiers.children}, name-match ${result.tiers.nameMatch}, search ${result.tiers.search}).`
+      );
+      return result;
+    } catch (err) {
+      if (err instanceof IntegrationError) throw err;
+      throw new IntegrationError(
+        `Live theme discovery failed for ${brand.code} / "${name}": ${err.message}. ` +
+          `The engine reports this blocker rather than fabricate products (CLAUDE.md §5.1).`,
+        { brand: brand.code, cause: err.message }
+      );
+    }
   }
 
   // Retrieve specific products by BigCommerce id (for a content-override's curated
@@ -389,7 +641,10 @@ function createProductSource({ repoRoot, brand, logger, cacheDir }) {
     return out;
   }
 
-  return { getCandidateProducts, getCategoryProducts, getProductsByIds, snapshotPath };
+  return { getCandidateProducts, getCategoryProducts, getThemeCandidateProducts, getProductsByIds, snapshotPath };
 }
 
-module.exports = { createProductSource, formatAud, enrich, resolveCategoryByName };
+module.exports = {
+  createProductSource, formatAud, enrich, resolveCategoryByName, discoverThemeCandidates,
+  splitCategoryNames, resolveMultiCategoryProducts,
+};

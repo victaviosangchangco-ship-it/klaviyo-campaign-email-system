@@ -28,7 +28,7 @@ function mockClient() {
 }
 
 const CAMPAIGN_ROW = {
-  campaign_id: 'RDD-2026-W33', brand: 'RDD', campaign_type: 'weekly', campaign_name: 'Workspace Weekly',
+  campaign_id: 'RDD-2026-W33', brand: 'RDD', topic_category_slug: 'weekly', campaign_name: 'Workspace Weekly',
   topic_category: 'Workspace', subject_line: 'Subject 33', preview_text: 'Preview 33',
   send_date: '2026-08-13', send_time: '10:00', promotion: null, segment: null, list: 'Email List',
 };

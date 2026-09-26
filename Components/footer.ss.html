@@ -1,0 +1,47 @@
+<!--
+  Component: footer.ss (SS Weekly visual-system override)
+  Purpose: SS's own approved footer — light band, legal links, a Facebook/Instagram
+           icon row (SS's own verified social profiles — CLAUDE.md §5, never
+           invented), and business name/address. Loaded INSTEAD of the generic
+           footer.html by renderer.js's brandFile() when brand.code === "SS". The
+           generic footer.html's pruneFooter() strips ANY social block (its own
+           doc comment: social URLs were "To be confirmed" for the brand it was
+           modeled on) — SS's ARE confirmed (03-Brands MD Files/SS.md, BRD.md,
+           already live in the approved SS Product Launch draft), so SS gets its
+           own file rather than a shared strip-everything default.
+  Required inputs: [[COMPANY_NAME]], [[COMPANY_ADDRESS]], [[FACEBOOK_URL]],
+                   [[FB_ICON_URL]], [[INSTAGRAM_URL]], [[IG_ICON_URL]]
+  Optional inputs: [[PRIVACY_URL]]
+  Fallback behavior: the unsubscribe link and [[COMPANY_ADDRESS]] are mandatory
+                     (legal, CS-15). Klaviyo Liquid ({% unsubscribe_link %}) must
+                     remain intact in the output.
+  Dependencies: none.
+-->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="[[FOOTER_BG]]" style="background:[[FOOTER_BG]];">
+  <tr>
+    <td align="center" style="padding:26px 30px 8px 30px;" bgcolor="[[FOOTER_BG]]">
+      <p style="margin:0 0 10px 0; font-family:[[FONT_STACK]]; font-size:12px; line-height:1.6;">
+        <a href="{% unsubscribe_link %}" style="color:[[LINK_COLOR]]; text-decoration:underline;">Unsubscribe</a>
+        &nbsp;&middot;&nbsp;
+        <a href="[[PRIVACY_URL]]" target="_blank" style="color:[[LINK_COLOR]]; text-decoration:underline;">Privacy Policy</a>
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" style="padding:4px 30px 14px 30px;" bgcolor="[[FOOTER_BG]]">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;">
+        <tr>
+          <td style="padding:0 8px;"><a href="[[FACEBOOK_URL]]" target="_blank" style="text-decoration:none;"><img src="[[FB_ICON_URL]]" alt="Safety Sector on Facebook" width="28" height="28" border="0" style="display:block; width:28px; height:28px; border:0;" /></a></td>
+          <td style="padding:0 8px;"><a href="[[INSTAGRAM_URL]]" target="_blank" style="text-decoration:none;"><img src="[[IG_ICON_URL]]" alt="Safety Sector on Instagram" width="28" height="28" border="0" style="display:block; width:28px; height:28px; border:0;" /></a></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" style="padding:0 30px 30px 30px;" bgcolor="[[FOOTER_BG]]">
+      <p class="unstyle-auto-detected-links" style="margin:0; font-family:[[FONT_STACK]]; font-size:11px; line-height:1.6; color:[[FOOTER_TEXT_COLOR]];">
+        [[COMPANY_NAME]]&nbsp;&middot;&nbsp;[[COMPANY_ADDRESS]]
+      </p>
+    </td>
+  </tr>
+</table>

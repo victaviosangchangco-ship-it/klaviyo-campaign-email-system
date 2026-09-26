@@ -1,7 +1,7 @@
 # Creative Workflow Standard
 
 > **The first document to read before beginning any new email design.**
-> Applies to the **Klaviyo Campaign Email System** and **Klaviyo Flow and Claude Code**, every brand
+> Applies to the **Klaviyo Campaign Email System** and **Klaviyo Flows Automation System**, every brand
 > (RDD · SS · SC · Stack · future), every campaign type and every flow type.
 >
 > This standard governs the **order in which work happens**. It changes no engineering rule, removes no
@@ -455,7 +455,7 @@ applies to locked components (`Shared/Engineering/README.md` §5.8).
 
 ## 9. Workflow Examples — Flow templates only
 
-> **This section is deliberately restricted to the Klaviyo Flow and Claude Code project.**
+> **This section is deliberately restricted to the Klaviyo Flows Automation System project.**
 >
 > The Klaviyo Campaign Email System has a different purpose — one-off promotional sends, with a weekly
 > selection engine, a campaign-type decision and a continuous-improvement loop against the last approved

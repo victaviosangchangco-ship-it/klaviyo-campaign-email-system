@@ -14,7 +14,7 @@
 | **Status** | **ACTIVE** |
 | **Version** | **1.0.0** |
 | **Owner** | Project Owner |
-| **Applies to** | Klaviyo Campaign Email System · Klaviyo Flow and Claude Code |
+| **Applies to** | Klaviyo Campaign Email System · Klaviyo Flows Automation System |
 | **Mirroring** | Byte-identical copies in both projects. Both canonical. Any change applies to both in the same edit. |
 | **Scope** | **Visual decision-making only.** Selects a coherent visual personality. Governs no markup and no engineering rule. |
 

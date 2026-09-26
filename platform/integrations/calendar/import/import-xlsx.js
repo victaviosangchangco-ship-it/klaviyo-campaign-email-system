@@ -28,6 +28,13 @@ const mapping = require('./xlsx-mapping');
 
 const DEFAULT_INPUT = path.join(REPO_ROOT, 'Calendar Campaign', 'RDD Campaign Calendar.xlsx');
 const DEFAULT_OUTPUT = path.join(REPO_ROOT, 'config', 'campaign-calendar.generated.json');
+const CADENCE_DEFAULTS_PATH = path.join(REPO_ROOT, 'config', 'cadence-defaults.json');
+
+function loadCadenceDefaults() {
+  if (!fs.existsSync(CADENCE_DEFAULTS_PATH)) return {};
+  const raw = JSON.parse(fs.readFileSync(CADENCE_DEFAULTS_PATH, 'utf8'));
+  return raw.defaults || {};
+}
 
 // Read the worksheet as an array-of-arrays with RAW values (date cells come back
 // as Excel serial numbers, which xlsx-mapping.toIsoDate converts timezone-safely).
@@ -105,6 +112,15 @@ function importCalendar(opts = {}) {
       continue;
     }
     campaigns.push(mapping.mapRow(get));
+  }
+
+  // Backfill cadence from cadence-defaults.json for plain-numeric-ID campaigns
+  // where cadenceFromId() returned null (no structural type token in the ID).
+  const cadenceDefaults = loadCadenceDefaults();
+  for (const c of campaigns) {
+    if (!c.cadence && c.campaign_id && cadenceDefaults[c.campaign_id]) {
+      c.cadence = cadenceDefaults[c.campaign_id];
+    }
   }
 
   // Deterministic order: by send_date then campaign_id (stable across re-imports).

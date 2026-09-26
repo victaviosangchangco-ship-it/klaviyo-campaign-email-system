@@ -13,14 +13,14 @@ const { createCalendarService, normalizeCampaign, FIELDS } = require('../integra
 const { JsonCalendarProvider } = require('../integrations/calendar/providers/json-provider');
 const { LarkCalendarProvider } = require('../integrations/calendar/providers/lark-provider');
 const { CsvCalendarProvider } = require('../integrations/calendar/providers/csv-provider');
-const { PlatformError, ConfigError } = require('../common/errors');
+const { PlatformError, ConfigError, ApprovalRequired } = require('../common/errors');
 
 // Sample rows (in-memory) used across service tests.
 const SAMPLE = {
   campaigns: [
-    { campaign_id: 'RDD-2026-W33', brand: 'RDD', campaign_type: 'weekly', campaign_name: 'Workspace', topic_category: 'Workspace', subject_line: 'S33', preview_text: 'P33', send_date: '2026-08-13', send_time: '10:00', promotion: null, segment: null, list: 'Email List' },
-    { campaign_id: 'RDD-2026-W34', brand: 'RDD', campaign_type: 'weekly', campaign_name: 'Acrylic', topic_category: 'Acrylic', subject_line: 'S34', preview_text: 'P34', send_date: '2026-08-20', send_time: '10:00' },
-    { campaign_id: 'SS-2026-W33', brand: 'SS', campaign_type: 'weekly', campaign_name: 'Safety', topic_category: 'Safety', subject_line: 'S', preview_text: 'P', send_date: '2026-08-13', send_time: '11:00', list: 'Safety Sector Customer List' },
+    { campaign_id: 'RDD-2026-W33', brand: 'RDD', cadence: 'weekly', topic_category_slug: 'weekly', campaign_name: 'Workspace', topic_category: 'Workspace', subject_line: 'S33', preview_text: 'P33', send_date: '2026-08-13', send_time: '10:00', promotion: null, segment: null, list: 'Email List' },
+    { campaign_id: 'RDD-2026-W34', brand: 'RDD', cadence: 'weekly', topic_category_slug: 'weekly', campaign_name: 'Acrylic', topic_category: 'Acrylic', subject_line: 'S34', preview_text: 'P34', send_date: '2026-08-20', send_time: '10:00' },
+    { campaign_id: 'SS-2026-W33', brand: 'SS', cadence: 'weekly', topic_category_slug: 'weekly', campaign_name: 'Safety', topic_category: 'Safety', subject_line: 'S', preview_text: 'P', send_date: '2026-08-13', send_time: '11:00', list: 'Safety Sector Customer List' },
   ],
 };
 
@@ -30,11 +30,12 @@ function svcFromData(data = SAMPLE) {
 
 // --- normalization ---------------------------------------------------------
 
-test('normalizeCampaign returns exactly the 12 typed fields, null-filled', () => {
+test('normalizeCampaign returns exactly the 13 typed fields, null-filled', () => {
   const c = normalizeCampaign({ campaign_id: 'X', brand: 'RDD' });
-  assert.strictEqual(Object.keys(c).length, 12);
+  assert.strictEqual(Object.keys(c).length, 13);
   assert.deepStrictEqual(Object.keys(c).sort(), [...FIELDS].sort());
   assert.strictEqual(c.subject_line, null);
+  assert.strictEqual(c.cadence, null);
   assert.strictEqual(c.campaign_id, 'X');
 });
 
@@ -98,6 +99,21 @@ test('LarkCalendarProvider fails with ConfigError when credentials are not confi
   await assert.rejects(() => provider.listCampaigns(), ConfigError);
 });
 
+test('normalizeCampaign preserves cadence through the pipeline', () => {
+  const c = normalizeCampaign({ campaign_id: 'SS-2026-LAUNCH-x', brand: 'SS', cadence: 'product-launch', topic_category_slug: 'product-launch' });
+  assert.strictEqual(c.cadence, 'product-launch');
+  assert.strictEqual(c.topic_category_slug, 'product-launch');
+  // cadence and topic_category_slug are independent fields — a weekly cadence can have any topic_category_slug
+  const c2 = normalizeCampaign({ campaign_id: 'RDD-2026-38', brand: 'RDD', cadence: 'weekly', topic_category_slug: 'promotional-sale' });
+  assert.strictEqual(c2.cadence, 'weekly');
+  assert.strictEqual(c2.topic_category_slug, 'promotional-sale');
+});
+
+test('normalizeCampaign sets cadence to null when absent', () => {
+  const c = normalizeCampaign({ campaign_id: 'X' });
+  assert.strictEqual(c.cadence, null);
+});
+
 // --- service: listCampaigns ------------------------------------------------
 
 test('listCampaigns returns all, or filtered by brand/type', async () => {
@@ -129,6 +145,44 @@ test('getCampaignByWeek matches on the ISO week of send_date (+brand filter)', a
   assert.strictEqual(await svc.getCampaignByWeek(''), null);
 });
 
+test('getCampaignByWeek: zero matches → null', async () => {
+  const svc = svcFromData();
+  assert.strictEqual(await svc.getCampaignByWeek('2026-W50'), null);
+});
+
+test('getCampaignByWeek: one match → exact campaign', async () => {
+  const svc = svcFromData();
+  const c = await svc.getCampaignByWeek('2026-W34');
+  assert.strictEqual(c.campaign_id, 'RDD-2026-W34');
+});
+
+test('getCampaignByWeek: multiple same-week matches → ApprovalRequired listing all IDs', async () => {
+  // Two campaigns in the same week, same brand — must throw, not silent-pick.
+  const multi = {
+    campaigns: [
+      { campaign_id: 'RDD-2026-40', brand: 'RDD', cadence: 'weekly', topic_category_slug: 'promo', send_date: '2026-09-28' },
+      { campaign_id: 'RDD-2026-41', brand: 'RDD', cadence: 'weekly', topic_category_slug: 'awareness', send_date: '2026-10-01' },
+    ],
+  };
+  const svc = svcFromData(multi);
+  await assert.rejects(
+    () => svc.getCampaignByWeek('2026-W40', { brand: 'RDD' }),
+    (err) => err instanceof ApprovalRequired && /RDD-2026-40/.test(err.message) && /RDD-2026-41/.test(err.message)
+  );
+});
+
+test('getCampaignByWeek: brand filter narrows to one match (service-layer safety)', async () => {
+  // Two brands in the same week → each brand filter yields exactly one.
+  const svc = svcFromData(); // SAMPLE has RDD-W33 + SS-W33 in W33
+  assert.strictEqual((await svc.getCampaignByWeek('2026-W33', { brand: 'RDD' })).campaign_id, 'RDD-2026-W33');
+  assert.strictEqual((await svc.getCampaignByWeek('2026-W33', { brand: 'SS' })).campaign_id, 'SS-2026-W33');
+  // Without brand filter, W33 has 2 matches → must throw
+  await assert.rejects(
+    () => svc.getCampaignByWeek('2026-W33'),
+    ApprovalRequired
+  );
+});
+
 // --- service: getNextCampaign ----------------------------------------------
 
 test('getNextCampaign returns the soonest upcoming on/after now', async () => {
@@ -156,5 +210,5 @@ test('default JsonCalendarProvider reads the real config/content-calendar.json',
   const svc = createCalendarService({ provider: new JsonCalendarProvider() });
   const rdd = await svc.listCampaigns({ brand: 'RDD' });
   assert.ok(rdd.length >= 1, 'expected at least one RDD sample campaign in the config');
-  for (const c of rdd) assert.strictEqual(Object.keys(c).length, 12);
+  for (const c of rdd) assert.strictEqual(Object.keys(c).length, 13);
 });

@@ -14,7 +14,7 @@ const { runLiveCampaign } = require('../workflow/live-orchestrator');
 const { QaBlocker, ApprovalRequired } = require('../common/errors');
 
 const CAMPAIGN = {
-  campaign_id: 'RDD-2026-W33', brand: 'RDD', campaign_type: 'weekly', campaign_name: 'Workspace Weekly',
+  campaign_id: 'RDD-2026-W33', brand: 'RDD', topic_category_slug: 'weekly', campaign_name: 'Workspace Weekly',
   topic_category: 'Workspace', subject_line: 'Subj', preview_text: 'Prev',
   send_date: '2026-08-13', send_time: '10:00', promotion: null, segment: null, list: 'Email List',
 };

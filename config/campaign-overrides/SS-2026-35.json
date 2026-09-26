@@ -1,0 +1,75 @@
+{
+  "_doc": "APPROVED CONTENT OVERRIDE for SS-2026-35 (SS Weekly visual-system recovery, 2026-09-20; expanded to 18 products 2026-09-20). The calendar-driven generic path could not express: (1) an exact required product order (300KG Panel Cart Trolley - id 858 - first, the product featured in the hero banner), (2) a THEME-LEVEL (not exact-category) product selection reaching exactly 18 relevant products, (3) per-product factual descriptions instead of the repeated category label, (4) a hero that carries the full campaign message so no separate text headline/intro/CTA duplicates it below the hero image. The Campaign Calendar (Lark) remains the planning source and is untouched by this file. All 18 products are fetched live and verified by id at generation time (never fabricated).",
+  "_product_discovery_note": "The verified BigCommerce 'Platform Trolley' category (id 133) has exactly 9 real, visible, in-stock products (694, 695, 696, 785, 786, 787, 788, 857, 858) - Tier 1, all included. No hand trucks/sack trucks/drum trolleys/dollies exist anywhere in this catalog (exhaustive keyword search). A broader keyword search (dolly/bin/stock/load/warehouse/castor/pallet/goods) surfaced Tier 2: 9 verified Loading Ramp products (569,574,583,638,640,641,643,707,716) that genuinely support 'Load. Move. Deliver.' via the loading/unloading vector explicitly in scope - vehicles/trailers/trucks loaded and unloaded at a site. Each product's own custom_url resolves to safetysector.com.au (verified per-product, not inferred from the shared-store category, which BigCommerce category ids these ramps sit under - 120/121/122/123/124/125/128/129/145/146/148 - are NOT in SS.config.json's featuredCategoryIds and category 120 is documented there as MIXED with SC; discovery here was by keyword search + per-product URL verification, never by pulling 'the whole category', so no SC contamination). 9+9=18 exactly, no padding, no duplicates, no RDD/SC-only products.",
+  "campaign_id": "SS-2026-35",
+  "brand": "SS",
+  "subject": "Load. Move. Deliver. A Dependable Trolley for Every Task",
+  "preview_text": "Explore 18 platform trolleys and loading ramps built for safer, faster load transport around your site.",
+  "eyebrow": "",
+  "hero_heading": "Load. Move. Deliver.",
+  "hero_body": "Platform trolleys and loading ramps for every load-handling task.",
+  "intro_paras": [],
+  "hero_message_baked": true,
+  "_hero_message_baked_note": "hero_heading/hero_body are populated so semantic QA (checkThemeCoherence) can confirm the hero supports the declared theme, but hero_message_baked:true tells renderer.js to skip rendering the text hero/intro/primary-CTA block entirely - the hero banner artwork already carries this exact headline, and repeating it below the image is the duplicate mid-page block this override removes (CLAUDE.md §9).",
+  "hero_image": {
+    "url": "https://assets-ss-wheat.vercel.app/hero-banners/ss-2026-35-hero-banner.png",
+    "alt": "Load. Move. Deliver. A dependable platform trolley for every task at Safety Sector.",
+    "height": 400,
+    "link": "https://www.safetysector.com.au/300kg-panel-cart-trolley/",
+    "campaignId": "SS-2026-35"
+  },
+  "cta_closing": {
+    "label": "Shop the Full Range",
+    "url": "https://www.safetysector.com.au/platform-trolley/",
+    "headline": "Shop the Full Range",
+    "subtext": "Platform trolleys and loading ramps built for safe, efficient load transport around your warehouse or site."
+  },
+  "groups": [
+    {
+      "title": "Platform Trolleys & Loading Ramps",
+      "subtitle": "Everything you need to load, move and deliver stock safely around your site.",
+      "badge": "In Stock",
+      "product_ids": [858, 694, 695, 696, 785, 786, 787, 788, 857, 640, 641, 569, 574, 643, 638, 707, 716, 583]
+    }
+  ],
+  "_relevance_audit": [
+    { "position": 1, "id": 858, "name": "300KG Panel Cart Trolley", "url": "https://www.safetysector.com.au/300kg-panel-cart-trolley/", "tier": 1, "reason": "Hero product (locked #1); verified BigCommerce category 'Platform Trolley' (id 133)." },
+    { "position": 2, "id": 694, "name": "Platform Trolley 150kg High Handle & Ultra Silent Wheels", "url": "https://www.safetysector.com.au/platform-trolley-150kg-high-handle-ultra-silent-wheels/", "tier": 1, "reason": "Verified BigCommerce category 'Platform Trolley' (id 133)." },
+    { "position": 3, "id": 695, "name": "Platform Trolley 300kg High Handle & Ultra Silent Wheels", "url": "https://www.safetysector.com.au/platform-trolley-300kg-high-handle-ultra-silent-wheels/", "tier": 1, "reason": "Verified BigCommerce category 'Platform Trolley' (id 133)." },
+    { "position": 4, "id": 696, "name": "Platform Trolley 150kg High Handle & Ultra Silent Wheels with Brake", "url": "https://www.safetysector.com.au/platform-trolley-150kg-high-handle-ultra-silent-wheels-with-brake/", "tier": 1, "reason": "Verified BigCommerce category 'Platform Trolley' (id 133)." },
+    { "position": 5, "id": 785, "name": "Industrial Steel Platform Trolley- 900x600mm", "url": "https://www.safetysector.com.au/industrial-steel-platform-trolley-900x600mm/", "tier": 1, "reason": "Verified BigCommerce category 'Platform Trolley' (id 133)." },
+    { "position": 6, "id": 786, "name": "Heavy Duty Warehouse Platform Cart- 1200x800", "url": "https://www.safetysector.com.au/heavy-duty-warehouse-platform-cart-1200x800/", "tier": 1, "reason": "Verified BigCommerce category 'Platform Trolley' (id 133)." },
+    { "position": 7, "id": 787, "name": "Heavy Duty Warehouse Cage Trolley- Dual Handle with Mesh Sides", "url": "https://www.safetysector.com.au/heavy-duty-warehouse-cage-trolley-dual-handle-with-mesh-sides/", "tier": 1, "reason": "Verified BigCommerce category 'Platform Trolley' (id 133)." },
+    { "position": 8, "id": 788, "name": "Double Layer Utility Trolley- Silent Castors & Dual Handles", "url": "https://www.safetysector.com.au/double-layer-utility-trolley-silent-castors-dual-handles/", "tier": 1, "reason": "Verified BigCommerce category 'Platform Trolley' (id 133)." },
+    { "position": 9, "id": 857, "name": "600KG Plastic Platform Wire Mesh Trolley", "url": "https://www.safetysector.com.au/600kg-plastic-platform-wire-mesh-trolley/", "tier": 1, "reason": "Verified BigCommerce category 'Platform Trolley' (id 133)." },
+    { "position": 10, "id": 640, "name": "Removalist Loading Ramp 2.15m x 1.05m Foldable- Heavy Duty", "url": "https://www.safetysector.com.au/removalist-loading-ramp-2-15m-x-1-05m-foldable-heavy-duty/", "tier": 2, "reason": "Loading/unloading equipment for moving stock onto vehicles - directly supports 'Load. Move. Deliver.'; URL verified on safetysector.com.au." },
+    { "position": 11, "id": 641, "name": "Truck Loading Ramp 1.8m x 0.77m- 600kg", "url": "https://www.safetysector.com.au/truck-loading-ramp-1-8m-x-0-77m-600kg/", "tier": 2, "reason": "Truck loading/unloading ramp - directly supports load transport; URL verified on safetysector.com.au." },
+    { "position": 12, "id": 569, "name": "Aluminium Loading Ramp Multi Fold 7ft", "url": "https://www.safetysector.com.au/aluminium-loading-ramp-multi-fold-7ft/", "tier": 2, "reason": "Portable loading ramp for moving loaded equipment/stock; URL verified on safetysector.com.au." },
+    { "position": 13, "id": 574, "name": "3000KG Loading Ramps Heavy Duty 2.5M- Pair", "url": "https://www.safetysector.com.au/3000kg-loading-ramps-heavy-duty-2.5m-pair/", "tier": 2, "reason": "Heavy-duty loading ramp pair for warehouse/vehicle load transfer; URL verified on safetysector.com.au." },
+    { "position": 14, "id": 643, "name": "1800KG Aluminium Loading Ramp Heavy Duty 3.2M- Pair", "url": "https://www.safetysector.com.au/1800kg-aluminium-loading-ramp-heavy-duty-3.2m-pair/", "tier": 2, "reason": "Heavy-duty loading ramp pair for warehouse/vehicle load transfer; URL verified on safetysector.com.au." },
+    { "position": 15, "id": 638, "name": "Aluminium ATV Loading Ramp- Mesh Design 2.13M Pair", "url": "https://www.safetysector.com.au/aluminium-atv-loading-ramp-mesh-design-2-13m-pair/", "tier": 2, "reason": "Loading ramp for moving equipment on/off a trailer; URL verified on safetysector.com.au." },
+    { "position": 16, "id": 707, "name": "Rubber Loading Ramp – 500x800x110mm", "url": "https://www.safetysector.com.au/rubber-loading-ramp-500x800x110mm/", "tier": 2, "reason": "Compact loading/access ramp for moving trolleys and loads across a level change; URL verified on safetysector.com.au." },
+    { "position": 17, "id": 716, "name": "Rubber Loading  Access Ramp 1000x500x50mm", "url": "https://www.safetysector.com.au/rubber-loading-access-ramp-1000x500x50mm/", "tier": 2, "reason": "Loading/access ramp for moving trolleys and loads across a level change; URL verified on safetysector.com.au." },
+    { "position": 18, "id": 583, "name": "Aluminium Folding Loading Ramp Motor Bike Trailer ATV 2.3M- Pair", "url": "https://www.safetysector.com.au/Aluminium-atv-loading-ramp/", "tier": 2, "reason": "Loading ramp for moving equipment on/off a trailer; URL verified on safetysector.com.au." }
+  ],
+  "descriptions": {
+    "858": "300kg capacity, 900x600mm reinforced deck, ultra-silent castors",
+    "694": "150kg capacity, 720x490mm platform, high handle & silent wheels",
+    "695": "300kg capacity, 900x600mm platform, high handle & silent wheels",
+    "696": "150kg capacity with step-on brake, high handle & silent wheels",
+    "785": "300kg capacity, steel checker-plate deck, foldable handle",
+    "786": "300kg capacity, 1200x800mm steel deck, foldable handle",
+    "787": "300kg capacity, 500mm mesh sides, dual handles",
+    "788": "300kg capacity, two-tier deck, silent castors & dual handles",
+    "857": "600kg capacity, 1200x750mm deck, foldable wire mesh sides",
+    "640": "2150x1050mm foldable ramp, anti-slip surface, marine-grade alloy",
+    "641": "600kg capacity, 1800x770mm, anti-slip marine-grade alloy",
+    "569": "270kg capacity, folds to 1070x360mm, anti-slip surface",
+    "574": "3000kg capacity pair, 2500mm length, anti-slip surface",
+    "643": "1800kg capacity pair, 3250mm length, anti-slip surface",
+    "638": "680kg capacity pair, folds to 1100x295mm, anti-slip mesh",
+    "707": "500x800x110mm, high-grip rubber surface",
+    "716": "1000x500x50mm, high-grip rubber surface",
+    "583": "900kg capacity pair, folds to 1180x280mm, anti-slip surface"
+  }
+}

@@ -32,13 +32,15 @@ function stairNosingProducts() {
     desc: 'Anti-Slip Stair Nosing',
     isVisible: true,
     availability: 'available',
+    inventoryTracking: 'product',
+    inventoryLevel: 10,
   }));
 }
 
 const CAMPAIGN = {
   campaign_id: 'RDD-2026-35',
   brand: 'RDD',
-  campaign_type: 'product-insights',
+  topic_category_slug: 'product-insights',
   campaign_type_label: 'Product insights',
   campaign_name: 'Reduce Slip Risks with Anti-Slip Stair Nosing',
   topic_category: 'Anti-Slip Stair Nosing',

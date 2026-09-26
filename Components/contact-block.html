@@ -1,0 +1,38 @@
+<!--
+  Component: contact-block
+  Purpose: "Got a question? We're here to help." — a centred phone + email help line
+           above the footer, separated by a top border. As shipped in SS-2026-W36/
+           W38. Not part of the generic weekly-skeleton.html — only a brand-specific
+           skeleton that declares its own contact-block ASSEMBLE marker ever
+           assembles this (renderer.js loads it unconditionally by path, but it is
+           inert for any skeleton that never references that marker).
+           NOTE: never quote an ASSEMBLE marker's literal HTML-comment syntax inside
+           THIS comment — an inner "close" token ends this comment early and leaks
+           everything after it into the rendered output (learned the hard way).
+  Required inputs: [[COMPANY_PHONE_TEL]], [[COMPANY_PHONE_DISPLAY]], [[COMPANY_EMAIL]]
+  Fallback behavior: this component assumes a brand with a CONFIRMED phone + email
+                     (never invent — CLAUDE.md §5). A brand without both facts should
+                     not assemble this marker at all rather than render a blank line.
+  Dependencies: shared .mp (mobile inset), .unstyle-auto-detected-links (iOS/Gmail
+                auto-link neutralisation) from base-head.
+  IMPORTANT: base-head's `.unstyle-auto-detected-links a` rule sets
+             `font-weight:inherit !important` (by design, to strip Gmail's blue
+             auto-link styling) — it also catches these two real links, since
+             the selector matches every anchor in the container, not just
+             Gmail-injected ones. A plain `font-weight:700` on the anchor loses
+             to that rule and silently renders as regular weight. Both the
+             anchor AND the inner span need `font-weight:700 !important`
+             (color needs the same treatment for the same reason).
+-->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="dm-bg" bgcolor="[[BODY_BG]]" style="background:[[BODY_BG]];">
+  <tr>
+    <td class="mp" align="center" style="padding:10px 24px 28px 24px; border-top:1px solid #eeeeee;">
+      <p class="dm-text" style="margin:20px 0 8px 0; font-family:'Arial Black',Arial,Helvetica,sans-serif; font-size:16px; font-weight:800; color:[[TEXT_COLOR]];">Got a question? We're here to help.</p>
+      <p class="unstyle-auto-detected-links" style="margin:0; font-family:[[FONT_STACK]]; font-size:14px; line-height:1.6; color:[[TEXT_COLOR]];">
+        <a href="tel:[[COMPANY_PHONE_TEL]]" style="color:[[ACCENT_COLOR]] !important; font-weight:700 !important; text-decoration:none;"><span style="color:[[ACCENT_COLOR]] !important; font-weight:700 !important;">[[COMPANY_PHONE_DISPLAY]]</span></a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="mailto:[[COMPANY_EMAIL]]" style="color:[[ACCENT_COLOR]] !important; font-weight:700 !important; text-decoration:none;"><span style="color:[[ACCENT_COLOR]] !important; font-weight:700 !important;">[[COMPANY_EMAIL]]</span></a>
+      </p>
+    </td>
+  </tr>
+</table>

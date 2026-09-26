@@ -25,20 +25,22 @@
 'use strict';
 
 const { ApprovalRequired } = require('../common/errors');
+const { isCampaignPurchasable, PASS } = require('../integrations/bigcommerce/inventory');
+const { orderProductsForGrid } = require('../render/grid-order');
 
-// Curate: keep only products that pass the verification-relevant checks
-// (CLAUDE.md §5.1 — visible, purchasable, priced, with an image and a URL).
-function curate(products, { count, min }) {
-  const kept = products.filter(
-    (p) =>
-      p &&
-      p.isVisible !== false &&
-      p.availability !== 'disabled' &&
-      p.priceLabel && // price > 0 (formatAud returned a label)
-      p.imageUrl &&
-      p.url
-  );
+// Keep only products that pass the verification-relevant checks (CLAUDE.md
+// §5.1 — visible, purchasable, priced, with an image and a URL) AND the
+// fail-closed inventory safety gate. Shared by curate() and curateWithAudit()
+// so the actual filter logic lives in exactly one place.
+function verifiedOnly(products) {
+  return products.filter((p) => {
+    if (!p) return false;
+    const v = isCampaignPurchasable(p);
+    return v.status === PASS;
+  });
+}
 
+function assertMinimum(kept, min) {
   if (kept.length < min) {
     throw new ApprovalRequired(
       `Only ${kept.length} verified product(s) available (minimum ${min}). ` +
@@ -47,11 +49,241 @@ function curate(products, { count, min }) {
       { verified: kept.length, min }
     );
   }
+}
 
-  // take up to `count`, then trim to an even number for a clean 2-col grid
-  let selected = kept.slice(0, count);
+// ---------------------------------------------------------------------------
+// SYSTEM PATCH: Curation Ranking + Category Balancing.
+//
+// Problem this fixes: the previous selection was `kept.slice(0, count)` — the
+// first N verified candidates in raw category-resolution order. For a
+// multi-category campaign that meant the FIRST one or two categories could
+// consume the entire product count before a later, equally-approved
+// supporting category was ever touched (SS-2026-36: 9 Speed Humps + 9 Safety
+// Bollards, 0 Dock Bumpers, 0 Convex Mirrors — despite all four being
+// Calendar-approved). It also had no concept of "this SKU is the standalone
+// product" vs "this SKU is a replacement end-cap for it", so an
+// accessory-only line could dominate a category over the complete unit it
+// belongs to.
+//
+// Fix, in two parts:
+//   1. classifyProduct() — ranks a product standalone/complete > functional
+//      component > accessory/replacement/end-cap. NO STRUCTURED SIGNAL EXISTS
+//      for this in the live catalog (verified directly against BigCommerce's
+//      custom_fields/type/sku for real SKUs — e.g. product 605 "Steel Speed
+//      Hump- 1m Module" carries only Material/Size/Weight custom fields, no
+//      product-type/accessory flag). Every real store category also assigns
+//      products to the PARENT id directly (subcategories like "Fold Down
+//      Bollard" exist as navigation only, never as a product's actual
+//      category), so category id is not a usable signal either. The fallback
+//      is therefore an EXPLICIT, auditable name-pattern match (never a silent
+//      heuristic) — every classification carries its exact matched pattern
+//      (or "no pattern matched") as `reason`, so it can be reviewed per product.
+//   2. selectBalanced() — groups verified candidates by category (each
+//      product's real resolved category, `.desc`), orders the groups by the
+//      Calendar's own product_categories order (campaign intent: first =
+//      primary, rest = approved supporting), ranks each group by tier then by
+//      healthier stock (a low-stock product never loses to a same-tier
+//      higher-stock one; but tier always wins over stock, so a low-stock
+//      complete/primary-theme unit is never displaced by a well-stocked
+//      accessory), then fills the requiredCount via ROUND-ROBIN across groups
+//      in that order — so no single category can exhaust the count while a
+//      later approved category still holds valid, unused candidates.
+//
+// Both are pure and independently testable (platform/tests/
+// required-product-count.test.js / curation-balance.test.js), and reused by
+// EVERY calendar-driven campaign — nothing here is SS-2026-36-specific.
+// ---------------------------------------------------------------------------
+
+const TIER_RANK = { complete: 0, component: 1, accessory: 2 };
+
+// Fallback-only, explicit, auditable name-pattern classification (see header
+// comment — no structured product-type field exists in this catalog).
+const ACCESSORY_PATTERNS = [
+  { re: /\bend\s*caps?\b/i, label: 'end cap' },
+  { re: /\bwall\s*(attachment|bracket|mount)s?\b/i, label: 'wall attachment/bracket' },
+  { re: /\bbase\s*for\b/i, label: 'replacement base' },
+  { re: /\breplacement\b/i, label: 'replacement part' },
+  { re: /\bspare\s*part\b/i, label: 'spare part' },
+];
+const COMPONENT_PATTERNS = [
+  { re: /\bend\s*sections?\b/i, label: 'end section' },
+  { re: /\bextension\s*(piece|section)?\b/i, label: 'extension piece' },
+  { re: /\bconnector\b/i, label: 'connector' },
+];
+
+function classifyProduct(product) {
+  const name = String((product && product.name) || '');
+  for (const { re, label } of ACCESSORY_PATTERNS) {
+    if (re.test(name)) {
+      return { tier: 'accessory', reason: `name matches accessory pattern "${label}" (fallback: no structured product-type field in this catalog)` };
+    }
+  }
+  for (const { re, label } of COMPONENT_PATTERNS) {
+    if (re.test(name)) {
+      return { tier: 'component', reason: `name matches component pattern "${label}"` };
+    }
+  }
+  return { tier: 'complete', reason: 'no accessory/component name pattern matched — treated as a standalone product' };
+}
+
+// Score a category's quality depth for proportional slot allocation. Only
+// complete/component candidates contribute (accessories add no depth); a
+// "strong" candidate (inv >= STRONG_INV_THRESHOLD) scores more than a weak one.
+const STRONG_INV_THRESHOLD = 2;
+const PRIMARY_DEPTH_WEIGHT = 3;
+
+function scoreCategoryDepth(rankedList) {
+  let score = 0;
+  for (const entry of rankedList) {
+    const inv = Number(entry.product.inventoryLevel) || 0;
+    const strong = inv >= STRONG_INV_THRESHOLD;
+    if (entry.tier === 'complete') score += strong ? 3 : 1;
+    else if (entry.tier === 'component') score += strong ? 1.5 : 0.5;
+  }
+  return score;
+}
+
+// Group verified candidates by category → rank each group (tier, then stock
+// desc) → allocate slots by category quality/depth rather than equal round-robin
+// → fill each category's allocated slots from its best candidates.
+// Returns { selected, audit, categoryStats } — never mutates input.
+function selectBalanced(kept, { count, categoryOrder }) {
+  const byCategory = new Map();
+  for (const p of kept) {
+    const cat = (p && p.desc) || '';
+    if (!byCategory.has(cat)) byCategory.set(cat, []);
+    byCategory.get(cat).push(p);
+  }
+
+  const orderedCats = [
+    ...categoryOrder.filter((c) => byCategory.has(c)),
+    ...[...byCategory.keys()].filter((c) => !categoryOrder.includes(c)),
+  ];
+
+  const ranked = new Map();
+  for (const cat of orderedCats) {
+    const list = byCategory.get(cat).map((product) => ({ product, ...classifyProduct(product) }));
+    list.sort((a, b) => {
+      if (TIER_RANK[a.tier] !== TIER_RANK[b.tier]) return TIER_RANK[a.tier] - TIER_RANK[b.tier];
+      return (Number(b.product.inventoryLevel) || 0) - (Number(a.product.inventoryLevel) || 0);
+    });
+    ranked.set(cat, list);
+  }
+
+  // Score each category's quality depth; primary gets a weight multiplier.
+  const scores = new Map();
+  for (let i = 0; i < orderedCats.length; i++) {
+    const cat = orderedCats[i];
+    const raw = scoreCategoryDepth(ranked.get(cat));
+    scores.set(cat, i === 0 ? raw * PRIMARY_DEPTH_WEIGHT : raw);
+  }
+
+  // Allocate: minimum 1 slot per category, remainder by depth weight.
+  const allocation = new Map();
+  let used = 0;
+  for (const cat of orderedCats) {
+    const min = Math.min(1, ranked.get(cat).length);
+    allocation.set(cat, min);
+    used += min;
+  }
+
+  let remaining = Math.max(0, count - used);
+  const totalScore = [...scores.values()].reduce((a, b) => a + b, 0);
+
+  if (remaining > 0 && totalScore > 0) {
+    const rawAllocs = orderedCats.map((cat) => {
+      const maxExtra = ranked.get(cat).length - allocation.get(cat);
+      const raw = remaining * scores.get(cat) / totalScore;
+      return { cat, raw, floor: Math.min(Math.floor(raw), maxExtra), maxExtra };
+    });
+
+    let floorSum = rawAllocs.reduce((s, a) => s + a.floor, 0);
+    let surplus = remaining - floorSum;
+
+    const byRemainder = rawAllocs
+      .filter((a) => a.floor < a.maxExtra)
+      .sort((a, b) => (b.raw - b.floor) - (a.raw - a.floor));
+
+    for (const a of byRemainder) {
+      if (surplus <= 0) break;
+      a.floor += 1;
+      surplus -= 1;
+    }
+
+    for (const a of rawAllocs) {
+      allocation.set(a.cat, allocation.get(a.cat) + a.floor);
+    }
+  }
+
+  // Fill each category's allocated slots from its ranked candidates.
+  const selected = [];
+  const audit = [];
+
+  for (let i = 0; i < orderedCats.length; i++) {
+    const cat = orderedCats[i];
+    const list = ranked.get(cat);
+    const slots = allocation.get(cat);
+    const role = i === 0 ? 'primary' : 'supporting';
+
+    for (let j = 0; j < slots && j < list.length; j++) {
+      const entry = list[j];
+      selected.push(entry.product);
+      audit.push({
+        id: entry.product.id,
+        name: entry.product.name,
+        category: cat,
+        role,
+        tier: entry.tier,
+        stock: entry.product.inventoryLevel != null ? Number(entry.product.inventoryLevel) : null,
+        reason: entry.reason,
+        rankWithinCategory: j + 1,
+      });
+    }
+  }
+
+  const categoryStats = orderedCats.map((cat, i) => ({
+    category: cat,
+    role: i === 0 ? 'primary' : 'supporting',
+    candidateCount: ranked.get(cat).length,
+    selectedCount: allocation.get(cat),
+    depthScore: scores.get(cat),
+  }));
+
+  return { selected, audit, categoryStats };
+}
+
+// Apply the even-grid trim (§6.9) after either selection strategy.
+function selectAndTrim(kept, { count, categoryOrder }) {
+  let selected;
+  let audit = [];
+  let categoryStats = [];
+  if (categoryOrder && categoryOrder.length) {
+    ({ selected, audit, categoryStats } = selectBalanced(kept, { count, categoryOrder }));
+  } else {
+    selected = kept.slice(0, count);
+  }
   if (selected.length % 2 !== 0) selected = selected.slice(0, selected.length - 1);
-  return selected;
+  const { ordered, pairingAudit } = orderProductsForGrid(selected);
+  return { selected: ordered, audit, categoryStats, pairingAudit };
+}
+
+// Curate: the original, UNCHANGED external contract (returns a plain array;
+// existing callers/tests are byte-for-byte unaffected when categoryOrder is
+// omitted — it degenerates to the exact old `slice(0, count)` behavior).
+function curate(products, { count, min, categoryOrder = null }) {
+  const kept = verifiedOnly(products);
+  assertMinimum(kept, min);
+  return selectAndTrim(kept, { count, categoryOrder }).selected;
+}
+
+// Same selection as curate(), but also returns the per-product curation audit
+// and per-category stats (used by the calendar-driven path so QA can see WHY
+// each product was, or wasn't, chosen). Reuses the exact same verification
+// gate as curate() — never a second, divergent filter.
+function curateWithAudit(products, { count, min, categoryOrder = null }) {
+  const kept = verifiedOnly(products);
+  assertMinimum(kept, min);
+  return selectAndTrim(kept, { count, categoryOrder });
 }
 
 // The top distinct category labels present in the curated set (factual).
@@ -84,6 +316,21 @@ function capPreview(s, max = 150) {
   return `${t.slice(0, max - 1).replace(/[\s,;:.–—-]+\S*$/, '').trim()}…`;
 }
 
+// Calendar free-text fields (key_topic, notes) are PLANNING INPUT for whoever
+// briefed the campaign — not display copy. A sentence written as an instruction
+// to the campaign builder ("Promote the...", "Each item links...") must never
+// reach the customer verbatim. This is a general detector (not overfit to exact
+// calendar phrasing) for imperative, process-facing language: it matches on
+// leading verbs/phrases that address the campaign/reader-as-marketer rather
+// than the customer. When it fires, callers fall back to the existing
+// verified-fact template sentence instead of inventing new copy.
+const PLANNING_LANGUAGE_RE = /^(promote|highlight|showcase|feature|position|target|drive|push|market|advertise|announce|use this (campaign|email|send)|this (campaign|email|send) (should|will|must)|each item links|link[s]? straight|the (goal|aim|intent) (is|of this))\b/i;
+
+function isPlanningLanguage(text) {
+  const t = String(text == null ? '' : text).trim();
+  return Boolean(t) && PLANNING_LANGUAGE_RE.test(t);
+}
+
 // Generate a campaign-specific Preview Text (email preheader). CLAUDE.md §6.24:
 // every Weekly Campaign MUST have a non-empty, campaign-specific preview text.
 // Source priority:
@@ -98,11 +345,14 @@ function generatePreviewText({ campaign = {}, category = null, count = 0 } = {})
 
   // (2) generate — factual inputs only
   const theme = (category && category.name) || campaign.topic_category || 'the range';
-  const key = campaign.key_topic ? String(campaign.key_topic).trim().replace(/\s+/g, ' ') : '';
+  const rawKey = campaign.key_topic ? String(campaign.key_topic).trim().replace(/\s+/g, ' ') : '';
+  // Planning language ("Promote the...") is never surfaced as preview text —
+  // fall back to the theme-only branches below instead of inventing anything.
+  const key = rawKey && !isPlanningLanguage(rawKey) ? rawKey : '';
   const promo = campaign.promotion && (campaign.promotion.text || campaign.promotion.code)
     ? String(campaign.promotion.text || campaign.promotion.code).trim()
     : '';
-  const type = String(campaign.campaign_type || '').toLowerCase();
+  const type = String(campaign.topic_category_slug || '').toLowerCase();
   const nItems = count > 0 ? `${count} ` : '';
   const ship = 'in stock now and ready to ship Australia-wide';
 
@@ -129,6 +379,15 @@ function buildCalendarPackage({ brand, campaign, category, selected }) {
   const catLabel = (category && category.name) || campaign.topic_category || 'the range';
   const allProductsUrl = brand.identity.allProductsUrl.value;
 
+  // campaign.key_topic is planning INPUT (what the campaign should promote),
+  // not customer-facing copy — a sentence written as an instruction to the
+  // builder ("Promote the...") must never render verbatim (CLAUDE.md §9).
+  // When it reads as planning language, fall back to the same grounded,
+  // verified-fact sentence already used when no key_topic is supplied at all.
+  const rawKeyTopic = campaign.key_topic ? String(campaign.key_topic).trim().replace(/\s+/g, ' ') : '';
+  const heroBodyFallback = `A focused selection of ${catLabel}, in stock now and ready to ship across Australia.`;
+  const heroBody = rawKeyTopic && !isPlanningLanguage(rawKeyTopic) ? rawKeyTopic : heroBodyFallback;
+
   return {
     // subject comes straight from the calendar (do not invent — user rule)
     subject: campaign.subject_line || `${brand.identity.displayName.value}: ${catLabel}`,
@@ -137,11 +396,13 @@ function buildCalendarPackage({ brand, campaign, category, selected }) {
     eyebrow: String(campaign.campaign_type_label || 'This Week').toUpperCase(),
     // one introduction only (§5.2): the hero states the theme…
     heroHeading: campaign.campaign_name || `This Week: ${catLabel}`,
-    heroBody: campaign.key_topic || `A focused selection of ${catLabel}, in stock now and ready to ship across Australia.`,
-    // …and the intro paragraphs SUPPORT it without restating the theme (§5.2)
+    heroBody,
+    // …and the intro paragraph SUPPORTS it without restating the theme (§5.2).
+    // CLAUDE.md §9: intro copy is one short paragraph max — a second, process-
+    // sounding line ("Each item links straight to its live product page.") was
+    // previously hardcoded here; removed rather than shown to customers.
     introParas: [
       `Browse the ${catLabel} range below. Every product is in stock and ready to ship across Australia.`,
-      'Each item links straight to its live product page.',
     ],
     sectionTitle: catLabel,
     sectionSubtitle: `${n} products, in stock now`,
@@ -150,6 +411,21 @@ function buildCalendarPackage({ brand, campaign, category, selected }) {
     // CTA → the live category page when resolved, else the safe all-products page (§6.7)
     ctaUrl: (category && category.url) || allProductsUrl,
     products: selected,
+    // Coupon/promo block (SYSTEM PATCH: Promotion/Coupon Resolution). The
+    // calendar's promotion field is authoritative — never invented here, never
+    // a different code/discount/expiry than the calendar declares. null
+    // promotion (the common case) → null coupon → renderer omits the block
+    // entirely (Standards/coupon-contract.md "Absent coupon"). The CTA reuses
+    // the SAME verified category URL as the rest of the send, so the promoted
+    // offer can never point at products outside the resolved theme/category.
+    coupon: campaign.promotion && campaign.promotion.code && campaign.promotion.text
+      ? {
+          code: campaign.promotion.code,
+          offerText: campaign.promotion.text,
+          ctaLabel: 'Shop Now',
+          ctaUrl: (category && category.url) || allProductsUrl,
+        }
+      : null,
     _decision: {
       candidateSource: `calendar:${campaign.campaign_id}`,
       category: catLabel,
@@ -173,14 +449,30 @@ function buildOverridePackage({ brand, plan, groups }) {
     subject: plan.subject,
     preheader: plan.preview_text,
     eyebrow: plan.eyebrow || '',
-    heroHeading: plan.hero_heading,
+    heroHeading: plan.hero_heading || '',
     heroBody: plan.hero_body || '',
     introParas: Array.isArray(plan.intro_paras) ? plan.intro_paras.slice(0, 2) : [],
     heroImage: plan.hero_image || null, // { url, alt, height, link }
-    ctaLabel: cta.label || 'Shop the Range',
-    ctaUrl: cta.url || brand.identity.allProductsUrl.value,
+    // The hero banner is a baked-message graphic (its own headline/CTA are
+    // artwork, not HTML) — the separate text hero/intro/primary-CTA block below
+    // it would only ever repeat what the image already shows (CLAUDE.md §9 "one
+    // introduction... later sections support, not restate"), so renderer.js
+    // skips rendering it. heroHeading/heroBody stay populated with real,
+    // theme-referencing text ONLY so semantic QA (checkThemeCoherence) can still
+    // confirm the hero supports the declared theme — it is never displayed.
+    heroMessageBaked: Boolean(plan.hero_message_baked),
+    // Primary CTA is OPTIONAL for an override (omit cta_primary entirely to skip
+    // it) — e.g. when the hero banner already carries the message/CTA and the
+    // approved flow goes straight into the first section heading (CLAUDE.md §9).
+    // An override that DOES supply cta_primary is unaffected (unchanged behavior).
+    ctaLabel: cta.label || null,
+    ctaUrl: cta.label ? (cta.url || brand.identity.allProductsUrl.value) : null,
     closingCtaLabel: closing ? closing.label : null,
     closingCtaUrl: closing ? closing.url : null,
+    // Optional — only consumed by a brand-specific closing-CTA panel (e.g.
+    // Components/CTA-secondary.ss.html); the generic plain-button path ignores them.
+    closingCtaHeadline: closing ? (closing.headline || closing.label) : null,
+    closingCtaSubtext: closing ? (closing.subtext || '') : null,
     sectionTitle: groups[0] ? groups[0].title : '',
     sectionSubtitle: '',
     badgeText: 'In Stock',
@@ -196,14 +488,34 @@ function buildOverridePackage({ brand, plan, groups }) {
   };
 }
 
-function buildPackage({ brand, slot, products, config, campaign = null, category = null }) {
-  const count = (config && config.product && config.product.defaultCount) || 16;
+function buildPackage({ brand, slot, products, config, campaign = null, category = null, targetCount = null }) {
+  // targetCount is the pipeline's SINGLE resolved requiredCount (campaign >
+  // brand > platform config priority — see pipeline.js's resolveRequiredProductCount).
+  // Callers that don't pass it (generic/test paths) keep the old platform-config
+  // fallback so existing behavior is unchanged.
+  const count = targetCount || (config && config.product && config.product.defaultCount) || 16;
   const min = (config && config.product && config.product.minCount) || 4;
 
-  const selected = curate(products, { count, min });
+  // Category-balanced ranking only activates when a resolved category is
+  // present (the calendar-driven path) — category.name carries the Calendar's
+  // product_categories in its original, comma-separated intent order (primary
+  // first). The generic/test path (category === null) is unaffected: it falls
+  // straight through to the old slice(0, count) behavior.
+  const categoryOrder = category && category.name
+    ? String(category.name).split(',').map((s) => s.trim()).filter(Boolean)
+    : null;
+
+  const { selected, audit, categoryStats, pairingAudit } = curateWithAudit(products, { count, min, categoryOrder });
 
   // Calendar-driven path: the campaign record governs the copy + theme.
-  if (campaign) return buildCalendarPackage({ brand, campaign, category, selected });
+  if (campaign) {
+    const pkg = buildCalendarPackage({ brand, campaign, category, selected });
+    pkg._decision.curationAudit = audit;
+    pkg._decision.categoryStats = categoryStats;
+    pkg._decision.approvedCategories = categoryOrder || [];
+    pkg._decision.pairingAudit = pairingAudit || [];
+    return pkg;
+  }
 
   // Generic weekly path (unchanged — byte-identical output, golden-test safe).
   const cats = topCategories(selected, 3);
@@ -235,10 +547,14 @@ function buildPackage({ brand, slot, products, config, campaign = null, category
       categories: cats,
       slot: { type: slot.type, isoWeek: slot.isoWeek, synthesized: !!slot.synthesized },
       generatedBy: 'deterministic-mvp (LLM seam: platform/ai/copy.js buildPackage)',
+      pairingAudit: pairingAudit || [],
     },
   };
 
   return pkg;
 }
 
-module.exports = { buildPackage, buildOverridePackage, curate, topCategories, humanList, generatePreviewText };
+module.exports = {
+  buildPackage, buildOverridePackage, curate, curateWithAudit, classifyProduct, selectBalanced,
+  topCategories, humanList, generatePreviewText, isPlanningLanguage,
+};

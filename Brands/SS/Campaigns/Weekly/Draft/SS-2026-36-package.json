@@ -1,0 +1,31 @@
+{
+  "campaignId": "SS-2026-36",
+  "brand": "SS",
+  "type": "weekly",
+  "generatedAt": "2026-09-26T12:17:07.188Z",
+  "runId": "SS-weekly-20260926-121707",
+  "subject": "Slow Vehicles at Entrances with Heavy-Duty Speed Humps",
+  "previewText": "Help warehouses, driveways and work zones control vehicle speed with durable, highly visible speed humps designed for safer site access. Compare 18…",
+  "productCount": 18,
+  "render": {
+    "productsRendered": 18,
+    "rows": 9,
+    "groups": 1,
+    "trimmedFrom": 18
+  },
+  "qa": {
+    "pass": 31,
+    "blocker": 0,
+    "warn": 0
+  },
+  "writeMode": "pipeline",
+  "sendStatus": "NOT_APPROVED_TO_SEND",
+  "_note": "Draft-only build (SYSTEM PATCH: Draft/Output Lifecycle). Output/ is untouched until an explicit, human-gated approval step promotes this Draft. Approval-to-send is tracked in Brief/ + Review/ and gated by CLAUDE.md §8.1. Klaviyo/send are out of MVP scope.",
+  "files": {
+    "html": "Brands\\SS\\Campaigns\\Weekly\\Draft\\SS-2026-36.html",
+    "draft": "Brands\\SS\\Campaigns\\Weekly\\Draft\\SS-2026-36-draft-v7.html",
+    "products_json": "Brands\\SS\\Campaigns\\Weekly\\Draft\\SS-2026-36-products.json",
+    "products_csv": "Brands\\SS\\Campaigns\\Weekly\\Draft\\SS-2026-36-products.csv",
+    "qa_report": "Brands\\SS\\Campaigns\\Weekly\\Draft\\SS-2026-36-qa-report.md"
+  }
+}

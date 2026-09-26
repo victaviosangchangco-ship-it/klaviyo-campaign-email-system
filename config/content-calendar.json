@@ -21,7 +21,7 @@
     {
       "campaign_id": "RDD-2026-W33",
       "brand": "RDD",
-      "campaign_type": "weekly",
+      "topic_category_slug": "weekly",
       "campaign_name": "Workspace & Signage Weekly",
       "topic_category": "Workspace",
       "subject_line": "This week at Retail Display Direct: Workspace essentials",
@@ -35,7 +35,7 @@
     {
       "campaign_id": "RDD-2026-W34",
       "brand": "RDD",
-      "campaign_type": "weekly",
+      "topic_category_slug": "weekly",
       "campaign_name": "Acrylic Displays Weekly",
       "topic_category": "Acrylic Displays",
       "subject_line": "Fresh acrylic display picks for your space",
@@ -49,7 +49,7 @@
     {
       "campaign_id": "RDD-2026-W35",
       "brand": "RDD",
-      "campaign_type": "weekly",
+      "topic_category_slug": "weekly",
       "campaign_name": "Snap Frames Weekly",
       "topic_category": "Snap Frames",
       "subject_line": "Snap frames, sized for every wall",
@@ -63,7 +63,7 @@
     {
       "campaign_id": "SS-2026-W33",
       "brand": "SS",
-      "campaign_type": "weekly",
+      "topic_category_slug": "weekly",
       "campaign_name": "Safety Sector Weekly",
       "topic_category": "Site Safety",
       "subject_line": "This week in site safety",

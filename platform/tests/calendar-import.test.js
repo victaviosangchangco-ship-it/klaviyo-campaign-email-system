@@ -35,7 +35,7 @@ test('toIsoDate normalizes Excel serial, Date, and string forms → YYYY-MM-DD',
   assert.strictEqual(mapping.toIsoDate(' '), null);
 });
 
-test('slug + brandFromId derive campaign_type and brand', () => {
+test('slug + brandFromId derive topic_category_slug and brand', () => {
   assert.strictEqual(mapping.slug('Promotional sale'), 'promotional-sale');
   assert.strictEqual(mapping.slug('EOFY sale'), 'eofy-sale');
   assert.strictEqual(mapping.brandFromId('RDD-2026-28'), 'RDD');
@@ -63,7 +63,59 @@ test('classifyRow skips junk, missing id/date, and popup; keeps a good row', () 
   assert.match(mapping.classifyRow(getter({ campaign_id: 'RDD-2026-47', scheduled_date: 46204, audience_type: 'popup' })), /popup/);
 });
 
-test('mapRow produces the 12 service fields (+extras); topic_category=product focus, preview/send_time null', () => {
+// SYSTEM PATCH: Campaign-ID Format Gap (2026-09) — CAMPAIGN_ID_RE previously
+// required a purely-numeric final segment and silently classified the two
+// OTHER officially-supported id shapes (CLAUDE.md §10 Www week format; §10
+// cadence-token ids) as a divider/label row, dropping real campaigns from
+// every resolution path. Found live against RDD-2026-HOL-fathers-day /
+// RDD-2026-CAT-sit-stand-workspace / RDD-2026-W38 while verifying the Phase 1
+// default-to-Lark change.
+test('classifyRow keeps Www week-format and structural cadence-token ids (CLAUDE.md §10) — not divider rows', () => {
+  const weekFormat = getter({ campaign_id: 'RDD-2026-W38', scheduled_date: 46204, audience_type: 'list' });
+  assert.strictEqual(mapping.classifyRow(weekFormat), null, 'Www format must be kept, not treated as a divider');
+
+  const holToken = getter({ campaign_id: 'RDD-2026-HOL-fathers-day', scheduled_date: 46204, audience_type: 'segment' });
+  assert.strictEqual(mapping.classifyRow(holToken), null, 'HOL-token id must be kept, not treated as a divider');
+
+  const launchToken = getter({ campaign_id: 'SS-2026-LAUNCH-mobility-daily-living-aids', scheduled_date: 46204, audience_type: 'list' });
+  assert.strictEqual(mapping.classifyRow(launchToken), null, 'LAUNCH-token id must be kept, not treated as a divider');
+
+  const catToken = getter({ campaign_id: 'RDD-2026-CAT-sit-stand-workspace', scheduled_date: 46204, audience_type: 'segment' });
+  assert.strictEqual(mapping.classifyRow(catToken), null, 'CAT-token id must be kept, not treated as a divider');
+
+  // The real divider/label rows must still be rejected — no BRAND-YEAR- prefix at all.
+  assert.match(mapping.classifyRow(getter({ campaign_id: 'Past campaigns ' })), /divider/);
+  assert.match(mapping.classifyRow(getter({ campaign_id: 'Superseded' })), /divider/);
+});
+
+test('mapRow: Www and cadence-token ids map correctly (brand/cadence derived, not dropped)', () => {
+  const week = mapping.mapRow(getter({ campaign_id: 'RDD-2026-W38', name: 'Workspace Weekly', topic_category: 'Product insights', subject_line: 'S', scheduled_date: 46204, product_categories: 'Workspace' }));
+  assert.strictEqual(week.campaign_id, 'RDD-2026-W38');
+  assert.strictEqual(week.brand, 'RDD');
+
+  const hol = mapping.mapRow(getter({ campaign_id: 'RDD-2026-HOL-fathers-day', name: "Father's Day", topic_category: 'Holiday gifting', subject_line: 'S', scheduled_date: 46204, product_categories: 'Gift Ideas' }));
+  assert.strictEqual(hol.brand, 'RDD');
+  assert.strictEqual(hol.cadence, 'holiday'); // inferred from HOL token
+});
+
+test('cadenceFromId infers cadence from type-token IDs, null for plain numeric', () => {
+  assert.strictEqual(mapping.cadenceFromId('SS-2026-LAUNCH-mobility-daily-living-aids'), 'product-launch');
+  assert.strictEqual(mapping.cadenceFromId('SS-2026-HOL-fathers-day'), 'holiday');
+  assert.strictEqual(mapping.cadenceFromId('RDD-2026-CAT-sit-stand-workspace'), 'category');
+  assert.strictEqual(mapping.cadenceFromId('RDD-2026-SEA-winter-warmers'), 'seasonal');
+  assert.strictEqual(mapping.cadenceFromId('RDD-2026-CLR-end-of-line'), 'clearance');
+  assert.strictEqual(mapping.cadenceFromId('RDD-2026-STORY-our-mission'), 'brand-story');
+  assert.strictEqual(mapping.cadenceFromId('RDD-2026-EDU-how-to-guide'), 'educational');
+  assert.strictEqual(mapping.cadenceFromId('RDD-2026-AUTO-welcome'), 'automation');
+  // Plain numeric IDs → null (NOT safe to infer)
+  assert.strictEqual(mapping.cadenceFromId('RDD-2026-38'), null);
+  assert.strictEqual(mapping.cadenceFromId('RDD-2026-01'), null);
+  assert.strictEqual(mapping.cadenceFromId('SC-2026-32'), null);
+  assert.strictEqual(mapping.cadenceFromId(null), null);
+  assert.strictEqual(mapping.cadenceFromId(''), null);
+});
+
+test('mapRow produces the 13 service fields (+extras); topic_category=product focus, preview/send_time null', () => {
   const row = getter({
     campaign_id: 'RDD-2026-28',
     name: 'New Financial Year Clearance',
@@ -84,7 +136,8 @@ test('mapRow produces the 12 service fields (+extras); topic_category=product fo
   const c = mapping.mapRow(row);
   assert.strictEqual(c.campaign_id, 'RDD-2026-28');
   assert.strictEqual(c.brand, 'RDD');
-  assert.strictEqual(c.campaign_type, 'clearance');       // from XLSX topic_category
+  assert.strictEqual(c.cadence, null);                    // plain numeric ID → no inference
+  assert.strictEqual(c.topic_category_slug, 'clearance'); // from XLSX topic_category
   assert.strictEqual(c.topic_category, 'Overstock Items'); // from XLSX product_categories
   assert.strictEqual(c.send_date, '2026-07-01');
   assert.strictEqual(c.preview_text, null);
@@ -96,6 +149,33 @@ test('mapRow produces the 12 service fields (+extras); topic_category=product fo
   assert.strictEqual(c.key_topic, 'Kick off the new financial year…');
   assert.strictEqual(c.tone, 'optimistic, fresh, value-driven');
   assert.strictEqual(c.status, 'pending');
+});
+
+test('mapRow: XLSX cadence column overrides cadenceFromId inference', () => {
+  const row = getter({
+    campaign_id: 'SS-2026-LAUNCH-mobility-daily-living-aids',
+    name: 'Mobility Launch',
+    topic_category: 'Product launch',
+    subject_line: 'Introducing Mobility Aids',
+    scheduled_date: '2026-09-01',
+    product_categories: 'Daily Living',
+    cadence: 'monthly',
+  });
+  const c = mapping.mapRow(row);
+  assert.strictEqual(c.cadence, 'monthly'); // explicit XLSX value wins over LAUNCH token
+});
+
+test('mapRow: type-token ID infers cadence when XLSX column absent', () => {
+  const row = getter({
+    campaign_id: 'SS-2026-HOL-fathers-day',
+    name: 'Fathers Day',
+    topic_category: 'Holiday gifting',
+    subject_line: 'Gift Ideas for Dad',
+    scheduled_date: '2026-09-06',
+    product_categories: 'Gift Ideas',
+  });
+  const c = mapping.mapRow(row);
+  assert.strictEqual(c.cadence, 'holiday'); // inferred from HOL token
 });
 
 // =====================================================================
@@ -135,6 +215,21 @@ function writeFixtureWorkbook(dir) {
   XLSX.writeFile(wb, file);
   return file;
 }
+
+test('importCalendar: cadence-defaults.json backfills plain-numeric-ID campaigns', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'calimp-'));
+  const inputPath = writeFixtureWorkbook(dir);
+  const outputPath = path.join(dir, 'out.json');
+  const { doc } = importCalendar({ inputPath, outputPath });
+  // RDD-2026-28 is a plain numeric ID with no XLSX cadence column — gets backfilled
+  // from cadence-defaults.json if it has an entry, else stays null.
+  const c28 = doc.campaigns.find((c) => c.campaign_id === 'RDD-2026-28');
+  // The fixture workbook has no cadence column; cadenceFromId returns null for plain numeric.
+  // Backfill depends on whether cadence-defaults.json has an entry for RDD-2026-28.
+  // In production it does; in this temp-dir import, the importer reads from the real
+  // config/cadence-defaults.json, so RDD-2026-28 should get 'weekly'.
+  assert.strictEqual(c28.cadence, 'weekly');
+});
 
 test('importCalendar: filters junk/popup/blank/no-date, normalizes, and writes provenance JSON', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'calimp-'));
@@ -181,9 +276,9 @@ test('importCalendar: filters junk/popup/blank/no-date, normalizes, and writes p
 function svc(campaigns) {
   return createCalendarService({ provider: new JsonCalendarProvider({ data: { campaigns } }) });
 }
-const W30_A = { campaign_id: 'RDD-2026-32', brand: 'RDD', campaign_type: 'category-spotlight', send_date: '2026-07-20' };
-const W30_B = { campaign_id: 'RDD-2026-33', brand: 'RDD', campaign_type: 'promotional-sale', send_date: '2026-07-22' };
-const W29 = { campaign_id: 'RDD-2026-31', brand: 'RDD', campaign_type: 'product-insights', send_date: '2026-07-15' };
+const W30_A = { campaign_id: 'RDD-2026-32', brand: 'RDD', topic_category_slug: 'category-spotlight', send_date: '2026-07-20' };
+const W30_B = { campaign_id: 'RDD-2026-33', brand: 'RDD', topic_category_slug: 'promotional-sale', send_date: '2026-07-22' };
+const W29 = { campaign_id: 'RDD-2026-31', brand: 'RDD', topic_category_slug: 'product-insights', send_date: '2026-07-15' };
 
 test('selection: --campaign picks that exact id (brand-checked)', async () => {
   const s = svc([W30_A, W30_B, W29]);
@@ -210,4 +305,20 @@ test('selection: no --week falls back to the soonest upcoming; explicit empty we
   const next = await resolveCalendarCampaign({ calendarService: s, brandCode: 'RDD', now: new Date('2026-07-01') });
   assert.strictEqual(next.campaign_id, 'RDD-2026-31'); // 07-15 is soonest
   await assert.rejects(() => resolveCalendarCampaign({ calendarService: s, brandCode: 'RDD', week: '2026-W40' }), ApprovalRequired);
+});
+
+test('selection: --campaign + matching --week proceeds normally', async () => {
+  const s = svc([W30_A, W30_B, W29]);
+  // W29 send_date 2026-07-15 → ISO W29. Pass both; they agree.
+  const c = await resolveCalendarCampaign({ calendarService: s, brandCode: 'RDD', campaignId: 'RDD-2026-31', week: '2026-W29' });
+  assert.strictEqual(c.campaign_id, 'RDD-2026-31');
+});
+
+test('selection: --campaign + conflicting --week → STOP', async () => {
+  const s = svc([W30_A, W30_B, W29]);
+  // RDD-2026-32 send_date 2026-07-20 → ISO W30, but we pass --week W29.
+  await assert.rejects(
+    () => resolveCalendarCampaign({ calendarService: s, brandCode: 'RDD', campaignId: 'RDD-2026-32', week: '2026-W29' }),
+    (err) => err instanceof ApprovalRequired && /2026-W30/.test(err.message) && /2026-W29/.test(err.message)
+  );
 });

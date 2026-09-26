@@ -1,0 +1,4 @@
+{
+  "_doc": "REQUIRED per-campaign declared-hero registry for calendar-driven Weekly generation (SYSTEM PATCH: Weekly Hero Banner Resolution). A calendar-driven Weekly campaign_id with NO entry here BLOCKS with HERO_ASSET_REQUIRED rather than silently falling back to a text-only hero or reusing another campaign's artwork. An entry declares campaign-specific artwork ALREADY verified/approved for this exact campaign_id — it never causes the engine to generate or guess an image. Each value: { url: absolute HTTPS image URL (required, hosted per CLAUDE.md §12), alt: meaningful alt text (required), height: real exported pixel height (required, per Standards/hero-contract.md), link: optional click-through URL (defaults to the brand website) }. Content-override campaigns (config/campaign-overrides/<id>.json) are unaffected — they declare their own hero_image and are governed by CLAUDE.md's existing content-override authoring flow, not this registry.",
+  "campaigns": {}
+}

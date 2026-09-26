@@ -1,0 +1,91 @@
+<!--
+  Template: weekly-skeleton.ss (SS Weekly visual-system override)
+  Purpose: SS's own approved page canvas — a light grey (#f0f0f0) full-width background
+           with a centred, padded 600px WHITE card — instead of the generic skeleton's
+           single 600px table on a body-coloured background. As shipped in
+           SS-2026-W32/W36/W38. Loaded INSTEAD of the generic weekly-skeleton.html by
+           renderer.js's brandFile() when brand.code === "SS" (CLAUDE.md §6.14). Same
+           ASSEMBLE marker set/order as the generic skeleton (queues in renderer.js are
+           keyed by the generic path string regardless of which file is loaded), so every
+           existing component-loading/token rule keeps working unchanged; only the shell
+           around them differs.
+  Required inputs: [[SUBJECT_LINE]], [[PREHEADER_TEXT]], plus each assembled component's
+                   required inputs (see that component's header).
+  Dependencies: Shared/Snippets/base-head.html, Shared/Snippets/preheader.html, and the
+                assembled Components. The base-head ASSEMBLE marker resolves (via
+                renderer.js's brandFile()) to Shared/Snippets/base-head.ss.html, which adds
+                the `.col-2` mobile rule inside <head> — scoped there, not the generic
+                base-head.html, so no other brand's shared CSS changes.
+-->
+<!-- ASSEMBLE: Shared/Snippets/base-head.html -->
+<body class="dm-bg" style="margin:0; padding:0; background:#f0f0f0;">
+
+  <!-- WK-S2: Preheader -->
+  <!-- ASSEMBLE: Shared/Snippets/preheader.html -->
+
+  <center style="width:100%; background:#f0f0f0;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f0f0f0" style="width:100%; margin:0; padding:0; background:#f0f0f0;">
+      <tr>
+        <td align="center" style="padding:26px 12px 34px 12px;">
+          <!--[if mso]><table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" align="center"><tr><td><![endif]-->
+          <table role="presentation" class="email-container dm-bg" width="100%" cellpadding="0" cellspacing="0" border="0" align="center" bgcolor="[[BODY_BG]]" style="width:100%; max-width:600px; margin:0 auto; background:[[BODY_BG]];">
+            <tr>
+              <td>
+
+                <!-- WK-S3: Header / logo -->
+                <!-- ASSEMBLE: Components/header.html -->
+
+                <!-- WK-S4: Hero image banner (optional visual lead) -->
+                <!-- ASSEMBLE: Components/hero-image.html -->
+
+                <!-- WK-S4: Headline block — eyebrow + H1 + optional lead line -->
+                <!-- ASSEMBLE: Components/hero.html -->
+
+                <!-- WK-S4: Intro copy (optional) -->
+                <!-- ASSEMBLE: Components/intro.html -->
+
+                <!-- WK-S4: Category navigation pills (optional) -->
+                <!-- ASSEMBLE: Components/category-pills.html -->
+
+                <!-- WK-S5: Primary call to action -->
+                <!-- ASSEMBLE: Components/CTA.html -->
+
+                <!-- WK-S6: Section heading (framing; repeat per product section) -->
+                <!-- ASSEMBLE: Components/section-heading.html -->
+
+                <!-- WK-S6: Featured products (conditional; one marker = one 2-card row, repeat per pair) -->
+                <!-- ASSEMBLE: Components/product-grid.html -->
+
+                <!-- WK-S6: Second product section — heading + grid (optional; e.g. an On-Sale block) -->
+                <!-- ASSEMBLE: Components/section-heading.html -->
+                <!-- ASSEMBLE: Components/product-grid.html -->
+
+                <!-- Support banner (optional; exact campaign_id match in hosting/<brand>/support-banners/, renders after the product grids) -->
+                <!-- ASSEMBLE: Components/support-banner.html -->
+
+                <!-- WK-S5: Secondary CTA — outline (optional; lower tier than the primary) -->
+                <!-- ASSEMBLE: Components/CTA-secondary.html -->
+
+                <!-- Offer / coupon (optional) -->
+                <!-- ASSEMBLE: Components/coupon.html -->
+
+                <!-- WK-S7: Supporting content — trust badges (optional) -->
+                <!-- ASSEMBLE: Components/trust-strip.html -->
+
+                <!-- Contact/help block (SS-only; W36/W38 approved pattern) -->
+                <!-- ASSEMBLE: Components/contact-block.html -->
+
+                <!-- WK-S8: Footer (compliance) -->
+                <!-- ASSEMBLE: Components/footer.html -->
+
+              </td>
+            </tr>
+          </table>
+          <!--[if mso]></td></tr></table><![endif]-->
+        </td>
+      </tr>
+    </table>
+  </center>
+
+</body>
+</html>

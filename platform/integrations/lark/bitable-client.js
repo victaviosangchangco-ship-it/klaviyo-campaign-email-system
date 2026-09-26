@@ -187,6 +187,37 @@ class LarkBitableClient {
 
     return { records, pages, total: total == null ? records.length : total };
   }
+
+  // List a table's field (column) definitions. Read-only — same GET-only
+  // guarantee as listRecords. Used to check whether a field already exists
+  // before any field-creation plan is built (calendar-field-manager.js).
+  // Returns { fields: [{ field_id, field_name, type, property, ... }] }.
+  async listFields({ appToken, tableId, pageSize = DEFAULTS.pageSize } = {}) {
+    if (!appToken) throw new ConfigError('listFields requires appToken.');
+    if (!tableId) throw new ConfigError('listFields requires tableId.');
+
+    const pathname = `/bitable/v1/apps/${encodeURIComponent(appToken)}/tables/${encodeURIComponent(tableId)}/fields`;
+
+    const fields = [];
+    let pageToken = null;
+    let pages = 0;
+
+    do {
+      const data = await this._get(pathname, { page_size: pageSize, page_token: pageToken });
+      const items = Array.isArray(data.items) ? data.items : [];
+      fields.push(...items);
+      pages += 1;
+      pageToken = data.has_more ? data.page_token || null : null;
+      if (pageToken && pages >= this.maxPages) {
+        throw new IntegrationError(
+          `Lark Base field pagination exceeded ${this.maxPages} pages — aborting to avoid an unbounded read.`,
+          { system: 'lark', pages }
+        );
+      }
+    } while (pageToken);
+
+    return { fields };
+  }
 }
 
 module.exports = { LarkBitableClient, DEFAULTS };

@@ -9,7 +9,8 @@ const { ApprovalRequired } = require('../common/errors');
 
 const ok = (id, over = {}) => ({
   id, name: `P${id}`, url: `https://x.com/${id}/`, imageUrl: `https://cdn.x.com/${id}.jpg`,
-  priceLabel: 'AUD $10.00', desc: 'Cat', isVisible: true, availability: 'available', ...over,
+  priceLabel: 'AUD $10.00', desc: 'Cat', isVisible: true, availability: 'available',
+  inventoryTracking: 'product', inventoryLevel: 10, ...over,
 });
 
 test('drops hidden, disabled, unpriced, imageless and urless products (§5.1)', () => {

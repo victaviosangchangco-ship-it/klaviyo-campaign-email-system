@@ -162,6 +162,72 @@ function checkGmailClip(html, kb) {
   return finding('pass', 'gmail-clip', `HTML is ${(bytes / 1024).toFixed(1)}KB (well under ${kb}KB clip).`, '§8.3', { bytes });
 }
 
+// Extract the last hex colour assigned to `prop` before `idx` in `html` — used
+// to find "the background this element actually sits on" by walking backward
+// from the link to the nearest bgcolor/background declaration.
+function lastHexBefore(html, idx, prop) {
+  const re = new RegExp(`${prop}\\s*[:=]\\s*"?#([0-9a-fA-F]{3,6})`, 'g');
+  let last = null;
+  let m;
+  while ((m = re.exec(html)) !== null && m.index < idx) last = m[1].toLowerCase();
+  return last;
+}
+
+function normalizeHex(h) {
+  if (!h) return null;
+  return h.length === 3 ? h.split('').map((c) => c + c).join('') : h;
+}
+
+// A footer/compliance link whose text colour exactly matches the background it
+// sits on is invisible — a real, brand-config-driven defect (e.g. LINK_COLOR
+// and FOOTER_BG both #000000), not a styling nuance. Generic (not SS-specific):
+// any brand's token combination can produce this.
+function checkFooterLinkContrast(html) {
+  const re = /<a\s+href="\{%\s*unsubscribe_link\s*%\}"[^>]*style="([^"]*)"/i;
+  const m = html.match(re);
+  if (!m) return finding('pass', 'footer-link-contrast', 'No unsubscribe link found to check.', 'CLAUDE.md/footer');
+  const linkColorMatch = m[1].match(/color\s*:\s*#([0-9a-fA-F]{3,6})/);
+  if (!linkColorMatch) return finding('pass', 'footer-link-contrast', 'Unsubscribe link has no explicit colour to check.', 'CLAUDE.md/footer');
+  const linkColor = normalizeHex(linkColorMatch[1].toLowerCase());
+  const bg = normalizeHex(lastHexBefore(html, m.index, 'background') || lastHexBefore(html, m.index, 'bgcolor'));
+  if (bg && bg === linkColor) {
+    return finding(
+      'blocker',
+      'footer-link-contrast',
+      `Unsubscribe/Privacy link colour (#${linkColor}) matches the footer background (#${bg}) — the link is invisible.`,
+      'CLAUDE.md/footer',
+      { color: linkColor, background: bg }
+    );
+  }
+  return finding('pass', 'footer-link-contrast', 'Footer link colour differs from its background.', 'CLAUDE.md/footer');
+}
+
+// A component doc comment that quotes a literal `<!-- ... -->` example inside
+// itself closes early and leaks the rest of its own prose (plus a dangling
+// `-->`) into the rendered document — a real regression once found in
+// Components/contact-block.html. A naive "count <!-- vs -->" check cannot
+// distinguish that leak from the legitimate, WIDELY-used Outlook downlevel-
+// revealed conditional idiom (`<!--[if !mso]><!-->` ... `<!--<![endif]-->`),
+// which is deliberately unbalanced by that measure — every approved output in
+// this repo uses it. Detect the leak by its actual signature instead: known
+// component doc-comment prose (a "Component:"/"Purpose:"/"Dependencies:" label)
+// surviving into the body, which only happens when a comment closed early.
+function checkStrayCommentArtifacts(html) {
+  const bodyMatch = html.match(/<body[\s\S]*$/i);
+  const body = bodyMatch ? bodyMatch[0] : html;
+  const hit = /\n\s*(Component|Purpose|Dependencies|Required inputs|Fallback behavior):/i.exec(body);
+  if (hit) {
+    return finding(
+      'blocker',
+      'stray-comment-artifact',
+      `Component doc-comment prose ("${hit[1]}:") leaked into the rendered body — a doc comment likely quotes a literal HTML comment inside itself and closed early (render/§8.3).`,
+      'render/§8.3',
+      { label: hit[1] }
+    );
+  }
+  return finding('pass', 'stray-comment-artifact', 'No leaked component doc-comment prose in the body.', 'render/§8.3');
+}
+
 function checkStructure(html) {
   const warns = [];
   if (!/<!DOCTYPE/i.test(html)) warns.push('missing <!DOCTYPE>');
@@ -189,6 +255,8 @@ function runAll(html, { platformConfig } = {}) {
     checkMissingImageDims(html),
     checkGmailClip(html, kb),
     checkStructure(html),
+    checkFooterLinkContrast(html),
+    checkStrayCommentArtifacts(html),
   ];
 }
 
@@ -229,4 +297,32 @@ async function checkLinksLive(urls, { timeoutMs = 8000, concurrency = 6, logger 
   return { finding: f, results };
 }
 
-module.exports = { runAll, checkLinksLive, finding };
+// --- product inventory checks (§11 — Inventory Safety Gate) ----------------
+
+const { isCampaignPurchasable, PASS } = require('../integrations/bigcommerce/inventory');
+
+function checkProductInventory(products, { brandCode = '?' } = {}) {
+  if (!Array.isArray(products) || !products.length) {
+    return finding('pass', 'product-inventory-current', 'No products to verify (approved-attach or empty).', '§11');
+  }
+  const failures = [];
+  for (const p of products) {
+    const v = isCampaignPurchasable(p, { brandCode });
+    if (v.status !== PASS) {
+      failures.push({ id: p.id, name: p.name, reason: v.reason });
+    }
+  }
+  if (failures.length) {
+    const detail = failures.slice(0, 5).map((f) => `[${f.id}] ${f.name}: ${f.reason}`).join('; ');
+    return finding(
+      'blocker',
+      'product-inventory-current',
+      `${failures.length} product(s) failed the inventory purchasability check: ${detail}`,
+      '§11',
+      { failures }
+    );
+  }
+  return finding('pass', 'product-inventory-current', `All ${products.length} product(s) are currently purchasable.`, '§11');
+}
+
+module.exports = { runAll, checkLinksLive, checkProductInventory, finding };
